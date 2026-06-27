@@ -11,7 +11,11 @@
         .title { color: #333; margin: 0 0 8px 0; font-size: 22px; }
         .subtitle { color: #999; font-size: 13px; margin: 0 0 24px 0; }
         .input-group input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 14px; -webkit-appearance: none; }
-        .btn-primary { width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .sms-group { display: flex; gap: 8px; margin-bottom: 16px; }
+        .sms-group input { flex: 1; margin-bottom: 0; }
+        .btn-sms { width: 120px; padding: 12px 0; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; cursor: pointer; white-space: nowrap; font-weight: 500; }
+        .btn-sms:disabled { background-color: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+        .btn-primary { width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 8px; }
         .identity-cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
         .identity-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; text-align: left; cursor: pointer; background: #fff; }
         .identity-card.active { border-color: #8b5cf6; background-color: #faf5ff; }
@@ -23,17 +27,27 @@
 </head>
 <body>
     <div class="auth-container">
+        <!-- 步骤一：手机短信验证注册 -->
         <div id="step1" class="form-box">
             <h2 class="title">欢迎加入国学交流平台</h2>
-            <p class="subtitle">请先创建一个您的专属账号</p>
+            <p class="subtitle">正规手机短信验证安全登录</p>
             <div class="input-group">
-                <input type="text" id="username" placeholder="请输入用户名/手机号" />
-                <input type="password" id="password" placeholder="请输入密码（不少于6位）" />
-                <input type="password" id="confirmPassword" placeholder="请再次确认密码" />
+                <!-- 手机号输入 -->
+                <input type="tel" id="phone" placeholder="请输入11位手机号" maxlength="11" />
+                
+                <!-- 短信验证码组合框 -->
+                <div class="sms-group">
+                    <input type="number" id="smsCode" placeholder="请输入验证码" oninput="if(value.length>6)value=value.slice(0,6)" />
+                    <button class="btn-sms" id="btnGetCode" onclick="sendSmsCode()">获取验证码</button>
+                </div>
+                
+                <!-- 密码设置 -->
+                <input type="password" id="password" placeholder="设置平台登录密码（不少于6位）" />
             </div>
-            <button class="btn-primary" onclick="handleRegister()">立即注册</button>
+            <button class="btn-primary" onclick="handleRegister()">立即验证注册</button>
         </div>
 
+        <!-- 步骤二：选择身份 -->
         <div id="step2" class="form-box hidden">
             <h2 class="title">请选择您的身份</h2>
             <p class="subtitle">身份选定后，平台将为您定制专属功能</p>
@@ -55,16 +69,68 @@
 
     <script>
         let selectedRole = '';
-        function handleRegister() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            const cp = document.getElementById('confirmPassword').value;
-            if(!u || !p) { alert('请填写完整信息'); return; }
-            if(p !== cp) { alert('两次密码不一致'); return; }
+        let currentGeneratedCode = ''; // 隐形保存当前生成的验证码
+        let countdownTimer = null;
+
+        // 模拟发送短信功能
+        function sendSmsCode() {
+            const phone = document.getElementById('phone').value;
+            // 正则验证是否为中国大陆11位手机号
+            const phoneReg = /^1[3-9]\d{9}$/;
+            if (!phoneReg.test(phone)) {
+                alert('请输入正确的11位手机号码');
+                return;
+            }
+
+            // 随机生成一个6位数的验证码
+            currentGeneratedCode = Math.floor(100000 + Math.random() * 900000).toString();
             
+            // 【模拟短信发送】弹窗直接通知老板
+            alert('【体验版提示】短信已发送至手机 ' + phone + '\n本次测试验证码为：' + currentGeneratedCode);
+
+            // 开启倒计时倒数特效
+            const btn = document.getElementById('btnGetCode');
+            let timeLeft = 60;
+            btn.disabled = true;
+            btn.innerText = timeLeft + 's 后重发';
+
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    btn.disabled = false;
+                    btn.innerText = '获取验证码';
+                } else {
+                    btn.innerText = timeLeft + 's 后重发';
+                }
+            }, 1000);
+        }
+
+        // 验证注册提交
+        function handleRegister() {
+            const phone = document.getElementById('phone').value;
+            const smsCode = document.getElementById('smsCode').value;
+            const password = document.getElementById('password').value;
+
+            if (!phone || !smsCode || !password) {
+                alert('请填写完整的手机号、验证码和密码');
+                return;
+            }
+            if (smsCode !== currentGeneratedCode) {
+                alert('验证码错误，请重新输入');
+                return;
+            }
+            if (password.length < 6) {
+                alert('为了您的账号安全，密码不能少于6位');
+                return;
+            }
+            
+            // 验证通过，清除倒计时并进入下一步
+            if (countdownTimer) clearInterval(countdownTimer);
             document.getElementById('step1').classList.add('hidden');
             document.getElementById('step2').classList.remove('hidden');
         }
+
         function selectRole(role) {
             selectedRole = role;
             document.getElementById('roleUser').classList.remove('active');
@@ -72,9 +138,10 @@
             if(role === 'user') document.getElementById('roleUser').classList.add('active');
             if(role === 'master') document.getElementById('roleMaster').classList.add('active');
         }
+
         function submitRole() {
             if(!selectedRole) { alert('请选择一个身份'); return; }
-            alert('选择成功！您选择的身份是：' + (selectedRole === 'user' ? '用户' : '卦师'));
+            alert('注册并绑定成功！您当前以【' + (selectedRole === 'user' ? '用户' : '卦师') + '】身份正式登录平台。');
         }
     </script>
 </body>
