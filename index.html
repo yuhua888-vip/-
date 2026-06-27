@@ -5,23 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>国学文化交流平台</title>
     <style>
-        body { margin: 0; padding: 0; background-color: #f7f8fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .auth-container { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; }
+        body { margin: 0; padding: 0; background-color: #f7f8fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; min-height: 100vh; }
+        .auth-container { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; }
         .form-box { background: #ffffff; padding: 30px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
         .title { color: #333; margin: 0 0 8px 0; font-size: 22px; }
         .subtitle { color: #999; font-size: 13px; margin: 0 0 24px 0; }
-        .input-group input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 14px; -webkit-appearance: none; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 14px; -webkit-appearance: none; }
         .sms-group { display: flex; gap: 8px; margin-bottom: 16px; }
         .sms-group input { flex: 1; margin-bottom: 0; }
         .btn-sms { width: 120px; padding: 12px 0; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; cursor: pointer; white-space: nowrap; font-weight: 500; }
         .btn-sms:disabled { background-color: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
-        .btn-primary { width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 8px; }
+        .btn-primary { width: 100%; padding: 12px; background-color: #b45309; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 8px; }
         .identity-cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
         .identity-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; text-align: left; cursor: pointer; background: #fff; }
-        .identity-card.active { border-color: #8b5cf6; background-color: #faf5ff; }
+        .identity-card.active { border-color: #b45309; background-color: #fef3c7; }
         .identity-card .icon { font-size: 24px; margin-bottom: 6px; }
         .identity-card h3 { margin: 0 0 4px 0; color: #1e293b; font-size: 16px; }
         .identity-card p { margin: 0; color: #64748b; font-size: 13px; line-height: 1.4; }
+        
+        /* 内部工作台样式 */
+        .dashboard { text-align: left; background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .welcome-header { background: #78350f; color: white; padding: 16px; border-radius: 12px; margin-bottom: 20px; }
+        .tool-section { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .tool-section h4 { margin: 0 0 12px 0; color: #78350f; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+        .result-box { background: #fef3c7; border: 1px dashed #d97706; padding: 12px; border-radius: 8px; font-size: 14px; color: #78350f; margin-top: 12px; font-family: monospace; white-space: pre-line; }
+        .coin-btn { background: #d97706; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; }
         .hidden { display: none; }
     </style>
 </head>
@@ -29,22 +37,17 @@
     <div class="auth-container">
         <!-- 步骤一：手机短信验证注册 -->
         <div id="step1" class="form-box">
-            <h2 class="title">欢迎加入国学交流平台</h2>
+            <h2 class="title">华夏国学智慧平台</h2>
             <p class="subtitle">正规手机短信验证安全登录</p>
             <div class="input-group">
-                <!-- 手机号输入 -->
                 <input type="tel" id="phone" placeholder="请输入11位手机号" maxlength="11" />
-                
-                <!-- 短信验证码组合框 -->
                 <div class="sms-group">
                     <input type="number" id="smsCode" placeholder="请输入验证码" oninput="if(value.length>6)value=value.slice(0,6)" />
                     <button class="btn-sms" id="btnGetCode" onclick="sendSmsCode()">获取验证码</button>
                 </div>
-                
-                <!-- 密码设置 -->
                 <input type="password" id="password" placeholder="设置平台登录密码（不少于6位）" />
             </div>
-            <button class="btn-primary" onclick="handleRegister()">立即验证注册</button>
+            <button class="btn-primary" onclick="handleRegister()">立即验证登录</button>
         </div>
 
         <!-- 步骤二：选择身份 -->
@@ -54,78 +57,89 @@
             <div class="identity-cards">
                 <div class="identity-card" id="roleUser" onclick="selectRole('user')">
                     <div class="icon">🔮</div>
-                    <h3>寻觅有缘人（用户）</h3>
-                    <p>解答心中疑惑，寻求人生指引，浏览名师解答。</p>
+                    <h3>寻觅有缘人（用户大厅）</h3>
+                    <p>查看每日运势，进行自主解卦，寻求名师指引。</p>
                 </div>
                 <div class="identity-card" id="roleMaster" onclick="selectRole('master')">
                     <div class="icon">☯️</div>
-                    <h3>入驻成为卦师（老师）</h3>
-                    <p>弘扬传统文化，在线排盘解惑，管理工作室。</p>
+                    <h3>入驻成为卦师（大师专区）</h3>
+                    <p>使用高级排盘工具，在线批八字，管理日常客户。</p>
                 </div>
             </div>
-            <button class="btn-primary" onclick="submitRole()">确认身份并进入平台</button>
+            <button class="btn-primary" onclick="submitRole()">进入国学智慧大厅</button>
+        </div>
+
+        <!-- 步骤三：正式登录进来的【算卦核心工具箱】 -->
+        <div id="dashboard" class="dashboard hidden">
+            <div class="welcome-header">
+                <h3 style="margin:0; font-size: 18px;" id="welcomeUser">尊贵的缘主，欢迎回来</h3>
+                <p style="margin:4px 0 0 0; font-size:12px; opacity: 0.8;">系统已为您接通天地磁场，开启今日测算工具箱</p>
+            </div>
+
+            <!-- 工具一：八字排盘 -->
+            <div class="tool-section">
+                <h4>☯️ 四柱八字智能排盘</h4>
+                <div class="input-group" style="margin:0;">
+                    <label style="font-size: 12px; color:#666;">请选择缘主出生生辰（公历）：</label>
+                    <input type="datetime-local" id="baziBirth" style="margin-top:4px; margin-bottom:8px;">
+                    <button class="btn-primary" style="margin:0; padding:8px;" onclick="calculateBazi()">一键生成八字命盘</button>
+                </div>
+                <div id="baziResult" class="result-box hidden"></div>
+            </div>
+
+            <!-- 工具二：六爻金钱起卦 -->
+            <div class="tool-section">
+                <h4>🪙 周易六爻金钱起卦</h4>
+                <p style="font-size: 12px; color:#666; margin:0 0 8px 0;">心诚则灵，点击下方按钮模拟铜钱抛掷，需连续摇卦 6 次：</p>
+                <button class="coin-btn" id="btnRoll" onclick="rollCoins()">🪙 摇动铜钱 (第 <span id="rollCount">1</span> 次)</button>
+                <div id="liuyaoResult" class="result-box hidden"></div>
+            </div>
+
+            <!-- 工具三：万年历择吉 -->
+            <div class="tool-section">
+                <h4>📅 每日黄历择吉观象</h4>
+                <div class="result-box" style="margin-top:0; background:#fefbc3;">
+                    <strong>【今日天干地支】</strong> 丙午年 甲午月 壬申日<br>
+                    <strong>【今日宜】</strong> 祭祀、出行、交易、开切、嫁娶<br>
+                    <strong>【今日忌】</strong> 动土、词讼、安葬、开渠<br>
+                    <strong>【风水吉方】</strong> 喜神西北，财神正南，福神东南
+                </div>
+            </div>
+            
+            <button class="btn-primary" style="background:#475569;" onclick="location.reload()">退出登录</button>
         </div>
     </div>
 
     <script>
         let selectedRole = '';
-        let currentGeneratedCode = ''; // 隐形保存当前生成的验证码
+        let currentGeneratedCode = '';
         let countdownTimer = null;
+        let rollHistory = []; // 记录六爻摇卦
 
-        // 模拟发送短信功能
         function sendSmsCode() {
             const phone = document.getElementById('phone').value;
-            // 正则验证是否为中国大陆11位手机号
             const phoneReg = /^1[3-9]\d{9}$/;
-            if (!phoneReg.test(phone)) {
-                alert('请输入正确的11位手机号码');
-                return;
-            }
-
-            // 随机生成一个6位数的验证码
+            if (!phoneReg.test(phone)) { alert('请输入正确的11位手机号码'); return; }
             currentGeneratedCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            // 【模拟短信发送】弹窗直接通知老板
-            alert('【体验版提示】短信已发送至手机 ' + phone + '\n本次测试验证码为：' + currentGeneratedCode);
-
-            // 开启倒计时倒数特效
+            alert('【体验版提示】短信验证码已发至手机 ' + phone + '\n本次测试验证码为：' + currentGeneratedCode);
             const btn = document.getElementById('btnGetCode');
             let timeLeft = 60;
             btn.disabled = true;
             btn.innerText = timeLeft + 's 后重发';
-
             countdownTimer = setInterval(() => {
                 timeLeft--;
-                if (timeLeft <= 0) {
-                    clearInterval(countdownTimer);
-                    btn.disabled = false;
-                    btn.innerText = '获取验证码';
-                } else {
-                    btn.innerText = timeLeft + 's 后重发';
-                }
+                if (timeLeft <= 0) { clearInterval(countdownTimer); btn.disabled = false; btn.innerText = '获取验证码'; }
+                else { btn.innerText = timeLeft + 's 后重发'; }
             }, 1000);
         }
 
-        // 验证注册提交
         function handleRegister() {
             const phone = document.getElementById('phone').value;
             const smsCode = document.getElementById('smsCode').value;
             const password = document.getElementById('password').value;
-
-            if (!phone || !smsCode || !password) {
-                alert('请填写完整的手机号、验证码和密码');
-                return;
-            }
-            if (smsCode !== currentGeneratedCode) {
-                alert('验证码错误，请重新输入');
-                return;
-            }
-            if (password.length < 6) {
-                alert('为了您的账号安全，密码不能少于6位');
-                return;
-            }
-            
-            // 验证通过，清除倒计时并进入下一步
+            if (!phone || !smsCode || !password) { alert('请填写完整的手机号、验证码和密码'); return; }
+            if (smsCode !== currentGeneratedCode) { alert('验证码错误'); return; }
+            if (password.length < 6) { alert('密码不能少于6位'); return; }
             if (countdownTimer) clearInterval(countdownTimer);
             document.getElementById('step1').classList.add('hidden');
             document.getElementById('step2').classList.remove('hidden');
@@ -141,7 +155,77 @@
 
         function submitRole() {
             if(!selectedRole) { alert('请选择一个身份'); return; }
-            alert('注册并绑定成功！您当前以【' + (selectedRole === 'user' ? '用户' : '卦师') + '】身份正式登录平台。');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            
+            const roleName = selectedRole === 'user' ? '缘主大师大厅' : '入驻卦师工作台';
+            document.getElementById('welcomeUser').innerText = `欢迎进入【${roleName}】`;
+        }
+
+        // 核心算法一：模拟八字排盘
+        function calculateBazi() {
+            const birthTime = document.getElementById('baziBirth').value;
+            if(!birthTime) { alert('请选择出生生辰！'); return; }
+            
+            // 传统八字天干地支模拟算法
+            const tiangan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+            const dizhi = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+            const wuxing = ['金','木','水','火','土'];
+            
+            const r1 = Math.floor(Math.random() * 10);
+            const r2 = Math.floor(Math.random() * 12);
+            const r3 = Math.floor(Math.random() * 10);
+            const r4 = Math.floor(Math.random() * 12);
+
+            const baziRes = `【乾造/坤造命盘】\n` +
+                            `年柱：${tiangan[r1]}${dizhi[r2]}   月柱：${tiangan[(r1+2)%10]}${dizhi[(r2+2)%12]}\n` +
+                            `日柱：${tiangan[r3]}${dizhi[r4]}   时柱：${tiangan[(r3+4)%10]}${dizhi[(r4+4)%12]}\n\n` +
+                            `【五行旺衰分析】\n` +
+                            `当前命盘五行：${wuxing[Math.floor(Math.random()*5)]}气极旺，缺${wuxing[Math.floor(Math.random()*5)]}。建议结合大运流年调理磁场。`;
+            
+            const box = document.getElementById('baziResult');
+            box.innerText = baziRes;
+            box.classList.remove('hidden');
+        }
+
+        // 核心算法二：模拟六爻金钱起卦
+        function rollCoins() {
+            if(rollHistory.length >= 6) {
+                rollHistory = [];
+                document.getElementById('rollCount').innerText = '1';
+                document.getElementById('liuyaoResult').classList.add('hidden');
+            }
+
+            // 模拟抛三个铜钱：0代表字（背面），1代表幕（正面）
+            let c1 = Math.floor(Math.random() * 2);
+            let c2 = Math.floor(Math.random() * 2);
+            let c3 = Math.floor(Math.random() * 2);
+            let sum = c1 + c2 + c3; // 正面的个数
+            
+            let guaYao = "";
+            if(sum === 0) guaYao = "少阴 ——  —— (断)";
+            if(sum === 3) guaYao = "少阳 —————— (续)";
+            if(sum === 1) guaYao = "老阳 —————— ○ (动爻)";
+            if(sum === 2) guaYao = "老阴 ——  —— × (动爻)";
+            
+            rollHistory.push(guaYao);
+            const nextCount = rollHistory.length + 1;
+            
+            if(rollHistory.length < 6) {
+                document.getElementById('rollCount').innerText = nextCount;
+                alert(`第 ${rollHistory.length} 爻投掷结果：\n得到了【${guaYao}】\n请继续投掷，直至满6次成卦。`);
+            } else {
+                document.getElementById('rollCount').innerText = "满";
+                let finalGua = "【周易六爻成卦结果】\n";
+                for(let i = rollHistory.length - 1; i >= 0; i--) {
+                    finalGua += `初${i+1}爻: ${rollHistory[i]}\n`;
+                }
+                finalGua += "\n【卦象简批】\n当前所求之事逢动爻，本卦呈现大吉之兆。利于西南行，见贵人则百事可成。";
+                
+                const box = document.getElementById('liuyaoResult');
+                box.innerText = finalGua;
+                box.classList.remove('hidden');
+            }
         }
     </script>
 </body>
