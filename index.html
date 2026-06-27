@@ -3,136 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>华夏国学社区</title>
+    <title>爻命</title>
     <style>
         :root {
-            --bg-main: #f8fafc;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --accent: #0f172a;
+            --bg-main: #fcfcfd;
+            --text-main: #09090b;
+            --text-sub: #71717a;
+            --border-color: #f4f4f5;
             --card-bg: #ffffff;
-            --border-color: #f1f5f9;
         }
         body { 
-            margin: 0; padding: 0; background-color: var(--bg-main); 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+            margin: 0; padding: 0; background-color: #f4f4f5; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "PingFang SC", sans-serif;
             display: flex; justify-content: center; min-height: 100vh; color: var(--text-main);
             -webkit-font-smoothing: antialiased;
         }
         .app-container { 
             width: 100%; max-width: 480px; background: var(--card-bg); 
             min-height: 100vh; display: flex; flex-direction: column; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.02); position: relative; box-sizing: border-box;
+            position: relative; box-sizing: border-box;
         }
         
-        /* 现代化纯净表单样式 */
-        .auth-screen { padding: 60px 28px; text-align: left; animation: fadeIn 0.4s ease; }
-        .auth-brand { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; color: #000; }
-        .auth-subtitle { color: var(--text-sub); font-size: 13px; margin-bottom: 36px; }
+        /* 极致现代风表单 */
+        .auth-screen { padding: 64px 30px; text-align: left; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .auth-brand { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; color: var(--text-main); }
+        .auth-subtitle { color: var(--text-sub); font-size: 13px; margin-bottom: 40px; letter-spacing: -0.2px; }
         
-        .input-wrapper { position: relative; margin-bottom: 18px; }
+        .input-wrapper { position: relative; margin-bottom: 20px; }
         .input-wrapper input { 
             width: 100%; padding: 16px; border: 1px solid var(--border-color); 
             border-radius: 14px; box-sizing: border-box; font-size: 15px; background: #f4f4f5;
-            color: var(--text-main); transition: all 0.25s ease; outline: none;
+            color: var(--text-main); transition: all 0.2s ease; outline: none;
         }
-        .input-wrapper input:focus { border-color: #000; background: #fff; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); }
+        .input-wrapper input:focus { border-color: #000; background: #fff; box-shadow: 0 0 0 4px rgba(0,0,0,0.03); }
         
-        .sms-flex { display: flex; gap: 10px; }
+        .sms-flex { display: flex; gap: 12px; }
         .btn-sms { 
-            padding: 0 18px; background: #fff; border: 1px solid #e4e4e7; 
+            padding: 0 20px; background: #fff; border: 1px solid #e4e4e7; 
             border-radius: 14px; font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: all 0.2s; white-space: nowrap;
         }
         
         .btn-action { 
             width: 100%; padding: 16px; background: #000; color: #fff; 
             border: none; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer;
-            margin-top: 12px; transition: all 0.2s;
+            margin-top: 10px; transition: all 0.2s;
         }
-        .btn-action:active { transform: scale(0.99); opacity: 0.9; }
+        .btn-action:active { transform: scale(0.99); opacity: 0.95; }
         
-        .auth-toggle { text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-sub); cursor: pointer; }
-        .auth-toggle span { color: #000; font-weight: 600; }
+        .auth-toggle { text-align: center; margin-top: 26px; font-size: 13px; color: var(--text-sub); cursor: pointer; }
+        .auth-toggle span { color: #000; font-weight: 600; text-decoration: underline; }
 
-        .identity-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+        .identity-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
         .identity-item { 
-            border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; 
-            cursor: pointer; transition: all 0.25s ease; background: #f4f4f5;
+            border: 1px solid var(--border-color); border-radius: 16px; padding: 22px; 
+            cursor: pointer; transition: all 0.2s ease; background: #f4f4f5;
         }
-        .identity-item.active { border-color: #000; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
-        .identity-item h3 { margin: 0 0 4px 0; font-size: 16px; font-weight: 700; }
-        .identity-item p { margin: 0; font-size: 13px; color: var(--text-sub); }
+        .identity-item.active { border-color: #000; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .identity-item h3 { margin: 0 0 6px 0; font-size: 16px; font-weight: 700; }
+        .identity-item p { margin: 0; font-size: 13px; color: var(--text-sub); line-height: 1.4; }
 
-        /* 主页面结构 */
-        .view-content { flex: 1; padding: 20px 20px 100px 20px; background: #fafafa; overflow-y: auto; display: flex; flex-direction: column; }
+        /* 主页面结构流线化 */
+        .view-content { flex: 1; padding: 24px 20px 120px 20px; background: var(--bg-main); overflow-y: auto; display: flex; flex-direction: column; }
         
-        /* 现代化头部 */
+        /* 极简高留白头部 */
         .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .app-header h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
-        .badge-role { font-size: 11px; font-weight: 600; background: #000; padding: 4px 10px; border-radius: 20px; color: #fff; }
+        .app-header h1 { font-size: 26px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        .badge-role { font-size: 11px; font-weight: 600; background: #000; padding: 5px 12px; border-radius: 20px; color: #fff; letter-spacing: 0.5px; }
         
-        /* 现代悬浮搜索栏 */
+        /* 胶囊级精致搜索栏 */
         .modern-search { 
-            background: #fff; border-radius: 14px; padding: 14px 16px; display: flex; 
-            align-items: center; gap: 10px; border: 1px solid var(--border-color); margin-bottom: 20px;
+            background: #f4f4f5; border-radius: 14px; padding: 14px 16px; display: flex; 
+            align-items: center; gap: 10px; margin-bottom: 24px;
         }
-        .modern-search input { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; }
+        .modern-search input { border: none; background: transparent; width: 100%; outline: none; font-size: 14px; color: var(--text-main); }
+        .modern-search input::placeholder { color: #a1a1aa; }
 
-        /* 现代化高拟真社区帖子卡片 */
-        .modern-card { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 14px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.01); }
-        .card-userinfo { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-        .avatar-circle { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #f1f5f9; border: 1px solid rgba(0,0,0,0.05); }
+        /* 杂志排版感卡片 */
+        .modern-card { background: #fff; border-radius: 24px; padding: 22px; margin-bottom: 16px; border: 1px solid #f4f4f5; box-shadow: 0 4px 20px rgba(0,0,0,0.005); }
+        .card-userinfo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .avatar-circle { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: #e4e4e7; border: 1px solid rgba(0,0,0,0.03); }
         .user-meta-box { display: flex; flex-direction: column; }
         .meta-title { font-size: 14px; font-weight: 600; color: var(--text-main); }
-        .meta-id { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
-        .card-content-title { font-size: 16px; font-weight: 700; margin: 0 0 6px 0; line-height: 1.4; }
-        .card-content-body { font-size: 14px; color: #4b5563; line-height: 1.5; }
+        .meta-id { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .card-content-title { font-size: 16px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.45; letter-spacing: -0.2px; }
+        .card-content-body { font-size: 14px; color: #3f3f46; line-height: 1.55; }
 
-        /* 📱 极简大厂风高质感扁平化底部固定导航栏（无白边、完美兼容全面屏） */
+        /* 📱 像素级对标大厂：纯粹毛玻璃吸底导航栏，杜绝劣质线条与白边 */
         .ios-bottom-nav { 
             position: absolute; bottom: 0; left: 0; right: 0; 
-            background: rgba(255, 255, 255, 0.95); border-top: 1px solid #f1f5f9;
+            background: rgba(255, 255, 255, 0.88);
             display: flex; align-items: center; justify-content: space-around;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 999;
-            padding-top: 10px;
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); z-index: 999;
+            padding-top: 12px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04);
         }
         .nav-tab-button { 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #a1a1aa; font-size: 10px; font-weight: 500; cursor: pointer; transition: all 0.2s; width: 60px; text-decoration: none;
+            color: #a1a1aa; font-size: 10px; font-weight: 600; cursor: pointer; transition: color 0.15s ease; width: 64px; text-decoration: none;
         }
-        /* 选中状态直接变极简深邃黑 */
-        .nav-tab-button.active { color: #000; font-weight: 600; }
-        .nav-tab-icon-svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; transition: transform 0.15s ease; }
-        .nav-tab-button:active .nav-tab-icon-svg { transform: scale(0.9); }
+        /* 激活时直接呈现深邃的高级纯黑 */
+        .nav-tab-button.active { color: #000; }
+        .nav-tab-icon-svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; transition: transform 0.1s ease; }
+        .nav-tab-button:active .nav-tab-icon-svg { transform: scale(0.92); }
         
-        /* 🎥 完美复刻大厂中间的短视频风格 “＋” 号黑胶囊按钮 */
+        /* 🎥 完美复刻大厂中间的短视频风格 “＋” 号黑胶囊快开件 */
         .nav-tab-button.center-special { position: relative; }
         .nav-tab-button.center-special .center-black-box {
-            width: 44px; height: 28px; background: #000; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; margin-bottom: 2px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 44px; height: 28px; background: #000; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 4px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12); transition: transform 0.1s;
         }
-        .nav-tab-button.center-special .center-black-box svg {
-            width: 16px; height: 16px; stroke: #fff; stroke-width: 3;
-        }
-        .nav-tab-button.center-special span { font-size: 10px; color: #a1a1aa; transition: color 0.2s; }
-        .nav-tab-button.center-special.active span { color: #000; font-weight: 600; }
+        .nav-tab-button.center-special:active .center-black-box { transform: scale(0.9); }
+        .nav-tab-button.center-special .center-black-box svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 3; }
+        .nav-tab-button.center-special span { font-size: 10px; color: #a1a1aa; }
+        .nav-tab-button.center-special.active span { color: #000; }
 
-        /* 账户设置面板高级精修 */
-        .profile-avatar-zone { text-align: center; padding: 15px 0; }
-        .profile-avatar-large { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+        /* 账户设置高级重订 */
+        .profile-avatar-zone { text-align: center; padding: 20px 0; }
+        .profile-avatar-large { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
         
-        /* 新中式几何高逼格头像池 */
-        .avatar-pool { display: flex; justify-content: center; gap: 16px; margin: 20px 0; }
-        .avatar-pool-item { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; background: #f4f4f5; }
-        .avatar-pool-item.selected { border-color: #000; transform: scale(1.08); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        /* 现代禅意色彩美学头像池（全面摒弃垃圾人脸） */
+        .avatar-pool { display: flex; justify-content: center; gap: 18px; margin: 24px 0; }
+        .avatar-pool-item { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: all 0.22s ease; background: #f4f4f5; }
+        .avatar-pool-item.selected { border-color: #000; transform: scale(1.12); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
 
-        /* 危险区退出按钮极简白底红字设计，拒绝土红 */
         .btn-danger-modern {
-            width: 100%; padding: 15px; background: #fff; color: #ef4444; 
+            width: 100%; padding: 16px; background: #fff; color: #ef4444; 
             border: 1px solid #fee2e2; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer;
-            margin-top: 14px; transition: all 0.2s;
+            margin-top: 16px; transition: all 0.2s;
         }
         .btn-danger-modern:active { background: #fef2f2; }
 
@@ -143,9 +142,8 @@
 <body>
     <div class="app-container">
         
-        <!-- 界面 A：密码登录页 -->
         <div id="screen-login" class="auth-screen">
-            <div class="auth-brand">欢迎回来</div>
+            <div class="auth-brand">爻命</div>
             <div class="auth-subtitle">请输入您的手机号与密码进行验证登录</div>
             <div class="input-wrapper">
                 <input type="tel" id="login-phone" placeholder="手机号码" maxlength="11" />
@@ -157,9 +155,8 @@
             <div class="auth-toggle" onclick="toggleAuthScreens('register')">还没有账号？<span>立即注册</span></div>
         </div>
 
-        <!-- 界面 B：短信注册页 -->
         <div id="screen-register" class="auth-screen hidden">
-            <div class="auth-brand">创建新账号</div>
+            <div class="auth-brand">注册爻命</div>
             <div class="auth-subtitle">同一个手机号只能绑定一个固定的专属独立UID</div>
             <div class="input-wrapper">
                 <input type="tel" id="reg-phone" placeholder="请输入11位手机号" maxlength="11" />
@@ -175,9 +172,8 @@
             <div class="auth-toggle" onclick="toggleAuthScreens('login')">已有注册账号？<span>前往登录</span></div>
         </div>
 
-        <!-- 界面 C：初始身份选定页 -->
         <div id="screen-identity" class="auth-screen hidden">
-            <div class="auth-brand">选定社区身份</div>
+            <div class="auth-brand">选定爻命身份</div>
             <div class="auth-subtitle">身份一经核发将不可更改，系统将以此分配全局UID</div>
             <div class="identity-container">
                 <div class="identity-item active" id="id-user" onclick="chooseRole('user')">
@@ -192,13 +188,11 @@
             <button class="btn-action" onclick="generateFinalAccount()">生成唯一UID并进入</button>
         </div>
 
-        <!-- 主程序框架 -->
         <div id="screen-main" class="hidden" style="display: flex; flex-direction: column; flex: 1;">
             
-            <!-- 栏目一：互动社区 -->
             <div id="view-forum" class="view-content">
                 <div class="app-header">
-                    <h1 id="main-title-node">华夏国学</h1>
+                    <h1 id="main-title-node">爻命</h1>
                     <span class="badge-role" id="role-tag-node">会员</span>
                 </div>
                 <div class="modern-search">
@@ -209,7 +203,7 @@
                     <div class="card-userinfo">
                         <img class="avatar-circle sync-global-avatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80">
                         <div class="user-meta-box">
-                            <span class="meta-title sync-global-name">国学缘主</span>
+                            <span class="meta-title sync-global-name">爻命缘主</span>
                             <span class="meta-id" id="card-uid-node">UID: ------</span>
                         </div>
                     </div>
@@ -218,10 +212,9 @@
                 </div>
             </div>
 
-            <!-- 栏目二：测算工具 -->
             <div id="view-tools" class="view-content hidden">
                 <div class="app-header"><h1>智能起卦盘</h1></div>
-                <div class="modern-card" style="background: #000; color:#fff; padding: 24px; border-radius: 24px;">
+                <div class="modern-card" style="background: #000; color:#fff; padding: 26px; border-radius: 24px; border:none;">
                     <h3 style="margin:0 0 8px 0; font-size:18px;">🪙 经典六爻模拟器</h3>
                     <p style="margin:0 0 20px 0; font-size:13px; color:#a1a1aa; line-height:1.4;">意念集中，点击下方抛掷铜钱。需连续投掷满 6 次聚气成卦。</p>
                     <button class="btn-action" style="background:#fff; color:#000; margin:0;" onclick="executeRoll()">摇动铜钱 (第 <span id="roll-index-lbl">1</span> 次)</button>
@@ -229,7 +222,6 @@
                 </div>
             </div>
 
-            <!-- 栏目三：消息通知 -->
             <div id="view-messages" class="view-content hidden">
                 <div class="app-header"><h1>消息</h1></div>
                 <div style="text-align:center; padding:60px 0; color:var(--text-sub); font-size:13px;">
@@ -237,13 +229,12 @@
                 </div>
             </div>
 
-            <!-- 栏目四：我的账户 -->
-            <div id="view-profile" class="view-content">
+            <div id="view-profile" class="view-content hidden">
                 <div class="app-header"><h1>个人账户</h1></div>
                 <div class="modern-card" style="border-radius: 24px;">
                     <div class="profile-avatar-zone">
                         <img id="profile-avatar-node" class="profile-avatar-large" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80">
-                        <h2 style="margin:14px 0 2px 0; font-size:19px; font-weight:700;" id="profile-name-node">国学缘主</h2>
+                        <h2 style="margin:14px 0 2px 0; font-size:19px; font-weight:700;" id="profile-name-node">爻命缘主</h2>
                         <p style="margin:0; font-size:12px; color:var(--text-sub);" id="profile-uid-node">UID: 000000</p>
                         <p style="margin:6px 0 0 0; font-size:11px; background:#f4f4f5; display:inline-block; padding:3px 10px; border-radius:20px; color:var(--text-sub);" id="profile-phone-node">手机号: ----</p>
                     </div>
@@ -256,9 +247,8 @@
                         <input type="text" id="input-edit-name" value="" style="background:#fafafa; border:1px solid #e4e4e7;">
                     </div>
                     
-                    <label style="font-size:12px; color:var(--text-sub); font-weight:600;">更换新中式·现代化几何禅意头像：</label>
+                    <label style="font-size:12px; color:var(--text-sub); font-weight:600;">更换现代化几何艺术头像：</label>
                     <div class="avatar-pool">
-                        <!-- 纯东方意境、极简水墨与现代几何色彩拼接头像 -->
                         <img class="avatar-pool-item selected" onclick="pickAvatar(this)" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80">
                         <img class="avatar-pool-item" onclick="pickAvatar(this)" src="https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=150&auto=format&fit=crop&q=80">
                         <img class="avatar-pool-item" onclick="pickAvatar(this)" src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=150&auto=format&fit=crop&q=80">
@@ -270,9 +260,8 @@
                 <button class="btn-danger-modern" onclick="location.reload()">退出当前账号</button>
             </div>
 
-            <!-- 📱 纯大厂高级质感纯黑线性动态底部导航栏 -->
             <div class="ios-bottom-nav">
-                <div class="nav-tab-button" onclick="clickNavTab(this, 'forum')">
+                <div class="nav-tab-button active" onclick="clickNavTab(this, 'forum')">
                     <svg class="nav-tab-icon-svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                     <span>首页</span>
                 </div>
@@ -286,7 +275,7 @@
                     <svg class="nav-tab-icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                     <span>消息</span>
                 </div>
-                <div class="nav-tab-button active" onclick="clickNavTab(this, 'profile')">
+                <div class="nav-tab-button" onclick="clickNavTab(this, 'profile')">
                     <svg class="nav-tab-icon-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span>我</span>
                 </div>
@@ -309,7 +298,6 @@
 
         let sessionPhone = '';
         let generatedSmsCode = '';
-        let smsTimer = null;
         let activeRole = 'user';
         let currentChosenAvatar = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80';
         let rollHistory = [];
@@ -317,14 +305,14 @@
         function toggleAuthScreens(target) {
             document.getElementById('screen-login').classList.add('hidden');
             document.getElementById('screen-register').classList.add('hidden');
-            if(target === 'login') document.getElementById('screen-login').remove('hidden');
+            if(target === 'login') document.getElementById('screen-login').classList.remove('hidden');
             if(target === 'register') document.getElementById('screen-register').classList.remove('hidden');
         }
 
         function handlePasswordLogin() {
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
-            if(!phone || !pass) { alert('请填写完整信息'); return; }
+            if(!phone || !pass) { alert('请填写完整数据'); return; }
             if(globalDatabase[phone]) {
                 enterPlatformMain(globalDatabase[phone]);
             } else {
@@ -334,9 +322,9 @@
 
         function sendMockSms() {
             const phone = document.getElementById('reg-phone').value.trim();
-            if(!/^1[3-9]\d{9}$/.test(phone)) { alert('手机号格式不符'); return; }
+            if(!/^1[3-9]\d{9}$/.test(phone)) { alert('手机号格式不正确'); return; }
             generatedSmsCode = "123456";
-            alert(`【安全验证】您的注册动态验证码为：123456`);
+            alert(`【爻命验证码】您正在注册爻命系统，验证码为：123456`);
         }
 
         function handleRegisterSubmit() {
@@ -356,14 +344,14 @@
             const uniqueUID = Math.floor(100000 + Math.random() * 900000);
             globalDatabase[sessionPhone] = {
                 uid: uniqueUID, phone: sessionPhone, role: activeRole,
-                nickname: activeRole==='user'?'缘主_'+sessionPhone.slice(-4):'名师_解惑人',
+                nickname: activeRole==='user'?'缘主_'+sessionPhone.slice(-4):'名师_爻命学者',
                 avatar: currentChosenAvatar
             };
             enterPlatformMain(globalDatabase[sessionPhone]);
         }
 
         let activeSessionUser = globalDatabase["15500002160"]; 
-        enterPlatformMain(activeSessionUser); // 默认直接挂载 image_4.png 的状态进行展示
+        enterPlatformMain(activeSessionUser); // 默认直接初始化主视图
 
         function enterPlatformMain(accountObj) {
             activeSessionUser = accountObj;
@@ -421,7 +409,7 @@
             if(rollHistory.length < 6) { document.getElementById('roll-index-lbl').innerText = rollHistory.length + 1; }
             else {
                 document.getElementById('roll-index-lbl').innerText = "满";
-                document.getElementById('roll-output-box').innerText = "【推演完毕】卦象已成，方位利南，行事宜稳。";
+                document.getElementById('roll-output-box').innerText = "【爻命精密推演完毕】卦象已成功锁定，正在进行全局解盘。";
                 document.getElementById('roll-output-box').classList.remove('hidden');
             }
         }
