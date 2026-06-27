@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国学文化交流平台</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #f7f8fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-container { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; }
+        .form-box { background: #ffffff; padding: 30px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
+        .title { color: #333; margin: 0 0 8px 0; font-size: 22px; }
+        .subtitle { color: #999; font-size: 13px; margin: 0 0 24px 0; }
+        .input-group input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 14px; -webkit-appearance: none; }
+        .btn-primary { width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .identity-cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+        .identity-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; text-align: left; cursor: pointer; background: #fff; }
+        .identity-card.active { border-color: #8b5cf6; background-color: #faf5ff; }
+        .identity-card .icon { font-size: 24px; margin-bottom: 6px; }
+        .identity-card h3 { margin: 0 0 4px 0; color: #1e293b; font-size: 16px; }
+        .identity-card p { margin: 0; color: #64748b; font-size: 13px; line-height: 1.4; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div id="step1" class="form-box">
+            <h2 class="title">欢迎加入国学交流平台</h2>
+            <p class="subtitle">请先创建一个您的专属账号</p>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="请输入用户名/手机号" />
+                <input type="password" id="password" placeholder="请输入密码（不少于6位）" />
+                <input type="password" id="confirmPassword" placeholder="请再次确认密码" />
+            </div>
+            <button class="btn-primary" onclick="handleRegister()">立即注册</button>
+        </div>
+
+        <div id="step2" class="form-box hidden">
+            <h2 class="title">请选择您的身份</h2>
+            <p class="subtitle">身份选定后，平台将为您定制专属功能</p>
+            <div class="identity-cards">
+                <div class="identity-card" id="roleUser" onclick="selectRole('user')">
+                    <div class="icon">🔮</div>
+                    <h3>寻觅有缘人（用户）</h3>
+                    <p>解答心中疑惑，寻求人生指引，浏览名师解答。</p>
+                </div>
+                <div class="identity-card" id="roleMaster" onclick="selectRole('master')">
+                    <div class="icon">☯️</div>
+                    <h3>入驻成为卦师（老师）</h3>
+                    <p>弘扬传统文化，在线排盘解惑，管理工作室。</p>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="submitRole()">确认身份并进入平台</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = '';
+        function handleRegister() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const cp = document.getElementById('confirmPassword').value;
+            if(!u || !p) { alert('请填写完整信息'); return; }
+            if(p !== cp) { alert('两次密码不一致'); return; }
+            
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+        function selectRole(role) {
+            selectedRole = role;
+            document.getElementById('roleUser').classList.remove('active');
+            document.getElementById('roleMaster').classList.remove('active');
+            if(role === 'user') document.getElementById('roleUser').classList.add('active');
+            if(role === 'master') document.getElementById('roleMaster').classList.add('active');
+        }
+        function submitRole() {
+            if(!selectedRole) { alert('请选择一个身份'); return; }
+            alert('选择成功！您选择的身份是：' + (selectedRole === 'user' ? '用户' : '卦师'));
+        }
+    </script>
+</body>
+</html>
