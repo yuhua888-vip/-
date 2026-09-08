@@ -12,8 +12,8 @@
           colors: {
             obsidian: {
               base: '#08080a',
-              card: 'rgba(18, 20, 28, 0.65)',
-              surface: 'rgba(26, 30, 42, 0.55)',
+              card: 'rgba(18, 20, 28, 0.7)',
+              surface: 'rgba(26, 30, 42, 0.6)',
               border: 'rgba(212, 175, 55, 0.16)'
             },
             champagne: {
@@ -21,8 +21,7 @@
               200: '#f3e5c8',
               300: '#e5cc94',
               400: '#d4af37',
-              500: '#aa8820',
-              600: '#755b11'
+              500: '#aa8820'
             },
             glacier: {
               DEFAULT: '#38bdf8',
@@ -41,14 +40,14 @@
             }
           },
           fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'sans-serif'],
-            mono: ['"SF Mono"', 'Menlo', 'Monaco', 'monospace']
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'sans-serif'],
+            mono: ['"SF Mono"', 'Menlo', 'monospace']
           },
           boxShadow: {
             'ios-glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
             'deal-glow': '0 0 24px rgba(212, 175, 55, 0.45), 0 4px 12px rgba(0, 0, 0, 0.5)',
             'chip-glow': '0 0 16px rgba(212, 175, 55, 0.35)',
-            'card-glass': '0 10px 25px -5px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1)'
+            'squeeze-glow': '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.2)'
           }
         }
       }
@@ -59,30 +58,39 @@
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
+    
+    /* 优化二：彻底禁用所有手势与双击缩放 */
+    * {
+      touch-action: manipulation;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
     html, body {
       width: 100%;
+      height: 100%;
       overflow-x: hidden;
-      touch-action: pan-y;
       -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      padding-top: var(--safe-top);
-      padding-bottom: calc(var(--safe-bottom) + 12px);
       background-color: #08080a;
       background-image: 
         radial-gradient(circle at 50% 0%, rgba(26, 32, 50, 0.75) 0%, rgba(14, 16, 24, 0.95) 55%, #08080a 100%),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
       background-size: 100% 100%, 100% 32px;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 12px);
     }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
     .glass-panel {
-      background: rgba(18, 20, 28, 0.68);
+      background: rgba(18, 20, 28, 0.72);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(212, 175, 55, 0.18);
     }
+
     .glass-surface {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(16px);
@@ -90,64 +98,87 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .card-container {
+    /* 桌面卡牌样式 */
+    .table-card {
+      width: 3.4rem;
+      height: 4.9rem;
+      border-radius: 0.55rem;
       perspective: 800px;
-      width: 3.5rem;
-      height: 5rem;
-      will-change: transform, opacity;
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
     }
-    .card-flipper {
+    .table-card-inner {
       position: relative;
       width: 100%;
       height: 100%;
-      transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
       transform-style: preserve-3d;
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.25, 1);
     }
-    .card-flipper.is-flipped { transform: rotateY(180deg); }
-    .card-side {
+    .table-card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .table-card-front, .table-card-back {
       position: absolute;
       inset: 0;
       backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: 0.6rem;
+      border-radius: 0.55rem;
     }
-    .card-front {
-      transform: rotateY(180deg);
-      background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-    }
-    .card-back {
+    .table-card-back {
       background: linear-gradient(135deg, #11141f 0%, #090a0f 100%);
       border: 1px solid rgba(212, 175, 55, 0.35);
-      box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.15);
+      box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.15);
+    }
+    .table-card-front {
+      transform: rotateY(180deg);
+      background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
-    @keyframes dealSlideIn {
-      0% { opacity: 0; transform: translate3d(0, -28px, 0) scale(0.9); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    /* 优化一：高保真 3D 物理搓牌台 */
+    .squeeze-stage {
+      perspective: 1200px;
     }
-    .card-deal-anim { animation: dealSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .squeeze-card-wrap {
+      width: 220px;
+      height: 310px;
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .squeeze-card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+    }
+    .squeeze-card-front {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      transform: rotateY(0deg);
+      z-index: 10;
+    }
+    .squeeze-card-back {
+      background: linear-gradient(135deg, #161a29 0%, #090b10 100%);
+      border: 2px solid rgba(212, 175, 55, 0.5);
+      z-index: 20;
+      transform-origin: top center;
+      transition: box-shadow 0.1s ease;
+      overflow: hidden;
+    }
+    .squeeze-card-back::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent 70%);
+      pointer-events: none;
+    }
 
-    @keyframes goldPulse {
-      0%, 100% { box-shadow: 0 0 16px rgba(212, 175, 55, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5); }
-      50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.8); }
-    }
-    .deal-pulse { animation: goldPulse 3s infinite ease-in-out; }
-
-    @keyframes chipDropAnim {
-      0% { transform: translateY(-16px) scale(1.15); opacity: 0; }
-      100% { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    .chip-stack-token { animation: chipDropAnim 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-    .touch-btn {
-      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s ease;
-    }
-    .touch-btn:active:not(:disabled) { transform: scale(0.94); }
-    .chip-click-fx { transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .chip-click-fx:active:not(:disabled) { transform: scale(0.88); }
     .chip-rim { border: 2px dashed rgba(255, 255, 255, 0.35); }
+    .deal-pulse { animation: goldPulse 3s infinite ease-in-out; }
+    @keyframes goldPulse {
+      0%, 100% { box-shadow: 0 0 16px rgba(212, 175, 55, 0.3); }
+      50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.65); }
+    }
 
     .road-cell {
       width: 14px;
@@ -161,181 +192,96 @@
     }
   </style>
 </head>
-<body class="text-slate-200 min-h-screen flex flex-col font-sans select-none overflow-x-hidden antialiased">
+<body class="text-slate-200 min-h-screen flex flex-col font-sans select-none antialiased">
 
-  <!-- 1. iOS 极简深色毛玻璃登录 / 入座弹窗 -->
-  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl transition-all duration-500">
-    <div class="glass-panel max-w-sm w-full rounded-3xl p-6 shadow-2xl border border-champagne-400/30 text-center space-y-4">
-      <div class="space-y-1">
-        <div class="inline-block px-2.5 py-0.5 rounded-full bg-champagne-400/10 border border-champagne-400/30 text-champagne-400 text-[10px] font-mono tracking-widest uppercase">
-          Salon Privé · 尊爵专属
-        </div>
-        <h2 class="text-xl font-black tracking-widest bg-gradient-to-r from-champagne-100 via-champagne-300 to-champagne-500 bg-clip-text text-transparent">
-          皇后娱乐 · 贵宾入座
-        </h2>
-        <p class="text-[11px] text-slate-400">8 Card · Punto Banco 国际标准数字化桌台</p>
-      </div>
-
-      <div class="text-left space-y-1">
-        <label class="text-[10px] text-slate-400 font-mono">贵宾代号 (VIP ALIAS)</label>
-        <input type="text" id="vip-name-input" value="VIP-888" maxlength="12" class="w-full bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-champagne-200 focus:outline-none focus:border-champagne-400/60" placeholder="请输入您的代号">
-      </div>
-
-      <div class="text-left space-y-1.5">
-        <label class="text-[10px] text-slate-400 font-mono">初始体验额度 (INITIAL CHIPS)</label>
-        <div class="grid grid-cols-3 gap-2">
-          <button onclick="selectInitBankroll(10000, this)" class="login-bankroll-btn py-2 rounded-xl glass-surface border border-white/10 text-xs font-mono text-slate-300">$10,000</button>
-          <button onclick="selectInitBankroll(50000, this)" class="login-bankroll-btn py-2 rounded-xl bg-champagne-400/20 border-2 border-champagne-400 text-xs font-mono text-champagne-300 font-bold shadow-sm">$50,000</button>
-          <button onclick="selectInitBankroll(200000, this)" class="login-bankroll-btn py-2 rounded-xl glass-surface border border-white/10 text-xs font-mono text-slate-300">$200,000</button>
-        </div>
-      </div>
-
-      <div class="glass-surface p-2.5 rounded-xl flex items-center justify-between text-left">
-        <div>
-          <div class="text-[11px] font-bold text-slate-200">🃏 沉浸式搓牌 (Squeeze)</div>
-          <div class="text-[8px] text-slate-400 font-mono">可亲手揭开第 3 张决胜牌</div>
-        </div>
-        <input type="checkbox" id="login-squeeze-toggle" checked class="w-4 h-4 accent-champagne-400">
-      </div>
-
-      <button onclick="confirmLoginAndEnter()" class="touch-btn w-full py-3 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow">
-        入座开局 · ENTER SALON
-      </button>
-    </div>
-  </div>
-
-  <!-- 2. 顶部 Header -->
-  <header class="w-full max-w-lg mx-auto px-4 pt-4 pb-3 flex items-center justify-between border-b border-champagne-400/15">
+  <!-- 顶部 Header -->
+  <header class="w-full max-w-lg mx-auto px-4 pt-3 pb-2 flex items-center justify-between border-b border-champagne-400/15">
     <div>
       <div class="text-sm font-black tracking-[0.2em] bg-gradient-to-r from-champagne-100 via-champagne-300 to-champagne-400 bg-clip-text text-transparent">
         皇后娱乐 · EMPRESS ROYALE <span class="text-[9px] font-mono tracking-widest text-champagne-400 font-semibold ml-0.5 border border-champagne-400/30 px-1 py-0.2 rounded-full">VIP</span>
       </div>
-      <div class="text-[8px] font-mono tracking-widest text-slate-400 uppercase mt-0.5 flex items-center gap-2">
-        <span id="header-user-tag">VIP-888</span>
-        <span>· 8 Card Punto Banco</span>
+      <div class="text-[8px] font-mono tracking-widest text-slate-400 uppercase mt-0.5">
+        8 Card · Punto Banco
       </div>
     </div>
-    <div class="flex items-center gap-2.5">
-      <div class="glass-surface rounded-2xl px-3 py-1.5 text-right shadow-card-glass">
+    <div class="flex items-center gap-2">
+      <div class="glass-surface rounded-2xl px-3 py-1.5 text-right">
         <div class="text-[7px] font-mono tracking-widest text-champagne-400/80 uppercase leading-none mb-0.5">Balance</div>
         <div id="bankroll-val" class="font-mono font-black text-champagne-300 text-base leading-tight tracking-tight">$50,000</div>
       </div>
-      <div class="flex items-center gap-1.5">
-        <button id="btn-reset" onclick="resetBankroll()" class="touch-btn p-2 rounded-xl glass-surface hover:border-champagne-400/40 text-slate-300 hover:text-champagne-300" title="重置">↺</button>
-        <button onclick="toggleAudio()" id="sound-btn" class="touch-btn p-2 rounded-xl glass-surface hover:border-champagne-400/40 text-slate-300 hover:text-champagne-300" title="音效">🔊</button>
-      </div>
+      <button onclick="toggleAudio()" id="sound-btn" class="p-2 rounded-xl glass-surface text-slate-300 hover:text-champagne-300">🔊</button>
     </div>
   </header>
 
   <main class="w-full max-w-lg mx-auto px-3.5 flex-1 flex flex-col justify-between space-y-2.5 pt-2 pb-2">
     
-    <!-- 3. SOPHIA AI 分析终端 -->
-    <section class="glass-panel rounded-2xl p-3 shadow-ios-glass space-y-2">
-      <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
-        <div class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded-lg bg-champagne-400/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 font-mono text-[10px] font-extrabold shadow-sm">Σ</div>
-          <div>
-            <div class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</div>
-            <div class="text-[7px] font-mono text-slate-400">QUANTITATIVE HISTORICAL ENGINE</div>
-          </div>
-        </div>
-        <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded-xl border border-white/5">
-          <button onclick="changeAiScope(10)" id="scope-btn-10" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">10H</button>
-          <button onclick="changeAiScope(20)" id="scope-btn-20" class="px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 font-bold border border-champagne-400/40 shadow-sm">20H</button>
-          <button onclick="changeAiScope(50)" id="scope-btn-50" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">50H</button>
-          <button onclick="changeAiScope('all')" id="scope-btn-all" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">ALL</button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-4 gap-2 text-center font-mono">
-        <div class="glass-surface p-1.5 rounded-xl">
-          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Banker</div>
-          <div id="ai-tile-b" class="text-[11px] font-black text-neonRed mt-0.5">0 (0%)</div>
-        </div>
-        <div class="glass-surface p-1.5 rounded-xl">
-          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Player</div>
-          <div id="ai-tile-p" class="text-[11px] font-black text-glacier mt-0.5">0 (0%)</div>
-        </div>
-        <div class="glass-surface p-1.5 rounded-xl">
-          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Tie</div>
-          <div id="ai-tile-t" class="text-[11px] font-black text-neonEmerald mt-0.5">0 (0%)</div>
-        </div>
-        <div class="glass-surface p-1.5 rounded-xl">
-          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Data Conf.</div>
-          <div id="ai-tile-conf" class="text-[9px] font-black text-champagne-400 mt-0.5">LOW</div>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between pt-0.5">
-        <div class="text-[8px] text-slate-300 font-mono">Streak: <b id="ai-streak-display" class="text-champagne-300 font-black">NONE</b></div>
+    <!-- AI 数据分析小窗 -->
+    <section class="glass-panel rounded-2xl p-2.5 space-y-1.5">
+      <div class="flex items-center justify-between border-b border-white/5 pb-1">
         <div class="flex items-center gap-1.5">
-          <button id="btn-ai-analyze" onclick="openAiTerminalModal()" class="touch-btn px-2.5 py-1 rounded-xl bg-champagne-400/15 border border-champagne-400/40 text-[9px] font-mono font-bold text-champagne-200">📊 ANALYZE</button>
-          <button id="btn-ai-apply" onclick="applyAiBet()" class="touch-btn px-2.5 py-1 rounded-xl glass-surface text-[9px] font-mono text-slate-200">模拟布码</button>
+          <div class="w-5 h-5 rounded-md bg-champagne-400/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 font-mono text-[9px] font-black">Σ</div>
+          <span class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</span>
         </div>
+        <span id="game-status-hint" class="text-[9px] font-mono text-champagne-400 font-bold tracking-wider">请选择筹码下注</span>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-center font-mono text-[10px]">
+        <div class="glass-surface p-1 rounded-xl"><span class="text-[7px] text-slate-400">庄胜</span> <b id="ai-tile-b" class="text-neonRed ml-1">0%</b></div>
+        <div class="glass-surface p-1 rounded-xl"><span class="text-[7px] text-slate-400">闲胜</span> <b id="ai-tile-p" class="text-glacier ml-1">0%</b></div>
+        <div class="glass-surface p-1 rounded-xl"><span class="text-[7px] text-slate-400">和局</span> <b id="ai-tile-t" class="text-neonEmerald ml-1">0%</b></div>
       </div>
     </section>
 
-    <!-- 4. 电子桌台与出牌区 -->
-    <section class="relative glass-panel rounded-3xl p-3 shadow-ios-glass min-h-[172px] flex flex-col justify-between overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-b from-slate-900/30 to-black/60 pointer-events-none"></div>
-      
+    <!-- 牌桌区域 (发牌后带点击手搓提示) -->
+    <section class="relative glass-panel rounded-3xl p-3 min-h-[175px] flex flex-col justify-between overflow-hidden">
       <div class="grid grid-cols-2 gap-3 relative z-10">
+        <!-- 闲家 -->
         <div class="flex flex-col items-center">
-          <div class="flex items-center gap-1.5 mb-2">
+          <div class="flex items-center gap-1.5 mb-1.5">
             <span class="text-[10px] font-black tracking-widest text-glacier">PLAYER</span>
-            <span id="player-score" class="w-5 h-5 rounded-full bg-glacier-surface border border-glacier-border flex items-center justify-center font-mono font-black text-[10px] text-glacier shadow-sm">-</span>
+            <span id="player-score" class="w-5 h-5 rounded-full bg-glacier-surface border border-glacier-border flex items-center justify-center font-mono font-black text-[10px] text-glacier">-</span>
           </div>
           <div id="player-cards" class="flex gap-1.5 min-h-[82px] items-center justify-center">
-            <div class="w-14 h-20 rounded-xl border border-dashed border-glacier/30 bg-glacier/5 flex items-center justify-center text-[9px] font-mono text-glacier/40">闲牌区</div>
+            <div class="table-card rounded-xl border border-dashed border-glacier/30 bg-glacier/5 flex items-center justify-center text-[9px] font-mono text-glacier/40">闲牌区</div>
           </div>
         </div>
+        <!-- 庄家 -->
         <div class="flex flex-col items-center">
-          <div class="flex items-center gap-1.5 mb-2">
-            <span id="banker-score" class="w-5 h-5 rounded-full bg-neonRed-surface border border-neonRed-border flex items-center justify-center font-mono font-black text-[10px] text-neonRed shadow-sm">-</span>
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <span id="banker-score" class="w-5 h-5 rounded-full bg-neonRed-surface border border-neonRed-border flex items-center justify-center font-mono font-black text-[10px] text-neonRed">-</span>
             <span class="text-[10px] font-black tracking-widest text-neonRed">BANKER</span>
           </div>
           <div id="banker-cards" class="flex gap-1.5 min-h-[82px] items-center justify-center">
-            <div class="w-14 h-20 rounded-xl border border-dashed border-neonRed/30 bg-neonRed/5 flex items-center justify-center text-[9px] font-mono text-neonRed/40">庄牌区</div>
+            <div class="table-card rounded-xl border border-dashed border-neonRed/30 bg-neonRed/5 flex items-center justify-center text-[9px] font-mono text-neonRed/40">庄牌区</div>
           </div>
         </div>
       </div>
-      <div class="h-6 flex items-center justify-center mt-1 relative z-10">
-        <div id="result-banner" class="hidden px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider text-slate-100 border shadow-lg backdrop-blur-xl"></div>
-      </div>
 
-      <!-- 搓牌浮层 (Squeeze Overlay) -->
-      <div id="squeeze-modal" class="hidden absolute inset-0 z-30 bg-black/90 backdrop-blur-md flex-col items-center justify-center p-3 text-center">
-        <div class="text-[11px] font-bold text-champagne-300 mb-1">🃏 触碰搓开关键补牌</div>
-        <div id="squeeze-card-box" onclick="revealSqueezeCard()" class="cursor-pointer w-20 h-28 rounded-xl bg-slate-900 border-2 border-champagne-400/80 shadow-2xl flex items-center justify-center text-4xl select-none transition-all active:scale-95">
-          ⚜
+      <!-- 搓牌提示/结果状态栏 -->
+      <div class="h-6 flex items-center justify-center mt-1 relative z-10">
+        <div id="squeeze-hint-banner" class="hidden px-3 py-0.5 rounded-full text-[9px] font-mono text-champagne-300 border border-champagne-400/40 bg-black/60 shadow-lg animate-pulse">
+          👆 点击盖牌可进行手动物理搓牌
         </div>
-        <button onclick="skipSqueeze()" class="mt-2 text-[9px] font-mono text-slate-400 underline">直接翻开 (Skip)</button>
+        <div id="result-banner" class="hidden px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider text-slate-100 border shadow-lg backdrop-blur-xl"></div>
       </div>
     </section>
 
-    <!-- 5. 下注区域（实体筹码高光展示） -->
+    <!-- 下注区域 -->
     <section id="betting-area" class="grid grid-cols-3 gap-2.5">
-      <!-- 闲 -->
-      <div onclick="addBet('player')" id="bet-card-player" class="touch-btn cursor-pointer bg-glacier-surface hover:bg-glacier-surface/80 border border-glacier-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] shadow-sm relative overflow-hidden">
+      <div onclick="addBet('player')" id="bet-card-player" class="cursor-pointer bg-glacier-surface hover:bg-glacier-surface/80 border border-glacier-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] relative overflow-hidden transition-all active:scale-95">
         <div>
           <div class="text-[11px] font-black text-glacier tracking-wider">PLAYER</div>
           <div class="text-[8px] font-mono text-slate-400">1:1</div>
         </div>
-        <!-- 实体筹码图标区 -->
         <div id="bet-chip-player" class="h-6 flex items-center justify-center"></div>
       </div>
-
-      <!-- 和 -->
-      <div onclick="addBet('tie')" id="bet-card-tie" class="touch-btn cursor-pointer bg-neonEmerald-surface hover:bg-neonEmerald-surface/80 border border-neonEmerald-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] shadow-sm relative overflow-hidden">
+      <div onclick="addBet('tie')" id="bet-card-tie" class="cursor-pointer bg-neonEmerald-surface hover:bg-neonEmerald-surface/80 border border-neonEmerald-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] relative overflow-hidden transition-all active:scale-95">
         <div>
           <div class="text-[11px] font-black text-neonEmerald tracking-wider">TIE</div>
           <div class="text-[8px] font-mono text-slate-400">1:8</div>
         </div>
         <div id="bet-chip-tie" class="h-6 flex items-center justify-center"></div>
       </div>
-
-      <!-- 庄 -->
-      <div onclick="addBet('banker')" id="bet-card-banker" class="touch-btn cursor-pointer bg-neonRed-surface hover:bg-neonRed-surface/80 border border-neonRed-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] shadow-sm relative overflow-hidden">
+      <div onclick="addBet('banker')" id="bet-card-banker" class="cursor-pointer bg-neonRed-surface hover:bg-neonRed-surface/80 border border-neonRed-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] relative overflow-hidden transition-all active:scale-95">
         <div>
           <div class="text-[11px] font-black text-neonRed tracking-wider">BANKER</div>
           <div class="text-[8px] font-mono text-slate-400">1:0.95</div>
@@ -344,92 +290,100 @@
       </div>
     </section>
 
-    <!-- 6. 专业五路路单系统 -->
-    <section class="glass-panel rounded-2xl p-2.5 shadow-ios-glass space-y-1.5">
+    <!-- 五路路单 -->
+    <section class="glass-panel rounded-2xl p-2.5 space-y-1.5">
       <div class="flex items-center justify-between border-b border-white/5 pb-1 gap-1">
-        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-          <button onclick="switchRoadTab('bead')" id="tab-bead" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">珠盘</button>
-          <button onclick="switchRoadTab('big')" id="tab-big" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold">大路</button>
-          <button onclick="switchRoadTab('bigEye')" id="tab-bigEye" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">大眼</button>
-          <button onclick="switchRoadTab('small')" id="tab-small" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">小路</button>
-          <button onclick="switchRoadTab('cockroach')" id="tab-cockroach" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">曱甴</button>
+        <div class="flex items-center gap-1">
+          <button onclick="switchRoadTab('bead')" id="tab-bead" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">珠盘</button>
+          <button onclick="switchRoadTab('big')" id="tab-big" class="px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold">大路</button>
         </div>
-        <div class="flex items-center gap-1 text-[8px] font-mono text-slate-400 shrink-0">
-          <span>庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b></span>
-          <span>闲:<b id="stat-p" class="text-glacier ml-0.5">0</b></span>
-          <span>和:<b id="stat-t" class="text-neonEmerald ml-0.5">0</b></span>
+        <div class="text-[8px] font-mono text-slate-400">
+          庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b>
+          闲:<b id="stat-p" class="text-glacier ml-1">0</b>
+          和:<b id="stat-t" class="text-neonEmerald ml-1">0</b>
         </div>
-      </div>
-      <div class="grid grid-cols-5 gap-1 text-[7px] font-mono glass-surface px-2 py-1 rounded-xl text-center text-slate-400">
-        <div>连庄:<b id="streak-cur-b" class="text-neonRed font-black ml-0.5">0</b></div>
-        <div>连闲:<b id="streak-cur-p" class="text-glacier font-black ml-0.5">0</b></div>
-        <div>最长庄:<b id="streak-max-b" class="text-neonRed font-black ml-0.5">0</b></div>
-        <div>最长闲:<b id="streak-max-p" class="text-glacier font-black ml-0.5">0</b></div>
-        <div>和局:<b id="stat-tie-total" class="text-neonEmerald font-black ml-0.5">0</b></div>
       </div>
       <div class="bg-black/50 rounded-xl p-1.5 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
         <div id="road-matrix-container" class="w-max min-w-full"></div>
       </div>
     </section>
 
-    <!-- 7. 筹码选择 -->
+    <!-- 筹码选择 -->
     <section id="chip-selection-area" class="flex flex-col gap-1">
       <div class="flex items-center justify-between px-1 text-[8px] font-mono text-slate-400 uppercase tracking-widest">
         <span>Select Chip</span>
         <span id="selected-chip-display" class="text-champagne-300 font-black text-[10px]">$100</span>
       </div>
       <div class="grid grid-cols-4 gap-2.5">
-        <button onclick="pickChip(50, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-emerald-950 to-emerald-700 border border-emerald-400/50 shadow-md flex items-center justify-center font-mono font-bold text-xs"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">50</span></button>
-        <button onclick="pickChip(100, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-cyan-950 to-blue-700 border border-cyan-400/70 shadow-chip-glow flex items-center justify-center font-mono font-bold text-xs ring-2 ring-champagne-400 -translate-y-0.5"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">100</span></button>
-        <button onclick="pickChip(500, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-purple-950 to-purple-700 border border-purple-400/50 shadow-md flex items-center justify-center font-mono font-bold text-xs"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">500</span></button>
-        <button onclick="pickChip(1000, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-amber-950 via-champagne-500 to-amber-600 border border-champagne-300/80 shadow-md flex items-center justify-center font-mono font-black text-xs text-black"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">1K</span></button>
+        <button onclick="pickChip(50, this)" class="chip-btn h-10 rounded-full bg-gradient-to-tr from-emerald-950 to-emerald-700 border border-emerald-400/50 shadow-md flex items-center justify-center font-mono font-bold text-xs active:scale-90 transition-transform"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">50</span></button>
+        <button onclick="pickChip(100, this)" class="chip-btn h-10 rounded-full bg-gradient-to-tr from-cyan-950 to-blue-700 border border-cyan-400/70 shadow-chip-glow flex items-center justify-center font-mono font-bold text-xs ring-2 ring-champagne-400 -translate-y-0.5 active:scale-90 transition-transform"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">100</span></button>
+        <button onclick="pickChip(500, this)" class="chip-btn h-10 rounded-full bg-gradient-to-tr from-purple-950 to-purple-700 border border-purple-400/50 shadow-md flex items-center justify-center font-mono font-bold text-xs active:scale-90 transition-transform"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">500</span></button>
+        <button onclick="pickChip(1000, this)" class="chip-btn h-10 rounded-full bg-gradient-to-tr from-amber-950 via-champagne-500 to-amber-600 border border-champagne-300/80 shadow-md flex items-center justify-center font-mono font-black text-xs text-black active:scale-90 transition-transform"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">1K</span></button>
       </div>
     </section>
 
-    <!-- 8. 底部主控制栏 (避开手机底部黑条误触区) -->
-    <footer class="grid grid-cols-4 gap-2.5 pt-1">
-      <button id="btn-clear" onclick="clearBets()" class="touch-btn col-span-1 py-2.5 rounded-2xl glass-surface text-slate-300 text-xs font-bold">清除</button>
-      <button id="deal-btn" onclick="dealRound()" class="touch-btn deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow">发牌 · DEAL</button>
+    <!-- 底部控制按钮 -->
+    <footer class="grid grid-cols-4 gap-2.5 pt-0.5">
+      <button id="btn-clear" onclick="clearBets()" class="col-span-1 py-2.5 rounded-2xl glass-surface text-slate-300 text-xs font-bold active:scale-95 transition-transform">清除</button>
+      <button id="deal-btn" onclick="dealRound()" class="deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow active:scale-95 transition-transform">发牌 · DEAL</button>
     </footer>
   </main>
 
-  <!-- 9. SOPHIA 模态分析控制台 -->
-  <div id="ai-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden items-center justify-center p-4">
-    <div class="glass-panel rounded-3xl w-full max-w-md p-5 shadow-2xl space-y-4 font-mono text-slate-200 text-xs">
-      <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <span class="text-champagne-400 font-black tracking-wider text-sm">Σ SOPHIA ANALYTICS CONSOLE</span>
-        <button onclick="closeAiTerminalModal()" class="touch-btn text-slate-400 hover:text-white text-lg">✕</button>
-      </div>
-      <div class="grid grid-cols-3 gap-2.5 text-center">
-        <div class="glass-surface p-2.5 rounded-2xl border border-neonRed/30">
-          <div class="text-[8px] text-neonRed font-black">BANKER (庄)</div>
-          <div id="modal-val-b" class="text-lg font-black text-neonRed mt-0.5">0</div>
-          <div id="modal-pct-b" class="text-[9px] text-slate-400">0.0%</div>
+  <!-- 优化一：物理手搓牌模态舞台 (Full 3D Squeeze Stage) -->
+  <div id="squeeze-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-3xl hidden flex-col items-center justify-between p-6">
+    <div class="w-full flex items-center justify-between text-xs font-mono">
+      <span id="squeeze-title" class="text-champagne-400 font-bold tracking-widest">PLAYER CARD 1</span>
+      <span class="text-slate-500 text-[10px]">手指按住牌角向内搓动</span>
+    </div>
+
+    <!-- 3D 拟真卡牌容器 -->
+    <div class="squeeze-stage my-auto flex items-center justify-center">
+      <div id="squeeze-box" class="squeeze-card-wrap">
+        <!-- 底牌（正面） -->
+        <div id="squeeze-front" class="squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between">
+          <div class="flex justify-between items-start">
+            <div id="sq-rank-top" class="text-3xl font-black font-mono leading-none">A</div>
+            <div id="sq-suit-top" class="text-2xl leading-none">♠</div>
+          </div>
+          <div id="sq-suit-center" class="text-7xl self-center">♠</div>
+          <div class="flex justify-between items-end rotate-180">
+            <div id="sq-rank-bot" class="text-3xl font-black font-mono leading-none">A</div>
+            <div id="sq-suit-bot" class="text-2xl leading-none">♠</div>
+          </div>
         </div>
-        <div class="glass-surface p-2.5 rounded-2xl border border-glacier/30">
-          <div class="text-[8px] text-glacier font-black">PLAYER (闲)</div>
-          <div id="modal-val-p" class="text-lg font-black text-glacier mt-0.5">0</div>
-          <div id="modal-pct-p" class="text-[9px] text-slate-400">0.0%</div>
-        </div>
-        <div class="glass-surface p-2.5 rounded-2xl border border-neonEmerald/30">
-          <div class="text-[8px] text-neonEmerald font-black">TIE (和)</div>
-          <div id="modal-val-t" class="text-lg font-black text-neonEmerald mt-0.5">0</div>
-          <div id="modal-pct-t" class="text-[9px] text-slate-400">0.0%</div>
+
+        <!-- 遮罩牌背（手搓受体） -->
+        <div id="squeeze-back" class="squeeze-card-face squeeze-card-back flex items-center justify-center cursor-grab active:cursor-grabbing">
+          <div class="w-24 h-40 rounded-xl border border-champagne-400/30 flex items-center justify-center bg-champagne-400/5">
+            <span class="text-4xl text-champagne-300 font-serif opacity-70">⚜</span>
+          </div>
+          <div class="absolute bottom-3 text-[9px] font-mono text-champagne-400/60 uppercase tracking-widest">
+            Drag to Squeeze
+          </div>
         </div>
       </div>
-      <div class="w-full h-2 rounded-full overflow-hidden flex bg-slate-900 border border-white/10">
-        <div id="modal-bar-b" class="bg-neonRed h-full transition-all duration-300" style="width: 33.3%;"></div>
-        <div id="modal-bar-p" class="bg-glacier h-full transition-all duration-300" style="width: 33.3%;"></div>
-        <div id="modal-bar-t" class="bg-neonEmerald h-full transition-all duration-300" style="width: 33.4%;"></div>
-      </div>
-      <button onclick="closeAiTerminalModal()" class="touch-btn w-full py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs shadow-lg">关闭分析终端</button>
+    </div>
+
+    <!-- 控制动作 -->
+    <div class="w-full space-y-2 max-w-xs">
+      <button onclick="instantRevealSqueeze()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase tracking-wider active:scale-95 transition-transform">
+        直接全开 (Reveal All)
+      </button>
     </div>
   </div>
 
   <script>
-    // ----------------------------------------------------
-    // 原生音频引擎 (Web Audio 实时合成)
-    // ----------------------------------------------------
+    /* ===================================================
+       优化二：全面阻断双击放大与多点手势
+       =================================================== */
+    document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+    document.addEventListener('gesturechange', (e) => e.preventDefault());
+    document.addEventListener('gestureend', (e) => e.preventDefault());
+
+    /* ===================================================
+       原生 Web Audio 引擎
+       =================================================== */
     let audioCtx = null;
     let soundEnabled = true;
 
@@ -451,7 +405,7 @@
         const gain = ctx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -461,22 +415,18 @@
     }
 
     function playChipSound() {
-      playTone(1200, 0.04, 'sine');
+      playTone(1100, 0.04, 'sine');
       setTimeout(() => playTone(800, 0.03, 'triangle'), 15);
     }
-
-    function playCardSlideSound() {
-      playTone(340, 0.08, 'triangle');
-    }
-
+    function playCardSlideSound() { playTone(320, 0.08, 'triangle'); }
     function toggleAudio() {
       soundEnabled = !soundEnabled;
       document.getElementById('sound-btn').innerHTML = soundEnabled ? '🔊' : '🔇';
     }
 
-    // ----------------------------------------------------
-    // 核心状态管理
-    // ----------------------------------------------------
+    /* ===================================================
+       游戏逻辑与开牌/手搓状态机
+       =================================================== */
     const SUITS = ['♠', '♥', '♣', '♦'];
     const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     let bankroll = 50000;
@@ -485,63 +435,19 @@
     let history = []; 
     let currentRoadTab = 'big';
     let isDealing = false;
-    let enableSqueeze = true;
-    let currentAiScope = 20;
-    let lastActionTime = 0;
-    let pendingSqueezeResolve = null;
+    let shoe = [];
 
-    // 登录与额度选择
-    let loginInitialBankroll = 50000;
-    function selectInitBankroll(amt, btn) {
-      loginInitialBankroll = amt;
-      playChipSound();
-      document.querySelectorAll('.login-bankroll-btn').forEach(b => {
-        b.className = 'login-bankroll-btn py-2 rounded-xl glass-surface border border-white/10 text-xs font-mono text-slate-300';
-      });
-      btn.className = 'login-bankroll-btn py-2 rounded-xl bg-champagne-400/20 border-2 border-champagne-400 text-xs font-mono text-champagne-300 font-bold shadow-sm';
-    }
+    // 当前局发出的卡牌实体
+    let roundCards = {
+      p1: null, p2: null, p3: null,
+      b1: null, b2: null, b3: null
+    };
+    let cardFlippedState = {
+      p1: false, p2: false, p3: false,
+      b1: false, b2: false, b3: false
+    };
 
-    function confirmLoginAndEnter() {
-      const alias = document.getElementById('vip-name-input').value.trim() || 'VIP-888';
-      document.getElementById('header-user-tag').innerText = alias;
-      enableSqueeze = document.getElementById('login-squeeze-toggle').checked;
-      bankroll = loginInitialBankroll;
-      playChipSound();
-
-      const modal = document.getElementById('login-modal');
-      modal.classList.add('opacity-0', 'pointer-events-none');
-      setTimeout(() => modal.classList.add('hidden'), 500);
-
-      updateUI();
-      updateRoad();
-      updateAiAnalytics();
-    }
-
-    function saveGameState() {
-      try {
-        localStorage.setItem('empress_bankroll', String(bankroll));
-        localStorage.setItem('empress_history', JSON.stringify(history));
-      } catch (e) {}
-    }
-
-    function loadGameState() {
-      try {
-        const savedBankroll = localStorage.getItem('empress_bankroll');
-        const savedHistory = localStorage.getItem('empress_history');
-        if (savedBankroll !== null) {
-          const parsed = parseInt(savedBankroll, 10);
-          if (!isNaN(parsed) && parsed >= 0) bankroll = parsed;
-        }
-        if (savedHistory !== null) {
-          const parsedArr = JSON.parse(savedHistory);
-          if (Array.isArray(parsedArr)) {
-            history = parsedArr.filter(x => x === 'banker' || x === 'player' || x === 'tie');
-          }
-        }
-      } catch (e) { history = []; }
-    }
-
-    function createShoe() {
+    function initShoe() {
       const deck = [];
       for (let d = 0; d < 8; d++) {
         for (const s of SUITS) {
@@ -554,13 +460,17 @@
           }
         }
       }
-      return deck.sort(() => Math.random() - 0.5);
+      shoe = deck.sort(() => Math.random() - 0.5);
     }
-    let shoe = createShoe();
+    initShoe();
 
     function drawCard() {
-      if (!shoe || shoe.length < 50) shoe = createShoe();
+      if (shoe.length < 52) initShoe();
       return shoe.pop();
+    }
+
+    function calcHand(cards) {
+      return cards.reduce((acc, cur) => acc + (cur ? cur.val : 0), 0) % 10;
     }
 
     function pickChip(val, btn) {
@@ -574,15 +484,10 @@
       document.getElementById('selected-chip-display').innerText = '$' + (val === 1000 ? '1,000' : val);
     }
 
-    // 下注交互（含实体筹码渲染）
     function addBet(area) {
       if (isDealing) return;
-      const now = Date.now();
-      if (now - lastActionTime < 60) return;
-      lastActionTime = now;
-
       if (bankroll < selectedChip) {
-        alert('筹码余额不足！');
+        alert('筹码不足！');
         return;
       }
       bankroll -= selectedChip;
@@ -599,41 +504,24 @@
       updateUI();
     }
 
-    function resetBankroll() {
-      if (isDealing) return;
-      if (confirm('是否重置为 $50,000 体验金并清空所有历史数据？')) {
-        clearBets();
-        bankroll = 50000;
-        history = [];
-        saveGameState();
-        updateRoad();
-        updateAiAnalytics();
-        updateUI();
-      }
-    }
-
-    function calcHand(cards) {
-      return cards.reduce((acc, cur) => acc + cur.val, 0) % 10;
-    }
-
-    function createCardMarkup(card, id) {
+    // 渲染桌面盖牌（绑定搓牌点击事件）
+    function createTableCardDOM(cardKey, sideLabel) {
       return `
-        <div id="${id}" class="card-container card-deal-anim">
-          <div class="card-flipper">
-            <div class="card-side card-back flex items-center justify-center">
-              <div class="w-8 h-12 rounded border border-champagne-400/30 bg-champagne-400/5 flex items-center justify-center">
-                <span class="text-[10px] text-champagne-300 font-serif opacity-80">⚜</span>
-              </div>
+        <div id="card-${cardKey}" onclick="userRequestSqueeze('${cardKey}', '${sideLabel}')" 
+             class="table-card cursor-pointer active:scale-95 transform transition">
+          <div class="table-card-inner" id="inner-${cardKey}">
+            <div class="table-card-back flex items-center justify-center">
+              <span class="text-[11px] text-champagne-400/80 font-serif">⚜</span>
             </div>
-            <div class="card-side card-front p-1.5 flex flex-col justify-between text-[11px] font-black leading-none ${card.isRed ? 'text-neonRed' : 'text-slate-950'}">
+            <div class="table-card-front p-1 flex flex-col justify-between text-[11px] font-black leading-none">
               <div class="flex justify-between items-start">
-                <span>${card.rank}</span>
-                <span class="text-[10px]">${card.suit}</span>
+                <span class="card-rank">-</span>
+                <span class="card-suit text-[10px]">-</span>
               </div>
-              <div class="text-center text-lg leading-none">${card.suit}</div>
+              <div class="text-center text-lg leading-none card-suit-center">-</div>
               <div class="flex justify-between items-end rotate-180">
-                <span>${card.rank}</span>
-                <span class="text-[10px]">${card.suit}</span>
+                <span class="card-rank">-</span>
+                <span class="card-suit text-[10px]">-</span>
               </div>
             </div>
           </div>
@@ -641,544 +529,376 @@
       `;
     }
 
-    function flipCardById(cardId) {
-      const el = document.getElementById(cardId);
-      if (el) {
-        const flipper = el.querySelector('.card-flipper');
-        if (flipper) {
-          playTone(480, 0.05);
-          flipper.classList.add('is-flipped');
-        }
-      }
+    function populateCardContent(cardKey, card) {
+      const el = document.getElementById(`card-${cardKey}`);
+      if (!el || !card) return;
+      const front = el.querySelector('.table-card-front');
+      front.className = `table-card-front p-1 flex flex-col justify-between text-[11px] font-black leading-none ${card.isRed ? 'text-neonRed' : 'text-slate-950'}`;
+      el.querySelectorAll('.card-rank').forEach(r => r.innerText = card.rank);
+      el.querySelectorAll('.card-suit').forEach(s => s.innerText = card.suit);
+      el.querySelector('.card-suit-center').innerText = card.suit;
     }
 
-    function setInteractionLock(locked) {
-      isDealing = locked;
-      document.querySelectorAll('#betting-area .touch-btn').forEach(c => {
-        if (locked) c.classList.add('pointer-events-none', 'opacity-70');
-        else c.classList.remove('pointer-events-none', 'opacity-70');
-      });
-      document.getElementById('deal-btn').disabled = locked;
-      document.getElementById('btn-clear').disabled = locked;
-      document.getElementById('btn-reset').disabled = locked;
-      document.getElementById('btn-ai-apply').disabled = locked;
-      document.getElementById('btn-ai-analyze').disabled = locked;
-      document.querySelectorAll('#chip-selection-area .chip-btn').forEach(btn => btn.disabled = locked);
-    }
-
-    const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-    // ----------------------------------------------------
-    // 搓牌 / 咪牌交互引擎
-    // ----------------------------------------------------
-    function triggerSqueezeExperience(card) {
-      return new Promise(resolve => {
-        pendingSqueezeResolve = resolve;
-        const modal = document.getElementById('squeeze-modal');
-        const box = document.getElementById('squeeze-card-box');
-        box.innerHTML = '⚜';
-        box.className = 'cursor-pointer w-20 h-28 rounded-xl bg-slate-900 border-2 border-champagne-400 shadow-2xl flex items-center justify-center text-3xl select-none transition-all active:scale-95 text-champagne-300';
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        playTone(90, 0.12, 'sine'); // 心跳悬疑低音
-      });
-    }
-
-    function revealSqueezeCard() {
-      const box = document.getElementById('squeeze-card-box');
-      box.innerHTML = '✨';
-      playTone(520, 0.08);
-      setTimeout(skipSqueeze, 300);
-    }
-
-    function skipSqueeze() {
-      const modal = document.getElementById('squeeze-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      if (pendingSqueezeResolve) {
-        pendingSqueezeResolve();
-        pendingSqueezeResolve = null;
-      }
-    }
-
-    // ----------------------------------------------------
-    // 发牌主流程
-    // ----------------------------------------------------
+    /* ===================================================
+       发牌流程 (发下即支持全程自主搓牌)
+       =================================================== */
     async function dealRound() {
-      if (isDealing) return;
       const totalBet = bets.player + bets.banker + bets.tie;
-      if (totalBet === 0) return;
+      if (totalBet === 0 || isDealing) return;
 
-      setInteractionLock(true);
-
-      const banner = document.getElementById('result-banner');
-      if (banner) banner.classList.add('hidden');
+      isDealing = true;
+      document.getElementById('deal-btn').disabled = true;
+      document.getElementById('btn-clear').disabled = true;
+      document.getElementById('result-banner').classList.add('hidden');
+      document.getElementById('squeeze-hint-banner').classList.remove('hidden');
+      document.getElementById('game-status-hint').innerText = '开牌中：点击卡牌可搓牌';
 
       const pTray = document.getElementById('player-cards');
       const bTray = document.getElementById('banker-cards');
-      if (pTray) pTray.innerHTML = '';
-      if (bTray) bTray.innerHTML = '';
+      pTray.innerHTML = '';
+      bTray.innerHTML = '';
       document.getElementById('player-score').innerText = '-';
       document.getElementById('banker-score').innerText = '-';
 
-      const pCards = [drawCard(), drawCard()];
-      const bCards = [drawCard(), drawCard()];
+      // 发出基础 4 张牌 (全部处于盖牌状态)
+      roundCards.p1 = drawCard();
+      roundCards.b1 = drawCard();
+      roundCards.p2 = drawCard();
+      roundCards.b2 = drawCard();
+      roundCards.p3 = null;
+      roundCards.b3 = null;
+
+      Object.keys(cardFlippedState).forEach(k => cardFlippedState[k] = false);
 
       playCardSlideSound();
-      if (pTray) pTray.innerHTML += createCardMarkup(pCards[0], 'p-card-1');
-      await wait(180);
-      flipCardById('p-card-1');
-      await wait(240);
+      pTray.innerHTML += createTableCardDOM('p1', '闲家 第1张');
+      await wait(150);
+      populateCardContent('p1', roundCards.p1);
 
       playCardSlideSound();
-      if (bTray) bTray.innerHTML += createCardMarkup(bCards[0], 'b-card-1');
-      await wait(180);
-      flipCardById('b-card-1');
-      await wait(240);
+      bTray.innerHTML += createTableCardDOM('b1', '庄家 第1张');
+      await wait(150);
+      populateCardContent('b1', roundCards.b1);
 
       playCardSlideSound();
-      if (pTray) pTray.innerHTML += createCardMarkup(pCards[1], 'p-card-2');
-      await wait(180);
-      flipCardById('p-card-2');
-      let pScore = calcHand(pCards);
-      document.getElementById('player-score').innerText = pScore;
-      await wait(240);
+      pTray.innerHTML += createTableCardDOM('p2', '闲家 第2张');
+      await wait(150);
+      populateCardContent('p2', roundCards.p2);
 
       playCardSlideSound();
-      if (bTray) bTray.innerHTML += createCardMarkup(bCards[1], 'b-card-2');
-      await wait(180);
-      flipCardById('b-card-2');
-      let bScore = calcHand(bCards);
-      document.getElementById('banker-score').innerText = bScore;
-      await wait(320);
+      bTray.innerHTML += createTableCardDOM('b2', '庄家 第2张');
+      await wait(150);
+      populateCardContent('b2', roundCards.b2);
+
+      // 计算是否需要补牌
+      let pScore = calcHand([roundCards.p1, roundCards.p2]);
+      let bScore = calcHand([roundCards.b1, roundCards.b2]);
 
       const isNatural = (pScore >= 8 || bScore >= 8);
       if (!isNatural) {
-        let p3 = null;
         if (pScore <= 5) {
-          await wait(200);
-          p3 = drawCard();
-          pCards.push(p3);
+          roundCards.p3 = drawCard();
           playCardSlideSound();
-          if (pTray) pTray.innerHTML += createCardMarkup(p3, 'p-card-3');
-          
-          if (enableSqueeze) {
-            await triggerSqueezeExperience(p3);
-          } else {
-            await wait(180);
-          }
-          flipCardById('p-card-3');
-          pScore = calcHand(pCards);
-          document.getElementById('player-score').innerText = pScore;
-          await wait(280);
+          pTray.innerHTML += createTableCardDOM('p3', '闲家 补牌');
+          populateCardContent('p3', roundCards.p3);
+          await wait(150);
         }
 
+        const p3Val = roundCards.p3 ? roundCards.p3.val : null;
         let bDraw = false;
-        if (p3 === null) {
+        if (p3Val === null) {
           if (bScore <= 5) bDraw = true;
         } else {
-          const v = p3.val;
           if (bScore <= 2) bDraw = true;
-          else if (bScore === 3 && v !== 8) bDraw = true;
-          else if (bScore === 4 && [2,3,4,5,6,7].includes(v)) bDraw = true;
-          else if (bScore === 5 && [4,5,6,7].includes(v)) bDraw = true;
-          else if (bScore === 6 && [6,7].includes(v)) bDraw = true;
+          else if (bScore === 3 && p3Val !== 8) bDraw = true;
+          else if (bScore === 4 && [2,3,4,5,6,7].includes(p3Val)) bDraw = true;
+          else if (bScore === 5 && [4,5,6,7].includes(p3Val)) bDraw = true;
+          else if (bScore === 6 && [6,7].includes(p3Val)) bDraw = true;
         }
 
         if (bDraw) {
-          await wait(200);
-          const b3 = drawCard();
-          bCards.push(b3);
+          roundCards.b3 = drawCard();
           playCardSlideSound();
-          if (bTray) bTray.innerHTML += createCardMarkup(b3, 'b-card-3');
-
-          if (enableSqueeze) {
-            await triggerSqueezeExperience(b3);
-          } else {
-            await wait(180);
-          }
-          flipCardById('b-card-3');
-          bScore = calcHand(bCards);
-          document.getElementById('banker-score').innerText = bScore;
-          await wait(280);
+          bTray.innerHTML += createTableCardDOM('b3', '庄家 补牌');
+          populateCardContent('b3', roundCards.b3);
+          await wait(150);
         }
       }
+
+      // 等待玩家搓牌或者点击全开
+      checkAutoRevealProgress();
+    }
+
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    /* ===================================================
+       优化一：物理触摸/鼠标搓牌交互核心
+       =================================================== */
+    let currentSqueezingKey = null;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let currentDragDist = 0;
+    let isDraggingCard = false;
+
+    const sqOverlay = document.getElementById('squeeze-overlay');
+    const sqBack = document.getElementById('squeeze-back');
+    const sqBox = document.getElementById('squeeze-box');
+
+    function userRequestSqueeze(cardKey, label) {
+      const card = roundCards[cardKey];
+      if (!card || cardFlippedState[cardKey]) return; // 已翻开的不重复搓
+
+      currentSqueezingKey = cardKey;
+      document.getElementById('squeeze-title').innerText = `${label} (${cardKey.toUpperCase()})`;
+
+      // 填充搓牌正面数值
+      const front = document.getElementById('squeeze-front');
+      front.className = `squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between ${card.isRed ? 'text-neonRed' : 'text-slate-950'}`;
+      document.getElementById('sq-rank-top').innerText = card.rank;
+      document.getElementById('sq-rank-bot').innerText = card.rank;
+      document.getElementById('sq-suit-top').innerText = card.suit;
+      document.getElementById('sq-suit-bot').innerText = card.suit;
+      document.getElementById('sq-suit-center').innerText = card.suit;
+
+      // 重置手搓物理形变
+      resetSqueezePhysics();
+
+      sqOverlay.classList.remove('hidden');
+      sqOverlay.classList.add('flex');
+    }
+
+    function resetSqueezePhysics() {
+      currentDragDist = 0;
+      isDraggingCard = false;
+      sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
+      sqBack.style.opacity = '1';
+      sqBox.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    }
+
+    // 绑定触摸与鼠标物理手搓监听
+    sqBack.addEventListener('pointerdown', (e) => {
+      isDraggingCard = true;
+      touchStartY = e.clientY;
+      touchStartX = e.clientX;
+      sqBack.setPointerCapture(e.pointerId);
+    });
+
+    sqBack.addEventListener('pointermove', (e) => {
+      if (!isDraggingCard) return;
+      const deltaY = e.clientY - touchStartY;
+      const deltaX = e.clientX - touchStartX;
+
+      // 仅允许向上或向内卷起
+      if (deltaY < 0) {
+        currentDragDist = Math.abs(deltaY);
+        const percent = Math.min(currentDragDist / 260, 1.0);
+
+        // 真实物理卷曲算法：位移 + 3D 透视角度倾斜 + 动态阴影衰减
+        const rotateAngle = percent * 75;
+        const liftZ = percent * 40;
+        sqBack.style.transform = `translate3d(0, -${currentDragDist * 0.85}px, ${liftZ}px) rotateX(${rotateAngle}deg)`;
+        sqBack.style.boxShadow = `0 ${25 + percent * 30}px ${40}px rgba(0,0,0,0.85)`;
+
+        // 整个舞台微幅偏转，增强手指操控实体感
+        sqBox.style.transform = `rotateY(${deltaX * 0.08}deg)`;
+
+        // 揭开超过 68% 触发顺畅回弹全开
+        if (percent > 0.68) {
+          isDraggingCard = false;
+          finishSqueezeCard();
+        }
+      }
+    });
+
+    sqBack.addEventListener('pointerup', () => {
+      if (!isDraggingCard) return;
+      isDraggingCard = false;
+      // 释放时如果没搓开，平滑弹回原位（物理弹性）
+      sqBack.style.transition = 'all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
+      setTimeout(() => sqBack.style.transition = '', 250);
+    });
+
+    function finishSqueezeCard() {
+      playTone(560, 0.1, 'triangle');
+      sqBack.style.transition = 'all 0.25s ease-out';
+      sqBack.style.transform = 'translateY(-280px) rotateX(85deg)';
+      sqBack.style.opacity = '0';
+
+      setTimeout(() => {
+        sqOverlay.classList.add('hidden');
+        sqOverlay.classList.remove('flex');
+        // 将桌面上对应的卡牌置为翻开
+        markCardAsRevealed(currentSqueezingKey);
+      }, 250);
+    }
+
+    function instantRevealSqueeze() {
+      finishSqueezeCard();
+    }
+
+    function markCardAsRevealed(cardKey) {
+      if (!cardKey) return;
+      cardFlippedState[cardKey] = true;
+      const inner = document.getElementById(`inner-${cardKey}`);
+      if (inner) inner.classList.add('is-flipped');
+      updateRealtimeScores();
+      checkAutoRevealProgress();
+    }
+
+    // 检查是否所有牌均已开完，若全开则进行最终结算
+    function checkAutoRevealProgress() {
+      const activeKeys = ['p1', 'p2', 'b1', 'b2'];
+      if (roundCards.p3) activeKeys.push('p3');
+      if (roundCards.b3) activeKeys.push('b3');
+
+      const allRevealed = activeKeys.every(k => cardFlippedState[k]);
+      if (allRevealed) {
+        finalizeRoundOutcome();
+      }
+    }
+
+    function updateRealtimeScores() {
+      const pFlipped = [roundCards.p1, roundCards.p2, roundCards.p3].filter((c, i) => {
+        const k = ['p1', 'p2', 'p3'][i];
+        return c && cardFlippedState[k];
+      });
+      const bFlipped = [roundCards.b1, roundCards.b2, roundCards.b3].filter((c, i) => {
+        const k = ['b1', 'b2', 'b3'][i];
+        return c && cardFlippedState[k];
+      });
+
+      if (pFlipped.length > 0) {
+        document.getElementById('player-score').innerText = calcHand(pFlipped);
+      }
+      if (bFlipped.length > 0) {
+        document.getElementById('banker-score').innerText = calcHand(bFlipped);
+      }
+    }
+
+    // 结算本局
+    function finalizeRoundOutcome() {
+      document.getElementById('squeeze-hint-banner').classList.add('hidden');
+      
+      const pFinal = calcHand([roundCards.p1, roundCards.p2, roundCards.p3]);
+      const bFinal = calcHand([roundCards.b1, roundCards.b2, roundCards.b3]);
+      document.getElementById('player-score').innerText = pFinal;
+      document.getElementById('banker-score').innerText = bFinal;
 
       let winner = 'tie';
-      if (pScore > bScore) winner = 'player';
-      else if (bScore > pScore) winner = 'banker';
+      if (pFinal > bFinal) winner = 'player';
+      else if (bFinal > pFinal) winner = 'banker';
 
       let winAmt = 0;
-      if (winner === 'player') winAmt += bets.player * 2;
-      else if (winner === 'banker') winAmt += Math.floor(bets.banker * 1.95);
-      else winAmt += bets.player + bets.banker + (bets.tie * 9);
-
-      if (banner) {
-        banner.className = 'px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-widest border shadow-lg backdrop-blur-xl';
-        if (winner === 'player') {
-          banner.classList.add('bg-glacier-surface', 'border-glacier-border', 'text-glacier');
-          banner.innerHTML = `PLAYER WINS <span class="text-white ml-1">${pScore} — ${bScore}</span>`;
-          playTone(680, 0.22);
-        } else if (winner === 'banker') {
-          banner.classList.add('bg-neonRed-surface', 'border-neonRed-border', 'text-neonRed');
-          banner.innerHTML = `BANKER WINS <span class="text-white ml-1">${bScore} — ${pScore}</span>`;
-          playTone(680, 0.22);
-        } else {
-          banner.classList.add('bg-neonEmerald-surface', 'border-neonEmerald-border', 'text-neonEmerald');
-          banner.innerHTML = `TIE GAME <span class="text-white ml-1">${pScore}</span>`;
-          playTone(520, 0.22);
-        }
-        banner.classList.remove('hidden');
-      }
-
-      await wait(400);
+      if (winner === 'player') winAmt = bets.player * 2;
+      else if (winner === 'banker') winAmt = Math.floor(bets.banker * 1.95);
+      else winAmt = bets.player + bets.banker + (bets.tie * 9);
 
       bankroll += winAmt;
       history.push(winner);
-      saveGameState();
+
+      const banner = document.getElementById('result-banner');
+      banner.className = 'px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-widest border shadow-lg backdrop-blur-xl';
+      if (winner === 'player') {
+        banner.classList.add('bg-glacier-surface', 'border-glacier-border', 'text-glacier');
+        banner.innerHTML = `PLAYER WINS <span class="text-white ml-1">${pFinal} — ${bFinal}</span>`;
+        playTone(680, 0.22);
+      } else if (winner === 'banker') {
+        banner.classList.add('bg-neonRed-surface', 'border-neonRed-border', 'text-neonRed');
+        banner.innerHTML = `BANKER WINS <span class="text-white ml-1">${bFinal} — ${pFinal}</span>`;
+        playTone(680, 0.22);
+      } else {
+        banner.classList.add('bg-neonEmerald-surface', 'border-neonEmerald-border', 'text-neonEmerald');
+        banner.innerHTML = `TIE GAME <span class="text-white ml-1">${pFinal}</span>`;
+        playTone(520, 0.22);
+      }
+      banner.classList.remove('hidden');
+
       bets = { player: 0, banker: 0, tie: 0 };
+      isDealing = false;
+      document.getElementById('deal-btn').disabled = false;
+      document.getElementById('btn-clear').disabled = false;
+      document.getElementById('game-status-hint').innerText = '下注已结算';
 
       updateRoad();
-      updateAiAnalytics();
       updateUI();
-      setInteractionLock(false);
     }
 
-    // ----------------------------------------------------
-    // SOPHIA AI 分析与控制台
-    // ----------------------------------------------------
-    function changeAiScope(scope) {
-      currentAiScope = scope;
-      ['10', '20', '50', 'all'].forEach(s => {
-        const btn = document.getElementById(`scope-btn-${s}`);
-        if (btn) {
-          if (s == scope) btn.className = 'px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 font-bold border border-champagne-400/40 shadow-sm';
-          else btn.className = 'px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
+    /* ===================================================
+       路单与统计渲染
+       =================================================== */
+    function switchRoadTab(tab) {
+      currentRoadTab = tab;
+      document.getElementById('tab-bead').className = tab === 'bead' ? 'px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold' : 'px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
+      document.getElementById('tab-big').className = tab === 'big' ? 'px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold' : 'px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
+      renderRoad();
+    }
+
+    function renderRoad() {
+      const container = document.getElementById('road-matrix-container');
+      const total = history.length;
+      const cols = Math.max(24, Math.ceil(total / 6) + 2);
+      let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${cols}, 14px);">`;
+
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < 6; r++) {
+          const idx = c * 6 + r;
+          if (idx < total) {
+            const res = history[idx];
+            let bg = 'bg-neonRed text-white', txt = '庄';
+            if (res === 'player') { bg = 'bg-glacier text-slate-950'; txt = '闲'; }
+            else if (res === 'tie') { bg = 'bg-neonEmerald text-slate-950'; txt = '和'; }
+            html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-black leading-none">${txt}</div></div>`;
+          } else {
+            html += `<div class="road-cell"></div>`;
+          }
         }
-      });
-      updateAiAnalytics();
+      }
+      html += '</div>';
+      container.innerHTML = html;
+      document.getElementById('road-viewport').scrollLeft = 9999;
     }
 
-    function getSliceHistory(scope) {
-      if (!Array.isArray(history)) return [];
-      if (scope === 'all' || history.length <= scope) return history.slice();
-      return history.slice(history.length - scope);
-    }
-
-    function calculateScopeStats(slice) {
+    function updateRoad() {
       let b = 0, p = 0, t = 0;
-      slice.forEach(x => {
+      history.forEach(x => {
         if (x === 'banker') b++;
         else if (x === 'player') p++;
         else if (x === 'tie') t++;
       });
-      const len = slice.length;
-      return {
-        b, p, t, len,
-        pctB: len > 0 ? ((b / len) * 100).toFixed(1) : '0.0',
-        pctP: len > 0 ? ((p / len) * 100).toFixed(1) : '0.0',
-        pctT: len > 0 ? ((t / len) * 100).toFixed(1) : '0.0'
-      };
+      document.getElementById('stat-b').innerText = b;
+      document.getElementById('stat-p').innerText = p;
+      document.getElementById('stat-t').innerText = t;
+
+      const total = history.length || 1;
+      document.getElementById('ai-tile-b').innerText = Math.round((b/total)*100) + '%';
+      document.getElementById('ai-tile-p').innerText = Math.round((p/total)*100) + '%';
+      document.getElementById('ai-tile-t').innerText = Math.round((t/total)*100) + '%';
+
+      renderRoad();
     }
 
-    function updateAiAnalytics() {
-      const slice = getSliceHistory(currentAiScope);
-      const stats = calculateScopeStats(slice);
-
-      const tileB = document.getElementById('ai-tile-b');
-      if (tileB) tileB.innerText = `${stats.b} (${Math.round(stats.pctB)}%)`;
-      const tileP = document.getElementById('ai-tile-p');
-      if (tileP) tileP.innerText = `${stats.p} (${Math.round(stats.pctP)}%)`;
-      const tileT = document.getElementById('ai-tile-t');
-      if (tileT) tileT.innerText = `${stats.t} (${Math.round(stats.pctT)}%)`;
-
-      const confBadge = document.getElementById('ai-tile-conf');
-      if (confBadge) {
-        if (stats.len < 10) {
-          confBadge.innerText = 'LOW';
-          confBadge.className = 'text-[9px] font-black text-champagne-500 mt-0.5';
-        } else if (stats.len < 30) {
-          confBadge.innerText = 'MODERATE';
-          confBadge.className = 'text-[9px] font-black text-glacier mt-0.5';
-        } else {
-          confBadge.innerText = 'HIGH';
-          confBadge.className = 'text-[9px] font-black text-neonEmerald mt-0.5';
-        }
-      }
-
-      let curStreakText = 'NONE';
-      if (history.length > 0) {
-        let lastWinner = null;
-        let streak = 0;
-        for (let i = history.length - 1; i >= 0; i--) {
-          const item = history[i];
-          if (item === 'tie') continue;
-          if (!lastWinner) {
-            lastWinner = item;
-            streak = 1;
-          } else if (item === lastWinner) {
-            streak++;
-          } else {
-            break;
-          }
-        }
-        if (lastWinner) curStreakText = `${lastWinner === 'banker' ? 'BANKER' : 'PLAYER'} × ${streak}`;
-      }
-      document.getElementById('ai-streak-display').innerText = curStreakText;
-    }
-
-    function openAiTerminalModal() {
-      playTone(500, 0.05);
-      const slice = getSliceHistory(currentAiScope);
-      const stats = calculateScopeStats(slice);
-
-      document.getElementById('modal-val-b').innerText = stats.b;
-      document.getElementById('modal-pct-b').innerText = `${stats.pctB}%`;
-      document.getElementById('modal-val-p').innerText = stats.p;
-      document.getElementById('modal-pct-p').innerText = `${stats.pctP}%`;
-      document.getElementById('modal-val-t').innerText = stats.t;
-      document.getElementById('modal-pct-t').innerText = `${stats.pctT}%`;
-
-      document.getElementById('modal-bar-b').style.width = `${stats.pctB}%`;
-      document.getElementById('modal-bar-p').style.width = `${stats.pctP}%`;
-      document.getElementById('modal-bar-t').style.width = `${stats.pctT}%`;
-
-      const modal = document.getElementById('ai-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeAiTerminalModal() {
-      const modal = document.getElementById('ai-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function applyAiBet() {
-      if (isDealing) return;
-      clearBets();
-      const slice = getSliceHistory(currentAiScope);
-      const stats = calculateScopeStats(slice);
-      let pick = (stats.len > 0 && stats.b >= stats.p) ? 'banker' : 'player';
-      const amt = Math.min(bankroll, 500);
-      if (amt <= 0) return;
-      bankroll -= amt;
-      bets[pick] = amt;
-      playChipSound();
-      updateUI();
-    }
-
-    // ----------------------------------------------------
-    // 五路路单算法
-    // ----------------------------------------------------
-    function switchRoadTab(tab) {
-      currentRoadTab = tab;
-      ['bead', 'big', 'bigEye', 'small', 'cockroach'].forEach(t => {
-        const el = document.getElementById('tab-' + t);
-        if (el) {
-          if (t === tab) el.className = 'touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold';
-          else el.className = 'touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
-        }
-      });
-      renderActiveRoad();
-    }
-
-    function getBigRoadLogicalColumns() {
-      const logicalColumns = [];
-      let currentCol = null;
-      for (const item of history) {
-        if (item === 'tie') {
-          if (!currentCol) {
-            currentCol = { winner: 'tie', count: 1, ties: 1 };
-            logicalColumns.push(currentCol);
-          } else {
-            currentCol.ties = (currentCol.ties || 0) + 1;
-          }
-        } else {
-          if (!currentCol || currentCol.winner !== item) {
-            currentCol = { winner: item, count: 1, ties: 0 };
-            logicalColumns.push(currentCol);
-          } else {
-            currentCol.count++;
-          }
-        }
-      }
-      return logicalColumns;
-    }
-
-    function buildBigRoadGrid(logicalColumns) {
-      const grid = {};
-      let maxCol = 22;
-      let colIndex = 0;
-      for (const col of logicalColumns) {
-        if (col.winner === 'tie') {
-          grid[`0,0`] = { winner: 'tie', ties: col.ties || 1 };
-          continue;
-        }
-        let r = 0, c = colIndex;
-        for (let i = 0; i < col.count; i++) {
-          if (r < 6 && !grid[`${r},${c}`]) {
-            grid[`${r},${c}`] = { winner: col.winner, ties: (i === 0 ? col.ties : 0) };
-            if (i < col.count - 1) {
-              if (r + 1 < 6 && !grid[`${r + 1},${c}`]) r++; else c++;
-            }
-          } else {
-            c++;
-            grid[`${r},${c}`] = { winner: col.winner, ties: 0 };
-          }
-          if (c >= maxCol) maxCol = c + 4;
-        }
-        colIndex++;
-      }
-      return { grid, maxCol };
-    }
-
-    function renderActiveRoad() {
-      const container = document.getElementById('road-matrix-container');
-      if (!container) return;
-      const logical = getBigRoadLogicalColumns();
-
-      if (currentRoadTab === 'bead') {
-        const total = history.length;
-        const cols = Math.max(22, Math.ceil(total / 6) + 2);
-        let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${cols}, 14px);">`;
-        for (let c = 0; c < cols; c++) {
-          for (let r = 0; r < 6; r++) {
-            const idx = c * 6 + r;
-            if (idx < total) {
-              const res = history[idx];
-              let bg = 'bg-neonRed text-white shadow-[0_0_6px_rgba(244,63,94,0.6)]', txt = '庄';
-              if (res === 'player') { bg = 'bg-glacier text-slate-950 shadow-[0_0_6px_rgba(56,189,248,0.6)]'; txt = '闲'; }
-              else if (res === 'tie') { bg = 'bg-neonEmerald text-slate-950 shadow-[0_0_6px_rgba(16,185,129,0.6)]'; txt = '和'; }
-              html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-black leading-none">${txt}</div></div>`;
-            } else {
-              html += `<div class="road-cell"></div>`;
-            }
-          }
-        }
-        html += '</div>';
-        container.innerHTML = html;
-      } else {
-        const { grid, maxCol } = buildBigRoadGrid(logical);
-        let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${maxCol}, 14px);">`;
-        for (let c = 0; c < maxCol; c++) {
-          for (let r = 0; r < 6; r++) {
-            const cell = grid[`${r},${c}`];
-            if (cell) {
-              const isB = cell.winner === 'banker';
-              const ringCls = isB ? 'border-neonRed shadow-[0_0_5px_rgba(244,63,94,0.5)]' : (cell.winner === 'player' ? 'border-glacier shadow-[0_0_5px_rgba(56,189,248,0.5)]' : 'border-neonEmerald shadow-[0_0_5px_rgba(16,185,129,0.5)]');
-              const tieMark = (cell.ties && cell.ties > 0) ? `<span class="absolute text-[7px] font-black text-neonEmerald -rotate-45 leading-none">/</span>` : '';
-              html += `<div class="road-cell"><div class="w-2.5 h-2.5 rounded-full border-[1.5px] ${ringCls} flex items-center justify-center relative">${tieMark}</div></div>`;
-            } else {
-              html += `<div class="road-cell"></div>`;
-            }
-          }
-        }
-        html += '</div>';
-        container.innerHTML = html;
-      }
-      const vp = document.getElementById('road-viewport');
-      if (vp) vp.scrollLeft = vp.scrollWidth;
-    }
-
-    function updateRoad() {
-      let bCount = 0, pCount = 0, tCount = 0;
-      let curB = 0, curP = 0, maxB = 0, maxP = 0;
-      let lastWin = null;
-      let tempStreak = 0;
-
-      for (let i = 0; i < history.length; i++) {
-        const item = history[i];
-        if (item === 'banker') bCount++;
-        else if (item === 'player') pCount++;
-        else if (item === 'tie') tCount++;
-
-        if (item === 'banker') {
-          if (lastWin === 'banker') tempStreak++;
-          else { lastWin = 'banker'; tempStreak = 1; }
-          if (tempStreak > maxB) maxB = tempStreak;
-        } else if (item === 'player') {
-          if (lastWin === 'player') tempStreak++;
-          else { lastWin = 'player'; tempStreak = 1; }
-          if (tempStreak > maxP) maxP = tempStreak;
-        }
-      }
-
-      for (let i = history.length - 1; i >= 0; i--) {
-        const item = history[i];
-        if (item === 'tie') continue;
-        if (!lastWin) lastWin = item;
-        if (item === 'banker') { if (curP === 0) curB++; else break; }
-        else if (item === 'player') { if (curB === 0) curP++; else break; }
-      }
-
-      document.getElementById('stat-b').innerText = bCount;
-      document.getElementById('stat-p').innerText = pCount;
-      document.getElementById('stat-t').innerText = tCount;
-
-      document.getElementById('streak-cur-b').innerText = curB;
-      document.getElementById('streak-cur-p').innerText = curP;
-      document.getElementById('streak-max-b').innerText = maxB;
-      document.getElementById('streak-max-p').innerText = maxP;
-      document.getElementById('stat-tie-total').innerText = tCount;
-
-      renderActiveRoad();
-    }
-
-    // ----------------------------------------------------
-    // 渲染实体筹码堆叠
-    // ----------------------------------------------------
-    function renderBetChipStack(area, amount) {
-      const container = document.getElementById(`bet-chip-${area}`);
-      if (!container) return;
-      if (amount <= 0) {
-        container.innerHTML = '';
-        return;
-      }
-      let chipColor = 'from-cyan-900 to-blue-600 border-cyan-300';
-      if (amount >= 1000) chipColor = 'from-amber-900 to-amber-500 border-champagne-300 text-black';
-      else if (amount >= 500) chipColor = 'from-purple-900 to-purple-600 border-purple-300';
-      else if (amount < 100) chipColor = 'from-emerald-900 to-emerald-600 border-emerald-300';
-
-      container.innerHTML = `
-        <div class="chip-stack-token relative px-2 py-0.5 rounded-full bg-gradient-to-r ${chipColor} border shadow-lg flex items-center gap-1">
-          <span class="w-3 h-3 rounded-full border border-dashed border-white/60 flex items-center justify-center text-[7px] font-black">⚜</span>
-          <span class="font-mono text-[9px] font-black text-white">$${amount.toLocaleString()}</span>
+    function renderBetChips(area, amount) {
+      const el = document.getElementById(`bet-chip-${area}`);
+      if (!el) return;
+      if (amount <= 0) { el.innerHTML = ''; return; }
+      el.innerHTML = `
+        <div class="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-900 to-champagne-500 border border-champagne-300 text-stone-950 font-mono font-black text-[9px] shadow-md">
+          $${amount.toLocaleString()}
         </div>
       `;
     }
 
     function updateUI() {
       document.getElementById('bankroll-val').innerText = '$' + bankroll.toLocaleString();
-      
-      const pVal = bets.player;
-      const bVal = bets.banker;
-      const tVal = bets.tie;
-
-      renderBetChipStack('player', pVal);
-      renderBetChipStack('banker', bVal);
-      renderBetChipStack('tie', tVal);
-
-      syncBetCardState('player', pVal > 0);
-      syncBetCardState('banker', bVal > 0);
-      syncBetCardState('tie', tVal > 0);
-    }
-
-    function syncBetCardState(area, isSelected) {
-      const card = document.getElementById(`bet-card-${area}`);
-      if (!card) return;
-      if (isSelected) {
-        card.classList.add('border-champagne-400', '-translate-y-0.5', 'bg-white/10', 'shadow-chip-glow');
-      } else {
-        card.classList.remove('border-champagne-400', '-translate-y-0.5', 'bg-white/10', 'shadow-chip-glow');
-      }
+      renderBetChips('player', bets.player);
+      renderBetChips('banker', bets.banker);
+      renderBetChips('tie', bets.tie);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      loadGameState();
-      updateRoad();
-      updateAiAnalytics();
       updateUI();
+      updateRoad();
     });
   </script>
 </body>
