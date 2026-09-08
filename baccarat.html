@@ -3,45 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ROYALE BACCARAT VIP · 8 Card Punto Banco</title>
+  <title>皇后娱乐 · EMPRESS ROYALE VIP</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            table: {
-              base: '#071610',
-              felt: '#0a2318',
-              surface: '#0d2d20',
-              border: '#15402f'
-            },
-            champagne: {
-              100: '#f9f5ea',
-              200: '#eddcb5',
-              300: '#ddc285',
-              400: '#c5a359',
-              500: '#a68238',
-              600: '#7e5f20'
-            },
-            side: {
-              player: '#1e3a8a',
-              playerBorder: '#2563eb',
-              banker: '#7f1d1d',
-              bankerBorder: '#dc2626',
-              tie: '#064e3b',
-              tieBorder: '#059669'
-            }
+            table: { base: '#071610', felt: '#0a2318', surface: '#0d2d20', border: '#15402f' },
+            champagne: { 100: '#f9f5ea', 200: '#eddcb5', 300: '#ddc285', 400: '#c5a359', 500: '#a68238' },
+            side: { player: '#1e3a8a', playerBorder: '#2563eb', banker: '#7f1d1d', bankerBorder: '#dc2626', tie: '#064e3b', tieBorder: '#059669' }
           },
           fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'sans-serif'],
-            mono: ['"SF Mono"', 'Menlo', 'Monaco', 'monospace']
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'sans-serif'],
+            mono: ['"SF Mono"', 'Menlo', 'monospace']
           },
           boxShadow: {
-            'card': '0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2)',
+            'card': '0 4px 12px rgba(0, 0, 0, 0.4)',
             'chip': '0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25)',
-            'chip-active': '0 6px 14px rgba(197, 163, 89, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
-            'btn-depress': 'inset 0 2px 4px rgba(0, 0, 0, 0.4)'
+            'chip-active': '0 6px 14px rgba(197, 163, 89, 0.35)'
           }
         }
       }
@@ -62,10 +42,7 @@
       padding-top: var(--safe-top);
       padding-bottom: var(--safe-bottom);
       background-color: #071610;
-      background-image: 
-        radial-gradient(circle at 50% 18%, rgba(13, 45, 32, 0.85) 0%, rgba(7, 22, 16, 0.98) 70%, #030a07 100%),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 24px;
+      background-image: radial-gradient(circle at 50% 18%, rgba(13, 45, 32, 0.85) 0%, rgba(7, 22, 16, 0.98) 70%, #030a07 100%);
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -74,7 +51,6 @@
       perspective: 800px;
       width: 3.5rem;
       height: 5rem;
-      will-change: transform, opacity;
     }
     .card-flipper {
       position: relative;
@@ -83,9 +59,7 @@
       transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
       transform-style: preserve-3d;
     }
-    .card-flipper.is-flipped {
-      transform: rotateY(180deg);
-    }
+    .card-flipper.is-flipped { transform: rotateY(180deg); }
     .card-side {
       position: absolute;
       inset: 0;
@@ -101,42 +75,21 @@
     .card-back {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid rgba(212, 175, 55, 0.4);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
-
     @keyframes dealSlideIn {
-      0% { opacity: 0; transform: translate3d(0, -28px, 0) scale(0.9) rotate(-4deg); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-    }
-    .card-deal-anim {
-      animation: dealSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes bannerFadeUp {
-      0% { opacity: 0; transform: translate3d(0, 6px, 0) scale(0.97); }
+      0% { opacity: 0; transform: translate3d(0, -28px, 0) scale(0.9); }
       100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
-    .banner-anim {
-      animation: bannerFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .touch-btn {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .touch-btn:active:not(:disabled) {
-      transform: scale(0.97);
-    }
-    .chip-rim {
-      border: 2px dashed rgba(255, 255, 255, 0.35);
-    }
-
+    .card-deal-anim { animation: dealSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .touch-btn { transition: all 0.2s ease; }
+    .touch-btn:active:not(:disabled) { transform: scale(0.97); }
+    .chip-rim { border: 2px dashed rgba(255, 255, 255, 0.35); }
     .road-cell {
       width: 14px;
       height: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
       background: rgba(0, 0, 0, 0.25);
       border-right: 1px solid rgba(255, 255, 255, 0.05);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -144,53 +97,36 @@
   </style>
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col font-sans select-none overflow-x-hidden antialiased">
-
-  <!-- 1. 顶部 Header -->
+  <!-- 顶部导航与资金卡 -->
   <header class="w-full max-w-lg mx-auto px-4 pt-3 pb-2 flex items-center justify-between border-b border-table-border/60">
     <div>
-      <div class="text-[13px] font-black tracking-[0.18em] text-champagne-300 font-sans">
-        ROYALE BACCARAT <span class="text-[10px] text-champagne-500 font-normal">VIP</span>
+      <div class="text-[13px] font-black tracking-[0.18em] text-champagne-300">
+        皇后娱乐 · EMPRESS ROYALE <span class="text-[10px] text-champagne-500 font-normal">VIP</span>
       </div>
       <div class="text-[8px] font-mono tracking-wider text-slate-400 uppercase">
         8 Card · International Standard Punto Banco
       </div>
     </div>
-
     <div class="flex items-center gap-2">
       <div class="bg-black/45 border border-champagne-500/35 rounded-xl px-2.5 py-1 text-right">
         <div class="text-[8px] font-mono tracking-widest text-slate-400 uppercase leading-none">Balance</div>
-        <div id="bankroll-val" class="font-mono font-bold text-champagne-300 text-sm sm:text-base leading-tight">$50,000</div>
+        <div id="bankroll-val" class="font-mono font-bold text-champagne-300 text-sm leading-tight">$50,000</div>
       </div>
-
       <div class="flex items-center gap-1">
-        <button id="btn-reset" onclick="resetBankroll()" class="touch-btn p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-slate-300 hover:text-champagne-300 disabled:opacity-30 disabled:pointer-events-none" title="重置体验金与历史">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        </button>
-        <button onclick="toggleAudio()" id="sound-btn" class="touch-btn p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-slate-300 hover:text-champagne-300" title="静音开关">
-          <span class="text-xs">🔊</span>
-        </button>
+        <button id="btn-reset" onclick="resetBankroll()" class="touch-btn p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-slate-300">↺</button>
+        <button onclick="toggleAudio()" id="sound-btn" class="touch-btn p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-slate-300">🔊</button>
       </div>
     </div>
   </header>
 
-  <!-- 主内容容器 -->
   <main class="w-full max-w-lg mx-auto px-3 flex-1 flex flex-col justify-between space-y-2 pt-1.5 pb-2">
-
-    <!-- 2. SOPHIA AI ANALYTICS -->
-    <section class="bg-table-surface/90 border border-table-border rounded-xl p-2.5 shadow-sm space-y-2">
+    <!-- SOPHIA AI 数据分析舱 -->
+    <section class="bg-table-surface/90 border border-table-border rounded-xl p-2.5 space-y-2">
       <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
         <div class="flex items-center gap-1.5">
-          <div class="w-5 h-5 rounded-md bg-champagne-500/20 border border-champagne-400/40 flex items-center justify-center text-champagne-300 font-mono text-[9px] font-extrabold shrink-0">
-            Σ
-          </div>
-          <div>
-            <div class="flex items-center gap-1">
-              <span class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</span>
-              <span class="text-[7px] px-1 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/40 font-mono font-semibold">LIVE</span>
-            </div>
-          </div>
+          <div class="w-5 h-5 rounded-md bg-champagne-500/20 border border-champagne-400/40 flex items-center justify-center text-champagne-300 font-mono text-[9px] font-extrabold">Σ</div>
+          <span class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</span>
         </div>
-
         <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg border border-white/5">
           <button onclick="changeAiScope(10)" id="scope-btn-10" class="px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400">10H</button>
           <button onclick="changeAiScope(20)" id="scope-btn-20" class="px-1.5 py-0.5 rounded text-[8px] font-mono bg-champagne-500/20 text-champagne-300 font-bold border border-champagne-500/40">20H</button>
@@ -198,7 +134,6 @@
           <button onclick="changeAiScope('all')" id="scope-btn-all" class="px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400">ALL</button>
         </div>
       </div>
-
       <div class="grid grid-cols-4 gap-1.5 text-center font-mono">
         <div class="bg-black/35 p-1 rounded-lg border border-white/5">
           <div class="text-[7px] text-slate-400 uppercase">Banker</div>
@@ -217,63 +152,43 @@
           <div id="ai-tile-conf" class="text-[9px] font-extrabold text-amber-400 mt-0.5">LOW</div>
         </div>
       </div>
-
       <div class="flex items-center justify-between pt-0.5">
-        <div class="text-[8px] text-slate-300 font-mono flex items-center gap-1.5">
-          <span>Streak: <b id="ai-streak-display" class="text-champagne-300 font-bold">NONE</b></span>
-          <span class="text-slate-600">|</span>
-          <span>Sample: <b id="ai-sample-display" class="text-slate-200">0</b></span>
-        </div>
-        
+        <div class="text-[8px] text-slate-300 font-mono">Streak: <b id="ai-streak-display" class="text-champagne-300">NONE</b></div>
         <div class="flex items-center gap-1.5">
-          <button id="btn-ai-analyze" onclick="openAiTerminalModal()" class="touch-btn px-2 py-0.5 rounded-lg bg-champagne-500/20 border border-champagne-400/50 hover:bg-champagne-500/30 text-[9px] font-mono font-bold text-champagne-200 tracking-wider flex items-center gap-1">
-            <span>📊</span> ANALYZE
-          </button>
-          <button id="btn-ai-apply" onclick="applyAiBet()" class="touch-btn px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-[9px] font-mono text-slate-300 disabled:opacity-30 disabled:pointer-events-none">
-            模拟布码
-          </button>
+          <button id="btn-ai-analyze" onclick="openAiTerminalModal()" class="touch-btn px-2 py-0.5 rounded-lg bg-champagne-500/20 border border-champagne-400/50 text-[9px] font-mono font-bold text-champagne-200">📊 ANALYZE</button>
+          <button id="btn-ai-apply" onclick="applyAiBet()" class="touch-btn px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-mono text-slate-300">模拟布码</button>
         </div>
-      </div>
-      
-      <div class="text-[7px] text-slate-500 font-mono text-right">
-        * 统计置信度表征样本容量稳定性，非预测概率。
       </div>
     </section>
 
-    <!-- 3. Baccarat Table -->
-    <section class="relative bg-table-felt border border-table-border rounded-2xl p-2.5 shadow-card flex flex-col justify-between min-h-[165px]">
-      <div class="absolute top-1.5 right-3 text-[8px] font-mono text-slate-500 flex items-center gap-1 opacity-70">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80"></span> SHOE READY
-      </div>
-
+    <!-- 牌桌区域 -->
+    <section class="relative bg-table-felt border border-table-border rounded-2xl p-2.5 shadow-card min-h-[165px] flex flex-col justify-between">
       <div class="grid grid-cols-2 gap-2 relative z-10">
         <div class="flex flex-col items-center">
           <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-[10px] font-bold text-blue-300 tracking-wider">PLAYER</span>
+            <span class="text-[10px] font-bold text-blue-300">PLAYER</span>
             <span id="player-score" class="w-5 h-5 rounded bg-blue-950/80 border border-blue-500/40 flex items-center justify-center font-mono font-bold text-[10px] text-blue-200">-</span>
           </div>
           <div id="player-cards" class="flex gap-1.5 min-h-[80px] items-center justify-center">
-            <div class="w-14 h-20 rounded-lg border border-dashed border-blue-400/20 bg-blue-950/10 flex items-center justify-center text-[9px] text-blue-400/30 font-mono">闲牌区</div>
+            <div class="w-14 h-20 rounded-lg border border-dashed border-blue-400/20 bg-blue-950/10 flex items-center justify-center text-[9px] text-blue-400/30">闲牌区</div>
           </div>
         </div>
-
         <div class="flex flex-col items-center">
           <div class="flex items-center gap-1.5 mb-1.5">
             <span id="banker-score" class="w-5 h-5 rounded bg-red-950/80 border border-red-500/40 flex items-center justify-center font-mono font-bold text-[10px] text-red-200">-</span>
-            <span class="text-[10px] font-bold text-red-300 tracking-wider">BANKER</span>
+            <span class="text-[10px] font-bold text-red-300">BANKER</span>
           </div>
           <div id="banker-cards" class="flex gap-1.5 min-h-[80px] items-center justify-center">
-            <div class="w-14 h-20 rounded-lg border border-dashed border-red-400/20 bg-red-950/10 flex items-center justify-center text-[9px] text-red-400/30 font-mono">庄牌区</div>
+            <div class="w-14 h-20 rounded-lg border border-dashed border-red-400/20 bg-red-950/10 flex items-center justify-center text-[9px] text-red-400/30">庄牌区</div>
           </div>
         </div>
       </div>
-
       <div class="h-5 flex items-center justify-center mt-1">
-        <div id="result-banner" class="hidden px-3 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wider text-slate-100 border shadow-sm"></div>
+        <div id="result-banner" class="hidden px-3 py-0.5 rounded-full text-[10px] font-mono font-semibold text-slate-100 border"></div>
       </div>
     </section>
 
-    <!-- 4. Betting Area -->
+    <!-- 下注区域 -->
     <section id="betting-area" class="grid grid-cols-3 gap-2">
       <div onclick="addBet('player')" id="bet-card-player" class="touch-btn cursor-pointer bg-side-player/15 hover:bg-side-player/25 border border-side-playerBorder/40 rounded-xl p-2 text-center flex flex-col justify-between min-h-[74px]">
         <div>
@@ -282,7 +197,6 @@
         </div>
         <div id="bet-player" class="font-mono text-xs font-bold text-champagne-300 h-3.5"></div>
       </div>
-
       <div onclick="addBet('tie')" id="bet-card-tie" class="touch-btn cursor-pointer bg-side-tie/15 hover:bg-side-tie/25 border border-side-tieBorder/40 rounded-xl p-2 text-center flex flex-col justify-between min-h-[74px]">
         <div>
           <div class="text-[11px] font-bold text-emerald-300">TIE</div>
@@ -290,7 +204,6 @@
         </div>
         <div id="bet-tie" class="font-mono text-xs font-bold text-champagne-300 h-3.5"></div>
       </div>
-
       <div onclick="addBet('banker')" id="bet-card-banker" class="touch-btn cursor-pointer bg-side-banker/15 hover:bg-side-banker/25 border border-side-bankerBorder/40 rounded-xl p-2 text-center flex flex-col justify-between min-h-[74px]">
         <div>
           <div class="text-[11px] font-bold text-red-300">BANKER</div>
@@ -300,25 +213,22 @@
       </div>
     </section>
 
-    <!-- 5. 专业 Roadmap 路单系统 -->
-    <section class="bg-table-surface/80 border border-table-border rounded-xl p-2 shadow-sm space-y-1.5">
+    <!-- 专业五路路单 -->
+    <section class="bg-table-surface/80 border border-table-border rounded-xl p-2 space-y-1.5">
       <div class="flex items-center justify-between border-b border-white/5 pb-1 gap-1">
         <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-          <span class="text-[8px] font-mono font-bold text-champagne-400 uppercase tracking-widest mr-0.5">ROAD</span>
-          <button onclick="switchRoadTab('bead')" id="tab-bead" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400">珠盘</button>
+          <button onclick="switchRoadTab('bead')" id="tab-bead" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">珠盘</button>
           <button onclick="switchRoadTab('big')" id="tab-big" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono border bg-champagne-500/20 text-champagne-300 border-champagne-500/30 font-bold">大路</button>
-          <button onclick="switchRoadTab('bigEye')" id="tab-bigEye" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400">大眼</button>
-          <button onclick="switchRoadTab('small')" id="tab-small" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400">小路</button>
-          <button onclick="switchRoadTab('cockroach')" id="tab-cockroach" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400">曱甴</button>
+          <button onclick="switchRoadTab('bigEye')" id="tab-bigEye" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">大眼</button>
+          <button onclick="switchRoadTab('small')" id="tab-small" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">小路</button>
+          <button onclick="switchRoadTab('cockroach')" id="tab-cockroach" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">曱甴</button>
         </div>
-
         <div class="flex items-center gap-1 text-[8px] font-mono text-slate-400 shrink-0">
           <span>庄:<b id="stat-b" class="text-red-400">0</b></span>
           <span>闲:<b id="stat-p" class="text-blue-400">0</b></span>
           <span>和:<b id="stat-t" class="text-emerald-400">0</b></span>
         </div>
       </div>
-
       <div class="grid grid-cols-5 gap-1 text-[7px] font-mono bg-black/30 px-1.5 py-1 rounded-md border border-white/5 text-center text-slate-400">
         <div>连庄:<b id="streak-cur-b" class="text-red-300 font-bold ml-0.5">0</b></div>
         <div>连闲:<b id="streak-cur-p" class="text-blue-300 font-bold ml-0.5">0</b></div>
@@ -326,142 +236,64 @@
         <div>最长闲:<b id="streak-max-p" class="text-blue-400 font-bold ml-0.5">0</b></div>
         <div>和局:<b id="stat-tie-total" class="text-emerald-400 font-bold ml-0.5">0</b></div>
       </div>
-
       <div class="bg-black/40 rounded-lg p-1 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
         <div id="road-matrix-container" class="w-max min-w-full"></div>
       </div>
     </section>
 
-    <!-- 6. Chip Selection -->
+    <!-- 筹码选择 -->
     <section id="chip-selection-area" class="flex flex-col gap-0.5">
       <div class="flex items-center justify-between px-1 text-[8px] font-mono text-slate-400 uppercase">
-        <span>Chip Selection</span>
         <span>Selected: <b id="selected-chip-display" class="text-champagne-300 font-bold">$100</b></span>
       </div>
       <div class="grid grid-cols-4 gap-2">
-        <button onclick="pickChip(50, this)" class="chip-btn touch-btn relative h-9 rounded-full bg-emerald-900 border border-emerald-500/60 shadow-chip flex items-center justify-center font-mono font-bold text-xs text-emerald-100 disabled:opacity-30 disabled:pointer-events-none">
-          <span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">50</span>
-        </button>
-        <button onclick="pickChip(100, this)" class="chip-btn touch-btn relative h-9 rounded-full bg-blue-900 border border-blue-400/80 shadow-chip-active flex items-center justify-center font-mono font-bold text-xs text-blue-100 ring-2 ring-champagne-400 -translate-y-0.5 disabled:opacity-30 disabled:pointer-events-none">
-          <span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">100</span>
-        </button>
-        <button onclick="pickChip(500, this)" class="chip-btn touch-btn relative h-9 rounded-full bg-purple-950 border border-purple-400/70 shadow-chip flex items-center justify-center font-mono font-bold text-xs text-purple-100 disabled:opacity-30 disabled:pointer-events-none">
-          <span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">500</span>
-        </button>
-        <button onclick="pickChip(1000, this)" class="chip-btn touch-btn relative h-9 rounded-full bg-stone-900 border border-champagne-400/90 shadow-chip flex items-center justify-center font-mono font-black text-xs text-champagne-300 disabled:opacity-30 disabled:pointer-events-none">
-          <span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">1K</span>
-        </button>
+        <button onclick="pickChip(50, this)" class="chip-btn touch-btn h-9 rounded-full bg-emerald-900 border border-emerald-500/60 shadow-chip flex items-center justify-center font-mono font-bold text-xs"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">50</span></button>
+        <button onclick="pickChip(100, this)" class="chip-btn touch-btn h-9 rounded-full bg-blue-900 border border-blue-400/80 shadow-chip-active flex items-center justify-center font-mono font-bold text-xs ring-2 ring-champagne-400 -translate-y-0.5"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">100</span></button>
+        <button onclick="pickChip(500, this)" class="chip-btn touch-btn h-9 rounded-full bg-purple-950 border border-purple-400/70 shadow-chip flex items-center justify-center font-mono font-bold text-xs"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">500</span></button>
+        <button onclick="pickChip(1000, this)" class="chip-btn touch-btn h-9 rounded-full bg-stone-900 border border-champagne-400/90 shadow-chip flex items-center justify-center font-mono font-black text-xs text-champagne-300"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">1K</span></button>
       </div>
     </section>
 
-    <!-- 7. Game Controls -->
+    <!-- 控制按键 -->
     <footer class="grid grid-cols-4 gap-2 pt-0.5">
-      <button id="btn-clear" onclick="clearBets()" class="touch-btn col-span-1 py-2 bg-white/5 hover:bg-white/10 active:bg-black/30 border border-white/10 text-slate-300 text-xs font-bold rounded-xl disabled:opacity-30 disabled:pointer-events-none">
-        清除
-      </button>
-      <button id="deal-btn" onclick="dealRound()" class="touch-btn col-span-3 py-2 bg-gradient-to-r from-champagne-400 to-champagne-500 hover:brightness-105 active:shadow-btn-depress text-stone-950 font-black text-xs tracking-wider uppercase rounded-xl shadow-md disabled:opacity-30 disabled:pointer-events-none">
-        发牌 · DEAL
-      </button>
+      <button id="btn-clear" onclick="clearBets()" class="touch-btn col-span-1 py-2 bg-white/5 border border-white/10 text-slate-300 text-xs font-bold rounded-xl">清除</button>
+      <button id="deal-btn" onclick="dealRound()" class="touch-btn col-span-3 py-2 bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase rounded-xl">发牌 · DEAL</button>
     </footer>
-
   </main>
 
-  <!-- 8. SOPHIA 模态分析控制台 -->
+  <!-- 模态弹窗 -->
   <div id="ai-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-3">
-    <div class="bg-table-felt border border-champagne-500/40 rounded-2xl w-full max-w-md p-4 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto font-mono text-slate-200 text-xs">
-      
+    <div class="bg-table-felt border border-champagne-500/40 rounded-2xl w-full max-w-md p-4 shadow-2xl space-y-3 font-mono text-slate-200 text-xs">
       <div class="flex items-center justify-between border-b border-white/10 pb-2">
-        <div class="flex items-center gap-2">
-          <span class="text-champagne-400 font-black">Σ SOPHIA ANALYTICS CONSOLE</span>
-          <span class="text-[8px] px-1.5 py-0.2 rounded bg-champagne-500/20 text-champagne-300 border border-champagne-500/30">V9.0 FINAL</span>
-        </div>
-        <button onclick="closeAiTerminalModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+        <span class="text-champagne-400 font-black">Σ SOPHIA ANALYTICS CONSOLE</span>
+        <button onclick="closeAiTerminalModal()" class="text-slate-400 text-base">✕</button>
       </div>
-
-      <div class="space-y-2">
-        <div class="text-[10px] text-champagne-300 font-bold uppercase tracking-wider flex items-center justify-between">
-          <span>1. Sample Size & Distribution</span>
-          <span id="modal-sample-scope" class="text-slate-400 font-normal">Recent 20</span>
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="bg-black/50 p-2 rounded-xl border border-red-500/20">
+          <div class="text-[8px] text-red-400">BANKER (庄)</div>
+          <div id="modal-val-b" class="text-base font-bold text-red-300">0</div>
+          <div id="modal-pct-b" class="text-[9px] text-slate-400">0.0%</div>
         </div>
-
-        <div class="grid grid-cols-3 gap-2 text-center">
-          <div class="bg-black/50 p-2 rounded-xl border border-red-500/20">
-            <div class="text-[8px] text-red-400">BANKER (庄)</div>
-            <div id="modal-val-b" class="text-base font-bold text-red-300">0</div>
-            <div id="modal-pct-b" class="text-[9px] text-slate-400">0.0%</div>
-          </div>
-          <div class="bg-black/50 p-2 rounded-xl border border-blue-500/20">
-            <div class="text-[8px] text-blue-400">PLAYER (闲)</div>
-            <div id="modal-val-p" class="text-base font-bold text-blue-300">0</div>
-            <div id="modal-pct-p" class="text-[9px] text-slate-400">0.0%</div>
-          </div>
-          <div class="bg-black/50 p-2 rounded-xl border border-emerald-500/20">
-            <div class="text-[8px] text-emerald-400">TIE (和)</div>
-            <div id="modal-val-t" class="text-base font-bold text-emerald-300">0</div>
-            <div id="modal-pct-t" class="text-[9px] text-slate-400">0.0%</div>
-          </div>
+        <div class="bg-black/50 p-2 rounded-xl border border-blue-500/20">
+          <div class="text-[8px] text-blue-400">PLAYER (闲)</div>
+          <div id="modal-val-p" class="text-base font-bold text-blue-300">0</div>
+          <div id="modal-pct-p" class="text-[9px] text-slate-400">0.0%</div>
         </div>
-
-        <div class="w-full h-2 rounded-full overflow-hidden flex bg-slate-800">
-          <div id="modal-bar-b" class="bg-red-500 h-full transition-all duration-300" style="width: 33.3%;"></div>
-          <div id="modal-bar-p" class="bg-blue-500 h-full transition-all duration-300" style="width: 33.3%;"></div>
-          <div id="modal-bar-t" class="bg-emerald-500 h-full transition-all duration-300" style="width: 33.4%;"></div>
+        <div class="bg-black/50 p-2 rounded-xl border border-emerald-500/20">
+          <div class="text-[8px] text-emerald-400">TIE (和)</div>
+          <div id="modal-val-t" class="text-base font-bold text-emerald-300">0</div>
+          <div id="modal-pct-t" class="text-[9px] text-slate-400">0.0%</div>
         </div>
       </div>
-
-      <div class="space-y-1.5 pt-1">
-        <div class="text-[10px] text-champagne-300 font-bold uppercase tracking-wider">
-          2. Streak & Trend Indicators
-        </div>
-        <div class="bg-black/40 p-2.5 rounded-xl border border-white/5 space-y-1.5 text-[10px]">
-          <div class="flex justify-between">
-            <span class="text-slate-400">当前连续走势 (Current Streak):</span>
-            <span id="modal-streak-current" class="font-bold text-champagne-200">NONE</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">历史最长庄龙 (Max Banker Run):</span>
-            <span id="modal-streak-max-b" class="font-bold text-red-400">0 Hands</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">历史最长闲龙 (Max Player Run):</span>
-            <span id="modal-streak-max-p" class="font-bold text-blue-400">0 Hands</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">数据样本置信度 (Confidence):</span>
-            <span id="modal-conf-status" class="font-bold text-amber-300">LOW (Sample &lt; 10)</span>
-          </div>
-        </div>
+      <div class="w-full h-2 rounded-full overflow-hidden flex bg-slate-800">
+        <div id="modal-bar-b" class="bg-red-500 h-full" style="width: 33.3%;"></div>
+        <div id="modal-bar-p" class="bg-blue-500 h-full" style="width: 33.3%;"></div>
+        <div id="modal-bar-t" class="bg-emerald-500 h-full" style="width: 33.4%;"></div>
       </div>
-
-      <div class="space-y-1.5 pt-1">
-        <div class="text-[10px] text-champagne-300 font-bold uppercase tracking-wider">
-          3. Quant Model Insights
-        </div>
-        <div class="bg-black/50 p-2.5 rounded-xl border border-champagne-500/20 text-[10px] space-y-1 text-slate-300 leading-relaxed">
-          <div id="modal-strategy-insight" class="text-champagne-100">
-            • 样本处于初始积累阶段，方差较高。
-          </div>
-          <div id="modal-strategy-sub" class="text-slate-400 text-[9px]">
-            • 理论期望：标准 8 副牌庄家优势约 1.06%，闲家约 1.24%。建议维持平注模拟。
-          </div>
-        </div>
-      </div>
-
-      <div class="pt-2 border-t border-white/5 text-[8px] text-slate-500 leading-normal space-y-0.5">
-        <div>* 声明：本系统为纯数学概率与历史数据模拟工具。</div>
-        <div>* 严禁将数据统计理解为“确定性预测”，禁止诱导真实赌博。</div>
-      </div>
-
-      <button onclick="closeAiTerminalModal()" class="w-full py-2 bg-champagne-500 text-stone-950 font-black rounded-xl text-xs hover:bg-champagne-400 transition">
-        关闭分析终端
-      </button>
+      <button onclick="closeAiTerminalModal()" class="w-full py-2 bg-champagne-500 text-stone-950 font-black rounded-xl text-xs">关闭分析终端</button>
     </div>
   </div>
-
   <script>
-    // ----------------------------------------------------
-    // 原生音频引擎
-    // ----------------------------------------------------
     let audioCtx = null;
     let soundEnabled = true;
 
@@ -497,12 +329,8 @@
       document.getElementById('sound-btn').innerHTML = `<span class="text-xs">${soundEnabled ? '🔊' : '🔇'}</span>`;
     }
 
-    // ----------------------------------------------------
-    // 状态管理与数据持久化
-    // ----------------------------------------------------
     const SUITS = ['♠', '♥', '♣', '♦'];
     const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-    
     let bankroll = 50000;
     let selectedChip = 100;
     let bets = { player: 0, banker: 0, tie: 0 };
@@ -510,19 +338,19 @@
     let currentRoadTab = 'big';
     let isDealing = false;
     let currentAiScope = 20;
-    let lastActionTime = 0; // 防抖时间戳
+    let lastActionTime = 0;
 
     function saveGameState() {
       try {
-        localStorage.setItem('rb_bankroll', String(bankroll));
-        localStorage.setItem('rb_history', JSON.stringify(history));
+        localStorage.setItem('empress_bankroll', String(bankroll));
+        localStorage.setItem('empress_history', JSON.stringify(history));
       } catch (e) {}
     }
 
     function loadGameState() {
       try {
-        const savedBankroll = localStorage.getItem('rb_bankroll');
-        const savedHistory = localStorage.getItem('rb_history');
+        const savedBankroll = localStorage.getItem('empress_bankroll');
+        const savedHistory = localStorage.getItem('empress_history');
         if (savedBankroll !== null) {
           const parsed = parseInt(savedBankroll, 10);
           if (!isNaN(parsed) && parsed >= 0) bankroll = parsed;
@@ -533,9 +361,7 @@
             history = parsedArr.filter(x => x === 'banker' || x === 'player' || x === 'tie');
           }
         }
-      } catch (e) {
-        history = [];
-      }
+      } catch (e) { history = []; }
     }
 
     function createShoe() {
@@ -578,7 +404,7 @@
     function addBet(area) {
       if (isDealing) return;
       const now = Date.now();
-      if (now - lastActionTime < 60) return; // 60ms 物理防抖
+      if (now - lastActionTime < 60) return;
       lastActionTime = now;
 
       if (bankroll < selectedChip) {
@@ -655,49 +481,29 @@
 
     function setInteractionLock(locked) {
       isDealing = locked;
-      const betCards = document.querySelectorAll('#betting-area .touch-btn');
-      betCards.forEach(c => {
+      document.querySelectorAll('#betting-area .touch-btn').forEach(c => {
         if (locked) c.classList.add('pointer-events-none', 'opacity-80');
         else c.classList.remove('pointer-events-none', 'opacity-80');
       });
-      const dealBtn = document.getElementById('deal-btn');
-      if (dealBtn) dealBtn.disabled = locked;
-
-      const btnClear = document.getElementById('btn-clear');
-      if (btnClear) btnClear.disabled = locked;
-
-      const btnReset = document.getElementById('btn-reset');
-      if (btnReset) btnReset.disabled = locked;
-
-      const btnApply = document.getElementById('btn-ai-apply');
-      if (btnApply) btnApply.disabled = locked;
-
-      const btnAnalyze = document.getElementById('btn-ai-analyze');
-      if (btnAnalyze) btnAnalyze.disabled = locked;
-
-      const chips = document.querySelectorAll('#chip-selection-area .chip-btn');
-      chips.forEach(btn => btn.disabled = locked);
+      document.getElementById('deal-btn').disabled = locked;
+      document.getElementById('btn-clear').disabled = locked;
+      document.getElementById('btn-reset').disabled = locked;
+      document.getElementById('btn-ai-apply').disabled = locked;
+      document.getElementById('btn-ai-analyze').disabled = locked;
+      document.querySelectorAll('#chip-selection-area .chip-btn').forEach(btn => btn.disabled = locked);
     }
 
     const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    // ----------------------------------------------------
-    // 发牌流程（原子互斥与严格防重）
-    // ----------------------------------------------------
     async function dealRound() {
-      // 1. 同步原子互斥检查
       if (isDealing) return;
       const totalBet = bets.player + bets.banker + bets.tie;
       if (totalBet === 0) return;
 
-      // 立即同步上锁
       setInteractionLock(true);
 
       const banner = document.getElementById('result-banner');
-      if (banner) {
-        banner.classList.add('hidden');
-        banner.classList.remove('banner-anim');
-      }
+      if (banner) banner.classList.add('hidden');
 
       const pTray = document.getElementById('player-cards');
       const bTray = document.getElementById('banker-cards');
@@ -784,16 +590,12 @@
       else if (bScore > pScore) winner = 'banker';
 
       let winAmt = 0;
-      if (winner === 'player') {
-        winAmt += bets.player * 2;
-      } else if (winner === 'banker') {
-        winAmt += Math.floor(bets.banker * 1.95);
-      } else {
-        winAmt += bets.player + bets.banker + (bets.tie * 9);
-      }
+      if (winner === 'player') winAmt += bets.player * 2;
+      else if (winner === 'banker') winAmt += Math.floor(bets.banker * 1.95);
+      else winAmt += bets.player + bets.banker + (bets.tie * 9);
 
       if (banner) {
-        banner.className = 'px-3 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wider text-slate-100 border shadow-sm banner-anim';
+        banner.className = 'px-3 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wider text-slate-100 border shadow-sm';
         if (winner === 'player') {
           banner.classList.add('bg-blue-950/85', 'border-blue-500/60');
           banner.innerHTML = `PLAYER WINS <span class="text-champagne-300 font-bold ml-1">${pScore} — ${bScore}</span>`;
@@ -820,23 +622,16 @@
       updateRoad();
       updateAiAnalytics();
       updateUI();
-
       setInteractionLock(false);
     }
 
-    // ----------------------------------------------------
-    // SOPHIA AI ANALYTICS 计算
-    // ----------------------------------------------------
     function changeAiScope(scope) {
       currentAiScope = scope;
       ['10', '20', '50', 'all'].forEach(s => {
         const btn = document.getElementById(`scope-btn-${s}`);
         if (btn) {
-          if (s == scope) {
-            btn.className = 'px-1.5 py-0.5 rounded text-[8px] font-mono bg-champagne-500/20 text-champagne-300 font-bold border border-champagne-500/40';
-          } else {
-            btn.className = 'px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400';
-          }
+          if (s == scope) btn.className = 'px-1.5 py-0.5 rounded text-[8px] font-mono bg-champagne-500/20 text-champagne-300 font-bold border border-champagne-500/40';
+          else btn.className = 'px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400';
         }
       });
       updateAiAnalytics();
@@ -844,9 +639,7 @@
 
     function getSliceHistory(scope) {
       if (!Array.isArray(history)) return [];
-      if (scope === 'all' || history.length <= scope) {
-        return history.slice();
-      }
+      if (scope === 'all' || history.length <= scope) return history.slice();
       return history.slice(history.length - scope);
     }
 
@@ -907,23 +700,15 @@
             break;
           }
         }
-        if (lastWinner) {
-          curStreakText = `${lastWinner === 'banker' ? 'BANKER' : 'PLAYER'} × ${streak}`;
-        }
+        if (lastWinner) curStreakText = `${lastWinner === 'banker' ? 'BANKER' : 'PLAYER'} × ${streak}`;
       }
-      const streakDisp = document.getElementById('ai-streak-display');
-      if (streakDisp) streakDisp.innerText = curStreakText;
-      const sampleDisp = document.getElementById('ai-sample-display');
-      if (sampleDisp) sampleDisp.innerText = stats.len;
+      document.getElementById('ai-streak-display').innerText = curStreakText;
     }
 
     function openAiTerminalModal() {
       playTone(500, 0.05);
       const slice = getSliceHistory(currentAiScope);
       const stats = calculateScopeStats(slice);
-
-      document.getElementById('modal-sample-scope').innerText = 
-        currentAiScope === 'all' ? `All ${stats.len} Hands` : `Recent ${stats.len} / ${currentAiScope}`;
 
       document.getElementById('modal-val-b').innerText = stats.b;
       document.getElementById('modal-pct-b').innerText = `${stats.pctB}%`;
@@ -935,32 +720,6 @@
       document.getElementById('modal-bar-b').style.width = `${stats.pctB}%`;
       document.getElementById('modal-bar-p').style.width = `${stats.pctP}%`;
       document.getElementById('modal-bar-t').style.width = `${stats.pctT}%`;
-
-      const curStreak = document.getElementById('ai-streak-display').innerText;
-      document.getElementById('modal-streak-current').innerText = curStreak;
-      document.getElementById('modal-streak-max-b').innerText = `${document.getElementById('streak-max-b').innerText} Hands`;
-      document.getElementById('modal-streak-max-p').innerText = `${document.getElementById('streak-max-p').innerText} Hands`;
-
-      const confText = stats.len < 10 
-        ? 'LOW (Sample < 10, 高方差状态)' 
-        : (stats.len < 30 ? 'MODERATE (10-29 局，局部均值聚集)' : 'HIGH (≥30 局，趋向理论大数概率)');
-      document.getElementById('modal-conf-status').innerText = confText;
-
-      const insightEl = document.getElementById('modal-strategy-insight');
-      const subEl = document.getElementById('modal-strategy-sub');
-      if (stats.len === 0) {
-        insightEl.innerText = '• 当前牌靴尚无有效样本，等待至少 1 局数据录入。';
-        subEl.innerText = '• 初始概率基准：标准百家乐闲胜率 44.62%，庄胜率 45.86%，和率 9.52%。';
-      } else if (stats.b > stats.p) {
-        insightEl.innerText = `• 统计特征：选定时段庄家占比偏高 (${stats.pctB}%)，呈现轻微正偏离。`;
-        subEl.innerText = '• 理论提示：独立试炼事件中，庄家免佣/抽佣机制下期望收益恒定。建议维持平注防守。';
-      } else if (stats.p > stats.b) {
-        insightEl.innerText = `• 统计特征：选定时段闲家占比偏高 (${stats.pctP}%)，偏离理论基准线。`;
-        subEl.innerText = '• 理论提示：样本方差在小样本下极易产生波幅，不构成下一手因果预测。';
-      } else {
-        insightEl.innerText = '• 统计特征：庄闲比例完全对称均等，方差收敛平稳。';
-        subEl.innerText = '• 理论提示：平注模拟是验证大数法则最佳模型。';
-      }
 
       const modal = document.getElementById('ai-modal');
       modal.classList.remove('hidden');
@@ -978,14 +737,7 @@
       clearBets();
       const slice = getSliceHistory(currentAiScope);
       const stats = calculateScopeStats(slice);
-      
-      let pick = 'banker';
-      if (stats.len > 0) {
-        pick = stats.b >= stats.p ? 'banker' : 'player';
-      } else {
-        pick = Math.random() > 0.48 ? 'banker' : 'player';
-      }
-
+      let pick = (stats.len > 0 && stats.b >= stats.p) ? 'banker' : 'player';
       const amt = Math.min(bankroll, 500);
       if (amt <= 0) return;
       bankroll -= amt;
@@ -994,20 +746,13 @@
       updateUI();
     }
 
-    // ----------------------------------------------------
-    // 五路路单算法
-    // ----------------------------------------------------
     function switchRoadTab(tab) {
       currentRoadTab = tab;
-      const tabs = ['bead', 'big', 'bigEye', 'small', 'cockroach'];
-      tabs.forEach(t => {
+      ['bead', 'big', 'bigEye', 'small', 'cockroach'].forEach(t => {
         const el = document.getElementById('tab-' + t);
         if (el) {
-          if (t === tab) {
-            el.className = 'touch-btn px-1 py-0.5 rounded text-[8px] font-mono border bg-champagne-500/20 text-champagne-300 border-champagne-500/30 font-bold';
-          } else {
-            el.className = 'touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400';
-          }
+          if (t === tab) el.className = 'touch-btn px-1 py-0.5 rounded text-[8px] font-mono border bg-champagne-500/20 text-champagne-300 border-champagne-500/30 font-bold';
+          else el.className = 'touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400';
         }
       });
       renderActiveRoad();
@@ -1016,7 +761,6 @@
     function getBigRoadLogicalColumns() {
       const logicalColumns = [];
       let currentCol = null;
-
       for (const item of history) {
         if (item === 'tie') {
           if (!currentCol) {
@@ -1064,53 +808,6 @@
       return { grid, maxCol };
     }
 
-    function deriveDownroadMarkers(logicalColumns, k) {
-      const derived = [];
-      const validCols = logicalColumns.filter(c => c.winner === 'banker' || c.winner === 'player');
-      for (let i = 1; i < validCols.length; i++) {
-        const curCol = validCols[i];
-        const prevColIndex = i - k;
-        if (prevColIndex < 0) continue;
-        for (let j = 0; j < curCol.count; j++) {
-          if (j === 0) {
-            const compA = validCols[i - 1].count;
-            const compB = validCols[i - 1 - k] ? validCols[i - 1 - k].count : 0;
-            derived.push(compA === compB ? 'red' : 'blue');
-          } else {
-            const refCol = validCols[prevColIndex];
-            derived.push(refCol && refCol.count >= (j + 1) ? 'red' : 'blue');
-          }
-        }
-      }
-      return derived;
-    }
-
-    function buildDerivedGrid(markerList) {
-      const grid = {};
-      let maxCol = 22;
-      let c = 0, r = 0;
-      let lastMarker = null;
-
-      for (const m of markerList) {
-        if (lastMarker === null) {
-          grid[`0,0`] = m;
-          lastMarker = m;
-        } else if (m === lastMarker) {
-          if (r + 1 < 6 && !grid[`${r + 1},${c}`]) r++; else c++;
-          grid[`${r},${c}`] = m;
-        } else {
-          let nextCol = 0;
-          while (grid[`0,${nextCol}`]) nextCol++;
-          c = nextCol;
-          r = 0;
-          grid[`${r},${c}`] = m;
-          lastMarker = m;
-        }
-        if (c >= maxCol) maxCol = c + 4;
-      }
-      return { grid, maxCol };
-    }
-
     function renderActiveRoad() {
       const container = document.getElementById('road-matrix-container');
       if (!container) return;
@@ -1128,7 +825,7 @@
               let bg = 'bg-red-600', txt = '庄';
               if (res === 'player') { bg = 'bg-blue-600'; txt = '闲'; }
               else if (res === 'tie') { bg = 'bg-emerald-600'; txt = '和'; }
-              html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-bold text-white shadow-sm leading-none">${txt}</div></div>`;
+              html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-bold text-white leading-none">${txt}</div></div>`;
             } else {
               html += `<div class="road-cell"></div>`;
             }
@@ -1136,8 +833,7 @@
         }
         html += '</div>';
         container.innerHTML = html;
-
-      } else if (currentRoadTab === 'big') {
+      } else {
         const { grid, maxCol } = buildBigRoadGrid(logical);
         let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${maxCol}, 14px);">`;
         for (let c = 0; c < maxCol; c++) {
@@ -1155,40 +851,11 @@
         }
         html += '</div>';
         container.innerHTML = html;
-
-      } else {
-        let k = 1, symbolType = 'circle';
-        if (currentRoadTab === 'small') { k = 2; symbolType = 'dot'; }
-        if (currentRoadTab === 'cockroach') { k = 3; symbolType = 'slash'; }
-
-        const markers = deriveDownroadMarkers(logical, k);
-        const { grid, maxCol } = buildDerivedGrid(markers);
-        let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${maxCol}, 14px);">`;
-        for (let c = 0; c < maxCol; c++) {
-          for (let r = 0; r < 6; r++) {
-            const color = grid[`${r},${c}`];
-            if (color) {
-              let markerEl = '';
-              if (symbolType === 'circle') markerEl = `<div class="w-2 h-2 rounded-full border ${color === 'red' ? 'border-red-500' : 'border-blue-500'}"></div>`;
-              else if (symbolType === 'dot') markerEl = `<div class="w-1.5 h-1.5 rounded-full ${color === 'red' ? 'bg-red-500' : 'bg-blue-500'}"></div>`;
-              else markerEl = `<div class="w-2.5 h-[1.5px] rotate-45 ${color === 'red' ? 'bg-red-500' : 'bg-blue-500'}"></div>`;
-              html += `<div class="road-cell">${markerEl}</div>`;
-            } else {
-              html += `<div class="road-cell"></div>`;
-            }
-          }
-        }
-        html += '</div>';
-        container.innerHTML = html;
       }
-
       const vp = document.getElementById('road-viewport');
       if (vp) vp.scrollLeft = vp.scrollWidth;
     }
 
-    // ----------------------------------------------------
-    // 连续走势与胜率更新
-    // ----------------------------------------------------
     function updateRoad() {
       let bCount = 0, pCount = 0, tCount = 0;
       let curB = 0, curP = 0, maxB = 0, maxP = 0;
@@ -1235,7 +902,6 @@
 
     function updateUI() {
       document.getElementById('bankroll-val').innerText = '$' + bankroll.toLocaleString();
-      
       const pVal = bets.player;
       const bVal = bets.banker;
       const tVal = bets.tie;
@@ -1259,7 +925,6 @@
       }
     }
 
-    // 页面加载启动
     window.addEventListener('DOMContentLoaded', () => {
       loadGameState();
       updateRoad();
