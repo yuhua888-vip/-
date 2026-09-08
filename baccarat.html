@@ -10,18 +10,45 @@
       theme: {
         extend: {
           colors: {
-            table: { base: '#071610', felt: '#0a2318', surface: '#0d2d20', border: '#15402f' },
-            champagne: { 100: '#f9f5ea', 200: '#eddcb5', 300: '#ddc285', 400: '#c5a359', 500: '#a68238' },
-            side: { player: '#1e3a8a', playerBorder: '#2563eb', banker: '#7f1d1d', bankerBorder: '#dc2626', tie: '#064e3b', tieBorder: '#059669' }
+            obsidian: {
+              base: '#08080a',
+              card: 'rgba(18, 20, 28, 0.65)',
+              surface: 'rgba(26, 30, 42, 0.55)',
+              border: 'rgba(212, 175, 55, 0.16)'
+            },
+            champagne: {
+              100: '#fbf7ee',
+              200: '#f3e5c8',
+              300: '#e5cc94',
+              400: '#d4af37',
+              500: '#aa8820',
+              600: '#755b11'
+            },
+            glacier: {
+              DEFAULT: '#38bdf8',
+              border: 'rgba(56, 189, 248, 0.4)',
+              surface: 'rgba(14, 38, 64, 0.45)'
+            },
+            neonRed: {
+              DEFAULT: '#f43f5e',
+              border: 'rgba(244, 63, 94, 0.4)',
+              surface: 'rgba(64, 18, 28, 0.45)'
+            },
+            neonEmerald: {
+              DEFAULT: '#10b981',
+              border: 'rgba(16, 185, 129, 0.4)',
+              surface: 'rgba(12, 45, 32, 0.45)'
+            }
           },
           fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'sans-serif'],
-            mono: ['"SF Mono"', 'Menlo', 'monospace']
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'sans-serif'],
+            mono: ['"SF Mono"', 'Menlo', 'Monaco', 'monospace']
           },
           boxShadow: {
-            'card': '0 4px 12px rgba(0, 0, 0, 0.4)',
-            'chip': '0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25)',
-            'chip-active': '0 6px 14px rgba(197, 163, 89, 0.35)'
+            'ios-glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
+            'deal-glow': '0 0 24px rgba(212, 175, 55, 0.45), 0 4px 12px rgba(0, 0, 0, 0.5)',
+            'chip-glow': '0 0 16px rgba(212, 175, 55, 0.35)',
+            'card-glass': '0 10px 25px -5px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1)'
           }
         }
       }
@@ -40,17 +67,36 @@
     }
     body {
       padding-top: var(--safe-top);
-      padding-bottom: var(--safe-bottom);
-      background-color: #071610;
-      background-image: radial-gradient(circle at 50% 18%, rgba(13, 45, 32, 0.85) 0%, rgba(7, 22, 16, 0.98) 70%, #030a07 100%);
+      padding-bottom: calc(var(--safe-bottom) + 10px);
+      background-color: #08080a;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(26, 32, 50, 0.75) 0%, rgba(14, 16, 24, 0.95) 55%, #08080a 100%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 32px;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+    /* 苹果级超透毛玻璃规范 */
+    .glass-panel {
+      background: rgba(18, 20, 28, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(212, 175, 55, 0.18);
+    }
+    .glass-surface {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* 纸牌 3D 翻牌动画 */
     .card-container {
       perspective: 800px;
       width: 3.5rem;
       height: 5rem;
+      will-change: transform, opacity;
     }
     .card-flipper {
       position: relative;
@@ -65,233 +111,267 @@
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      border-radius: 0.5rem;
+      border-radius: 0.6rem;
     }
     .card-front {
       transform: rotateY(180deg);
-      background: #f8fafc;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.8);
     }
     .card-back {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid rgba(212, 175, 55, 0.4);
+      background: linear-gradient(135deg, #11141f 0%, #090a0f 100%);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.15);
     }
+
     @keyframes dealSlideIn {
       0% { opacity: 0; transform: translate3d(0, -28px, 0) scale(0.9); }
       100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
     .card-deal-anim { animation: dealSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .touch-btn { transition: all 0.2s ease; }
-    .touch-btn:active:not(:disabled) { transform: scale(0.97); }
+
+    /* 发牌主按钮金色呼吸流光动效 */
+    @keyframes goldPulse {
+      0%, 100% { box-shadow: 0 0 16px rgba(212, 175, 55, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5); }
+      50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.8); }
+    }
+    .deal-pulse { animation: goldPulse 3.2s infinite ease-in-out; }
+
+    /* 触觉微反馈动效 */
+    .touch-btn {
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s ease, background 0.15s ease;
+    }
+    .touch-btn:active:not(:disabled) {
+      transform: scale(0.94);
+    }
+    .chip-click-fx {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .chip-click-fx:active:not(:disabled) {
+      transform: scale(0.88);
+    }
+
     .chip-rim { border: 2px dashed rgba(255, 255, 255, 0.35); }
+    
+    /* 极淡路单线条与通透高密度网格 */
     .road-cell {
       width: 14px;
       height: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.25);
-      border-right: 1px solid rgba(255, 255, 255, 0.05);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.015);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
   </style>
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col font-sans select-none overflow-x-hidden antialiased">
 
-  <!-- 顶部导航与资金卡 -->
-  <header class="w-full max-w-lg mx-auto px-4 pt-3 pb-2 flex items-center justify-between border-b border-table-border/60">
+  <!-- 1. 顶部 Header (增加 Padding 与呼吸留白，高级资金信息卡) -->
+  <header class="w-full max-w-lg mx-auto px-4 pt-4 pb-3 flex items-center justify-between border-b border-champagne-400/15">
     <div>
-      <div class="text-[13px] font-black tracking-[0.18em] text-champagne-300">
-        皇后娱乐 · EMPRESS ROYALE <span class="text-[10px] text-champagne-500 font-normal">VIP</span>
+      <div class="text-sm font-black tracking-[0.2em] bg-gradient-to-r from-champagne-100 via-champagne-300 to-champagne-400 bg-clip-text text-transparent">
+        皇后娱乐 · EMPRESS ROYALE <span class="text-[9px] font-mono tracking-widest text-champagne-400 font-semibold ml-0.5 border border-champagne-400/30 px-1 py-0.2 rounded-full">VIP</span>
       </div>
-      <div class="text-[8px] font-mono tracking-wider text-slate-400 uppercase">
+      <div class="text-[8px] font-mono tracking-widest text-slate-400 uppercase mt-0.5">
         8 Card · International Standard Punto Banco
       </div>
     </div>
-    <div class="flex items-center gap-2">
-      <div class="bg-black/45 border border-champagne-500/35 rounded-xl px-2.5 py-1 text-right">
-        <div class="text-[8px] font-mono tracking-widest text-slate-400 uppercase leading-none">Balance</div>
-        <div id="bankroll-val" class="font-mono font-bold text-champagne-300 text-sm leading-tight">$50,000</div>
+    <div class="flex items-center gap-2.5">
+      <div class="glass-surface rounded-2xl px-3 py-1.5 text-right shadow-card-glass">
+        <div class="text-[7px] font-mono tracking-widest text-champagne-400/80 uppercase leading-none mb-0.5">Balance</div>
+        <div id="bankroll-val" class="font-mono font-black text-champagne-300 text-base leading-tight tracking-tight">$50,000</div>
       </div>
-      <div class="flex items-center gap-1">
-        <button id="btn-reset" onclick="resetBankroll()" class="touch-btn p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-slate-300">↺</button>
-        <button onclick="toggleAudio()" id="sound-btn" class="touch-btn p-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-champagne-400/40 text-slate-300">🔊</button>
+      <div class="flex items-center gap-1.5">
+        <button id="btn-reset" onclick="resetBankroll()" class="touch-btn p-2 rounded-xl glass-surface hover:border-champagne-400/40 text-slate-300 hover:text-champagne-300 transition-colors" title="重置体验金">↺</button>
+        <button onclick="toggleAudio()" id="sound-btn" class="touch-btn p-2 rounded-xl glass-surface hover:border-champagne-400/40 text-slate-300 hover:text-champagne-300 transition-colors" title="静音开关">🔊</button>
       </div>
     </div>
   </header>
 
-  <main class="w-full max-w-lg mx-auto px-3 flex-1 flex flex-col justify-between space-y-2 pt-1.5 pb-2">
-    <!-- SOPHIA AI 数据分析舱 -->
-    <section class="bg-table-surface/90 border border-table-border rounded-xl p-2.5 space-y-2">
-      <div class="flex items-center justify-between border-b border-white/5 pb-1.5">
-        <div class="flex items-center gap-1.5">
-          <div class="w-5 h-5 rounded-md bg-champagne-500/20 border border-champagne-400/40 flex items-center justify-center text-champagne-300 font-mono text-[9px] font-extrabold">Σ</div>
-          <span class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</span>
+  <main class="w-full max-w-lg mx-auto px-3.5 flex-1 flex flex-col justify-between space-y-2.5 pt-2 pb-3">
+    
+    <!-- 2. SOPHIA AI 数据分析舱 (iOS 毛玻璃极简终端) -->
+    <section class="glass-panel rounded-2xl p-3 shadow-ios-glass space-y-2.5">
+      <div class="flex items-center justify-between border-b border-white/5 pb-2">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-lg bg-champagne-400/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 font-mono text-[10px] font-extrabold shadow-sm">Σ</div>
+          <div>
+            <div class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</div>
+            <div class="text-[7px] font-mono text-slate-400">QUANTITATIVE HISTORICAL ENGINE</div>
+          </div>
         </div>
-        <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg border border-white/5">
-          <button onclick="changeAiScope(10)" id="scope-btn-10" class="px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400">10H</button>
-          <button onclick="changeAiScope(20)" id="scope-btn-20" class="px-1.5 py-0.5 rounded text-[8px] font-mono bg-champagne-500/20 text-champagne-300 font-bold border border-champagne-500/40">20H</button>
-          <button onclick="changeAiScope(50)" id="scope-btn-50" class="px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400">50H</button>
-          <button onclick="changeAiScope('all')" id="scope-btn-all" class="px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400">ALL</button>
-        </div>
-      </div>
-      <div class="grid grid-cols-4 gap-1.5 text-center font-mono">
-        <div class="bg-black/35 p-1 rounded-lg border border-white/5">
-          <div class="text-[7px] text-slate-400 uppercase">Banker</div>
-          <div id="ai-tile-b" class="text-[10px] font-extrabold text-red-400 mt-0.5">0 (0%)</div>
-        </div>
-        <div class="bg-black/35 p-1 rounded-lg border border-white/5">
-          <div class="text-[7px] text-slate-400 uppercase">Player</div>
-          <div id="ai-tile-p" class="text-[10px] font-extrabold text-blue-400 mt-0.5">0 (0%)</div>
-        </div>
-        <div class="bg-black/35 p-1 rounded-lg border border-white/5">
-          <div class="text-[7px] text-slate-400 uppercase">Tie</div>
-          <div id="ai-tile-t" class="text-[10px] font-extrabold text-emerald-400 mt-0.5">0 (0%)</div>
-        </div>
-        <div class="bg-black/35 p-1 rounded-lg border border-white/5">
-          <div class="text-[7px] text-slate-400 uppercase">Data Conf.</div>
-          <div id="ai-tile-conf" class="text-[9px] font-extrabold text-amber-400 mt-0.5">LOW</div>
+        <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded-xl border border-white/5">
+          <button onclick="changeAiScope(10)" id="scope-btn-10" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400 transition-all">10H</button>
+          <button onclick="changeAiScope(20)" id="scope-btn-20" class="px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 font-bold border border-champagne-400/40 shadow-sm transition-all">20H</button>
+          <button onclick="changeAiScope(50)" id="scope-btn-50" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400 transition-all">50H</button>
+          <button onclick="changeAiScope('all')" id="scope-btn-all" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400 transition-all">ALL</button>
         </div>
       </div>
+
+      <div class="grid grid-cols-4 gap-2 text-center font-mono">
+        <div class="glass-surface p-1.5 rounded-xl">
+          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Banker</div>
+          <div id="ai-tile-b" class="text-[11px] font-black text-neonRed mt-0.5">0 (0%)</div>
+        </div>
+        <div class="glass-surface p-1.5 rounded-xl">
+          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Player</div>
+          <div id="ai-tile-p" class="text-[11px] font-black text-glacier mt-0.5">0 (0%)</div>
+        </div>
+        <div class="glass-surface p-1.5 rounded-xl">
+          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Tie</div>
+          <div id="ai-tile-t" class="text-[11px] font-black text-neonEmerald mt-0.5">0 (0%)</div>
+        </div>
+        <div class="glass-surface p-1.5 rounded-xl">
+          <div class="text-[7px] text-slate-400 uppercase tracking-wider">Data Conf.</div>
+          <div id="ai-tile-conf" class="text-[9px] font-black text-champagne-400 mt-0.5">LOW</div>
+        </div>
+      </div>
+
       <div class="flex items-center justify-between pt-0.5">
-        <div class="text-[8px] text-slate-300 font-mono">Streak: <b id="ai-streak-display" class="text-champagne-300">NONE</b></div>
+        <div class="text-[8px] text-slate-300 font-mono">Streak: <b id="ai-streak-display" class="text-champagne-300 font-black">NONE</b></div>
         <div class="flex items-center gap-1.5">
-          <button id="btn-ai-analyze" onclick="openAiTerminalModal()" class="touch-btn px-2 py-0.5 rounded-lg bg-champagne-500/20 border border-champagne-400/50 text-[9px] font-mono font-bold text-champagne-200">📊 ANALYZE</button>
-          <button id="btn-ai-apply" onclick="applyAiBet()" class="touch-btn px-2 py-0.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-mono text-slate-300">模拟布码</button>
+          <button id="btn-ai-analyze" onclick="openAiTerminalModal()" class="touch-btn px-2.5 py-1 rounded-xl bg-champagne-400/15 border border-champagne-400/40 text-[9px] font-mono font-bold text-champagne-200 hover:bg-champagne-400/25">📊 ANALYZE</button>
+          <button id="btn-ai-apply" onclick="applyAiBet()" class="touch-btn px-2.5 py-1 rounded-xl glass-surface hover:border-champagne-400/40 text-[9px] font-mono text-slate-200">模拟布码</button>
         </div>
       </div>
     </section>
 
-    <!-- 牌桌区域 -->
-    <section class="relative bg-table-felt border border-table-border rounded-2xl p-2.5 shadow-card min-h-[165px] flex flex-col justify-between">
-      <div class="grid grid-cols-2 gap-2 relative z-10">
+    <!-- 3. Baccarat Table (深藏青曜石拟态桌面，极简无边框通透感) -->
+    <section class="relative glass-panel rounded-3xl p-3 shadow-ios-glass min-h-[172px] flex flex-col justify-between overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-900/30 to-black/60 pointer-events-none"></div>
+      
+      <div class="grid grid-cols-2 gap-3 relative z-10">
         <div class="flex flex-col items-center">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-[10px] font-bold text-blue-300">PLAYER</span>
-            <span id="player-score" class="w-5 h-5 rounded bg-blue-950/80 border border-blue-500/40 flex items-center justify-center font-mono font-bold text-[10px] text-blue-200">-</span>
+          <div class="flex items-center gap-1.5 mb-2">
+            <span class="text-[10px] font-black tracking-widest text-glacier">PLAYER</span>
+            <span id="player-score" class="w-5 h-5 rounded-full bg-glacier-surface border border-glacier-border flex items-center justify-center font-mono font-black text-[10px] text-glacier shadow-sm">-</span>
           </div>
-          <div id="player-cards" class="flex gap-1.5 min-h-[80px] items-center justify-center">
-            <div class="w-14 h-20 rounded-lg border border-dashed border-blue-400/20 bg-blue-950/10 flex items-center justify-center text-[9px] text-blue-400/30">闲牌区</div>
+          <div id="player-cards" class="flex gap-1.5 min-h-[82px] items-center justify-center">
+            <div class="w-14 h-20 rounded-xl border border-dashed border-glacier/30 bg-glacier/5 flex items-center justify-center text-[9px] font-mono text-glacier/40">闲牌区</div>
           </div>
         </div>
         <div class="flex flex-col items-center">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span id="banker-score" class="w-5 h-5 rounded bg-red-950/80 border border-red-500/40 flex items-center justify-center font-mono font-bold text-[10px] text-red-200">-</span>
-            <span class="text-[10px] font-bold text-red-300">BANKER</span>
+          <div class="flex items-center gap-1.5 mb-2">
+            <span id="banker-score" class="w-5 h-5 rounded-full bg-neonRed-surface border border-neonRed-border flex items-center justify-center font-mono font-black text-[10px] text-neonRed shadow-sm">-</span>
+            <span class="text-[10px] font-black tracking-widest text-neonRed">BANKER</span>
           </div>
-          <div id="banker-cards" class="flex gap-1.5 min-h-[80px] items-center justify-center">
-            <div class="w-14 h-20 rounded-lg border border-dashed border-red-400/20 bg-red-950/10 flex items-center justify-center text-[9px] text-red-400/30">庄牌区</div>
+          <div id="banker-cards" class="flex gap-1.5 min-h-[82px] items-center justify-center">
+            <div class="w-14 h-20 rounded-xl border border-dashed border-neonRed/30 bg-neonRed/5 flex items-center justify-center text-[9px] font-mono text-neonRed/40">庄牌区</div>
           </div>
         </div>
       </div>
-      <div class="h-5 flex items-center justify-center mt-1">
-        <div id="result-banner" class="hidden px-3 py-0.5 rounded-full text-[10px] font-mono font-semibold text-slate-100 border"></div>
+      <div class="h-6 flex items-center justify-center mt-1 relative z-10">
+        <div id="result-banner" class="hidden px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider text-slate-100 border shadow-lg backdrop-blur-xl"></div>
       </div>
     </section>
 
-    <!-- 下注区域 -->
-    <section id="betting-area" class="grid grid-cols-3 gap-2">
-      <div onclick="addBet('player')" id="bet-card-player" class="touch-btn cursor-pointer bg-side-player/15 hover:bg-side-player/25 border border-side-playerBorder/40 rounded-xl p-2 text-center flex flex-col justify-between min-h-[74px]">
+    <!-- 4. Betting Area (通透霓虹红蓝绿下注区，精致高光边框) -->
+    <section id="betting-area" class="grid grid-cols-3 gap-2.5">
+      <div onclick="addBet('player')" id="bet-card-player" class="touch-btn cursor-pointer bg-glacier-surface hover:bg-glacier-surface/80 border border-glacier-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[76px] shadow-sm">
         <div>
-          <div class="text-[11px] font-bold text-blue-300">PLAYER</div>
+          <div class="text-[11px] font-black text-glacier tracking-wider">PLAYER</div>
           <div class="text-[8px] font-mono text-slate-400">1:1</div>
         </div>
-        <div id="bet-player" class="font-mono text-xs font-bold text-champagne-300 h-3.5"></div>
+        <div id="bet-player" class="font-mono text-xs font-black text-champagne-300 h-4"></div>
       </div>
-      <div onclick="addBet('tie')" id="bet-card-tie" class="touch-btn cursor-pointer bg-side-tie/15 hover:bg-side-tie/25 border border-side-tieBorder/40 rounded-xl p-2 text-center flex flex-col justify-between min-h-[74px]">
+      <div onclick="addBet('tie')" id="bet-card-tie" class="touch-btn cursor-pointer bg-neonEmerald-surface hover:bg-neonEmerald-surface/80 border border-neonEmerald-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[76px] shadow-sm">
         <div>
-          <div class="text-[11px] font-bold text-emerald-300">TIE</div>
+          <div class="text-[11px] font-black text-neonEmerald tracking-wider">TIE</div>
           <div class="text-[8px] font-mono text-slate-400">1:8</div>
         </div>
-        <div id="bet-tie" class="font-mono text-xs font-bold text-champagne-300 h-3.5"></div>
+        <div id="bet-tie" class="font-mono text-xs font-black text-champagne-300 h-4"></div>
       </div>
-      <div onclick="addBet('banker')" id="bet-card-banker" class="touch-btn cursor-pointer bg-side-banker/15 hover:bg-side-banker/25 border border-side-bankerBorder/40 rounded-xl p-2 text-center flex flex-col justify-between min-h-[74px]">
+      <div onclick="addBet('banker')" id="bet-card-banker" class="touch-btn cursor-pointer bg-neonRed-surface hover:bg-neonRed-surface/80 border border-neonRed-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[76px] shadow-sm">
         <div>
-          <div class="text-[11px] font-bold text-red-300">BANKER</div>
+          <div class="text-[11px] font-black text-neonRed tracking-wider">BANKER</div>
           <div class="text-[8px] font-mono text-slate-400">1:0.95</div>
         </div>
-        <div id="bet-banker" class="font-mono text-xs font-bold text-champagne-300 h-3.5"></div>
+        <div id="bet-banker" class="font-mono text-xs font-black text-champagne-300 h-4"></div>
       </div>
     </section>
 
-    <!-- 专业五路路单 -->
-    <section class="bg-table-surface/80 border border-table-border rounded-xl p-2 space-y-1.5">
+    <!-- 5. 专业 Roadmap 路单 (高密度通透网格) -->
+    <section class="glass-panel rounded-2xl p-2.5 shadow-ios-glass space-y-1.5">
       <div class="flex items-center justify-between border-b border-white/5 pb-1 gap-1">
         <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-          <button onclick="switchRoadTab('bead')" id="tab-bead" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">珠盘</button>
-          <button onclick="switchRoadTab('big')" id="tab-big" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono border bg-champagne-500/20 text-champagne-300 border-champagne-500/30 font-bold">大路</button>
-          <button onclick="switchRoadTab('bigEye')" id="tab-bigEye" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">大眼</button>
-          <button onclick="switchRoadTab('small')" id="tab-small" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">小路</button>
-          <button onclick="switchRoadTab('cockroach')" id="tab-cockroach" class="touch-btn px-1 py-0.5 rounded text-[8px] font-mono text-slate-400">曱甴</button>
+          <button onclick="switchRoadTab('bead')" id="tab-bead" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">珠盘</button>
+          <button onclick="switchRoadTab('big')" id="tab-big" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold">大路</button>
+          <button onclick="switchRoadTab('bigEye')" id="tab-bigEye" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">大眼</button>
+          <button onclick="switchRoadTab('small')" id="tab-small" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">小路</button>
+          <button onclick="switchRoadTab('cockroach')" id="tab-cockroach" class="touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">曱甴</button>
         </div>
         <div class="flex items-center gap-1 text-[8px] font-mono text-slate-400 shrink-0">
-          <span>庄:<b id="stat-b" class="text-red-400">0</b></span>
-          <span>闲:<b id="stat-p" class="text-blue-400">0</b></span>
-          <span>和:<b id="stat-t" class="text-emerald-400">0</b></span>
+          <span>庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b></span>
+          <span>闲:<b id="stat-p" class="text-glacier ml-0.5">0</b></span>
+          <span>和:<b id="stat-t" class="text-neonEmerald ml-0.5">0</b></span>
         </div>
       </div>
-      <div class="grid grid-cols-5 gap-1 text-[7px] font-mono bg-black/30 px-1.5 py-1 rounded-md border border-white/5 text-center text-slate-400">
-        <div>连庄:<b id="streak-cur-b" class="text-red-300 font-bold ml-0.5">0</b></div>
-        <div>连闲:<b id="streak-cur-p" class="text-blue-300 font-bold ml-0.5">0</b></div>
-        <div>最长庄:<b id="streak-max-b" class="text-red-400 font-bold ml-0.5">0</b></div>
-        <div>最长闲:<b id="streak-max-p" class="text-blue-400 font-bold ml-0.5">0</b></div>
-        <div>和局:<b id="stat-tie-total" class="text-emerald-400 font-bold ml-0.5">0</b></div>
+      <div class="grid grid-cols-5 gap-1 text-[7px] font-mono glass-surface px-2 py-1 rounded-xl text-center text-slate-400">
+        <div>连庄:<b id="streak-cur-b" class="text-neonRed font-black ml-0.5">0</b></div>
+        <div>连闲:<b id="streak-cur-p" class="text-glacier font-black ml-0.5">0</b></div>
+        <div>最长庄:<b id="streak-max-b" class="text-neonRed font-black ml-0.5">0</b></div>
+        <div>最长闲:<b id="streak-max-p" class="text-glacier font-black ml-0.5">0</b></div>
+        <div>和局:<b id="stat-tie-total" class="text-neonEmerald font-black ml-0.5">0</b></div>
       </div>
-      <div class="bg-black/40 rounded-lg p-1 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
+      <div class="bg-black/50 rounded-xl p-1.5 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
         <div id="road-matrix-container" class="w-max min-w-full"></div>
       </div>
     </section>
 
-    <!-- 筹码选择 -->
-    <section id="chip-selection-area" class="flex flex-col gap-0.5">
-      <div class="flex items-center justify-between px-1 text-[8px] font-mono text-slate-400 uppercase">
-        <span>Selected: <b id="selected-chip-display" class="text-champagne-300 font-bold">$100</b></span>
+    <!-- 6. 筹码选择 (增强触觉反馈、质感金属圈) -->
+    <section id="chip-selection-area" class="flex flex-col gap-1">
+      <div class="flex items-center justify-between px-1 text-[8px] font-mono text-slate-400 uppercase tracking-widest">
+        <span>Chip Selected</span>
+        <span id="selected-chip-display" class="text-champagne-300 font-black text-[10px]">$100</span>
       </div>
-      <div class="grid grid-cols-4 gap-2">
-        <button onclick="pickChip(50, this)" class="chip-btn touch-btn h-9 rounded-full bg-emerald-900 border border-emerald-500/60 shadow-chip flex items-center justify-center font-mono font-bold text-xs"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">50</span></button>
-        <button onclick="pickChip(100, this)" class="chip-btn touch-btn h-9 rounded-full bg-blue-900 border border-blue-400/80 shadow-chip-active flex items-center justify-center font-mono font-bold text-xs ring-2 ring-champagne-400 -translate-y-0.5"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">100</span></button>
-        <button onclick="pickChip(500, this)" class="chip-btn touch-btn h-9 rounded-full bg-purple-950 border border-purple-400/70 shadow-chip flex items-center justify-center font-mono font-bold text-xs"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">500</span></button>
-        <button onclick="pickChip(1000, this)" class="chip-btn touch-btn h-9 rounded-full bg-stone-900 border border-champagne-400/90 shadow-chip flex items-center justify-center font-mono font-black text-xs text-champagne-300"><span class="w-6 h-6 rounded-full chip-rim flex items-center justify-center text-[10px]">1K</span></button>
+      <div class="grid grid-cols-4 gap-2.5">
+        <button onclick="pickChip(50, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-emerald-950 to-emerald-700 border border-emerald-400/50 shadow-md flex items-center justify-center font-mono font-bold text-xs"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">50</span></button>
+        <button onclick="pickChip(100, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-cyan-950 to-blue-700 border border-cyan-400/70 shadow-chip-glow flex items-center justify-center font-mono font-bold text-xs ring-2 ring-champagne-400 -translate-y-0.5"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">100</span></button>
+        <button onclick="pickChip(500, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-purple-950 to-purple-700 border border-purple-400/50 shadow-md flex items-center justify-center font-mono font-bold text-xs"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">500</span></button>
+        <button onclick="pickChip(1000, this)" class="chip-btn chip-click-fx h-10 rounded-full bg-gradient-to-tr from-amber-950 via-champagne-500 to-amber-600 border border-champagne-300/80 shadow-md flex items-center justify-center font-mono font-black text-xs text-black"><span class="w-7 h-7 rounded-full chip-rim flex items-center justify-center text-[10px]">1K</span></button>
       </div>
     </section>
 
-    <!-- 控制按键 -->
-    <footer class="grid grid-cols-4 gap-2 pt-0.5">
-      <button id="btn-clear" onclick="clearBets()" class="touch-btn col-span-1 py-2 bg-white/5 border border-white/10 text-slate-300 text-xs font-bold rounded-xl">清除</button>
-      <button id="deal-btn" onclick="dealRound()" class="touch-btn col-span-3 py-2 bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase rounded-xl">发牌 · DEAL</button>
+    <!-- 7. 底部控制按键 (发牌按钮尊贵金色呼吸光晕) -->
+    <footer class="grid grid-cols-4 gap-2.5 pt-1">
+      <button id="btn-clear" onclick="clearBets()" class="touch-btn col-span-1 py-2.5 rounded-2xl glass-surface hover:border-champagne-400/40 text-slate-300 text-xs font-bold">清除</button>
+      <button id="deal-btn" onclick="dealRound()" class="touch-btn deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow">发牌 · DEAL</button>
     </footer>
   </main>
 
-  <!-- 模态弹窗 -->
-  <div id="ai-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-3">
-    <div class="bg-table-felt border border-champagne-500/40 rounded-2xl w-full max-w-md p-4 shadow-2xl space-y-3 font-mono text-slate-200 text-xs">
-      <div class="flex items-center justify-between border-b border-white/10 pb-2">
-        <span class="text-champagne-400 font-black">Σ SOPHIA ANALYTICS CONSOLE</span>
-        <button onclick="closeAiTerminalModal()" class="text-slate-400 text-base">✕</button>
+  <!-- 8. SOPHIA 模态分析控制台 (暗黑通透量化舱) -->
+  <div id="ai-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl w-full max-w-md p-5 shadow-2xl space-y-4 font-mono text-slate-200 text-xs">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <span class="text-champagne-400 font-black tracking-wider text-sm">Σ SOPHIA ANALYTICS CONSOLE</span>
+        <button onclick="closeAiTerminalModal()" class="touch-btn text-slate-400 hover:text-white text-lg">✕</button>
       </div>
-      <div class="grid grid-cols-3 gap-2 text-center">
-        <div class="bg-black/50 p-2 rounded-xl border border-red-500/20">
-          <div class="text-[8px] text-red-400">BANKER (庄)</div>
-          <div id="modal-val-b" class="text-base font-bold text-red-300">0</div>
+      <div class="grid grid-cols-3 gap-2.5 text-center">
+        <div class="glass-surface p-2.5 rounded-2xl border border-neonRed/30">
+          <div class="text-[8px] text-neonRed font-black">BANKER (庄)</div>
+          <div id="modal-val-b" class="text-lg font-black text-neonRed mt-0.5">0</div>
           <div id="modal-pct-b" class="text-[9px] text-slate-400">0.0%</div>
         </div>
-        <div class="bg-black/50 p-2 rounded-xl border border-blue-500/20">
-          <div class="text-[8px] text-blue-400">PLAYER (闲)</div>
-          <div id="modal-val-p" class="text-base font-bold text-blue-300">0</div>
+        <div class="glass-surface p-2.5 rounded-2xl border border-glacier/30">
+          <div class="text-[8px] text-glacier font-black">PLAYER (闲)</div>
+          <div id="modal-val-p" class="text-lg font-black text-glacier mt-0.5">0</div>
           <div id="modal-pct-p" class="text-[9px] text-slate-400">0.0%</div>
         </div>
-        <div class="bg-black/50 p-2 rounded-xl border border-emerald-500/20">
-          <div class="text-[8px] text-emerald-400">TIE (和)</div>
-          <div id="modal-val-t" class="text-base font-bold text-emerald-300">0</div>
+        <div class="glass-surface p-2.5 rounded-2xl border border-neonEmerald/30">
+          <div class="text-[8px] text-neonEmerald font-black">TIE (和)</div>
+          <div id="modal-val-t" class="text-lg font-black text-neonEmerald mt-0.5">0</div>
           <div id="modal-pct-t" class="text-[9px] text-slate-400">0.0%</div>
         </div>
       </div>
-      <div class="w-full h-2 rounded-full overflow-hidden flex bg-slate-800">
-        <div id="modal-bar-b" class="bg-red-500 h-full" style="width: 33.3%;"></div>
-        <div id="modal-bar-p" class="bg-blue-500 h-full" style="width: 33.3%;"></div>
-        <div id="modal-bar-t" class="bg-emerald-500 h-full" style="width: 33.4%;"></div>
+      <div class="w-full h-2 rounded-full overflow-hidden flex bg-slate-900 border border-white/10">
+        <div id="modal-bar-b" class="bg-neonRed h-full transition-all duration-300" style="width: 33.3%;"></div>
+        <div id="modal-bar-p" class="bg-glacier h-full transition-all duration-300" style="width: 33.3%;"></div>
+        <div id="modal-bar-t" class="bg-neonEmerald h-full transition-all duration-300" style="width: 33.4%;"></div>
       </div>
-      <button onclick="closeAiTerminalModal()" class="w-full py-2 bg-champagne-500 text-stone-950 font-black rounded-xl text-xs">关闭分析终端</button>
+      <button onclick="closeAiTerminalModal()" class="touch-btn w-full py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs shadow-lg">关闭分析终端</button>
     </div>
   </div>
 
@@ -328,7 +408,7 @@
 
     function toggleAudio() {
       soundEnabled = !soundEnabled;
-      document.getElementById('sound-btn').innerHTML = `<span class="text-xs">${soundEnabled ? '🔊' : '🔇'}</span>`;
+      document.getElementById('sound-btn').innerHTML = soundEnabled ? '🔊' : '🔇';
     }
 
     const SUITS = ['♠', '♥', '♣', '♦'];
@@ -393,12 +473,10 @@
       selectedChip = val;
       playTone(600, 0.05);
       document.querySelectorAll('.chip-btn').forEach(b => {
-        b.classList.remove('ring-2', 'ring-champagne-400', '-translate-y-0.5', 'shadow-chip-active');
-        b.classList.add('shadow-chip');
+        b.classList.remove('ring-2', 'ring-champagne-400', '-translate-y-0.5', 'shadow-chip-glow');
       });
       if (btn) {
-        btn.classList.add('ring-2', 'ring-champagne-400', '-translate-y-0.5', 'shadow-chip-active');
-        btn.classList.remove('shadow-chip');
+        btn.classList.add('ring-2', 'ring-champagne-400', '-translate-y-0.5', 'shadow-chip-glow');
       }
       document.getElementById('selected-chip-display').innerText = '$' + (val === 1000 ? '1,000' : val);
     }
@@ -450,11 +528,11 @@
         <div id="${id}" class="card-container card-deal-anim">
           <div class="card-flipper">
             <div class="card-side card-back flex items-center justify-center">
-              <div class="w-8 h-12 rounded border border-champagne-400/20 bg-champagne-400/5 flex items-center justify-center">
-                <span class="text-[10px] text-champagne-300 font-serif opacity-70">⚜</span>
+              <div class="w-8 h-12 rounded border border-champagne-400/30 bg-champagne-400/5 flex items-center justify-center">
+                <span class="text-[10px] text-champagne-300 font-serif opacity-80">⚜</span>
               </div>
             </div>
-            <div class="card-side card-front border border-slate-300 p-1.5 flex flex-col justify-between text-[11px] font-bold leading-none ${card.isRed ? 'text-red-600' : 'text-slate-900'}">
+            <div class="card-side card-front p-1.5 flex flex-col justify-between text-[11px] font-black leading-none ${card.isRed ? 'text-neonRed' : 'text-slate-950'}">
               <div class="flex justify-between items-start">
                 <span>${card.rank}</span>
                 <span class="text-[10px]">${card.suit}</span>
@@ -484,8 +562,8 @@
     function setInteractionLock(locked) {
       isDealing = locked;
       document.querySelectorAll('#betting-area .touch-btn').forEach(c => {
-        if (locked) c.classList.add('pointer-events-none', 'opacity-80');
-        else c.classList.remove('pointer-events-none', 'opacity-80');
+        if (locked) c.classList.add('pointer-events-none', 'opacity-70');
+        else c.classList.remove('pointer-events-none', 'opacity-70');
       });
       document.getElementById('deal-btn').disabled = locked;
       document.getElementById('btn-clear').disabled = locked;
@@ -597,18 +675,18 @@
       else winAmt += bets.player + bets.banker + (bets.tie * 9);
 
       if (banner) {
-        banner.className = 'px-3 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wider text-slate-100 border shadow-sm';
+        banner.className = 'px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-widest border shadow-lg backdrop-blur-xl';
         if (winner === 'player') {
-          banner.classList.add('bg-blue-950/85', 'border-blue-500/60');
-          banner.innerHTML = `PLAYER WINS <span class="text-champagne-300 font-bold ml-1">${pScore} — ${bScore}</span>`;
+          banner.classList.add('bg-glacier-surface', 'border-glacier-border', 'text-glacier');
+          banner.innerHTML = `PLAYER WINS <span class="text-white ml-1">${pScore} — ${bScore}</span>`;
           playTone(680, 0.22);
         } else if (winner === 'banker') {
-          banner.classList.add('bg-red-950/85', 'border-red-500/60');
-          banner.innerHTML = `BANKER WINS <span class="text-champagne-300 font-bold ml-1">${bScore} — ${pScore}</span>`;
+          banner.classList.add('bg-neonRed-surface', 'border-neonRed-border', 'text-neonRed');
+          banner.innerHTML = `BANKER WINS <span class="text-white ml-1">${bScore} — ${pScore}</span>`;
           playTone(680, 0.22);
         } else {
-          banner.classList.add('bg-emerald-950/85', 'border-emerald-500/60');
-          banner.innerHTML = `TIE GAME <span class="text-champagne-300 font-bold ml-1">${pScore}</span>`;
+          banner.classList.add('bg-neonEmerald-surface', 'border-neonEmerald-border', 'text-neonEmerald');
+          banner.innerHTML = `TIE GAME <span class="text-white ml-1">${pScore}</span>`;
           playTone(520, 0.22);
         }
         banner.classList.remove('hidden');
@@ -632,8 +710,8 @@
       ['10', '20', '50', 'all'].forEach(s => {
         const btn = document.getElementById(`scope-btn-${s}`);
         if (btn) {
-          if (s == scope) btn.className = 'px-1.5 py-0.5 rounded text-[8px] font-mono bg-champagne-500/20 text-champagne-300 font-bold border border-champagne-500/40';
-          else btn.className = 'px-1.5 py-0.5 rounded text-[8px] font-mono text-slate-400';
+          if (s == scope) btn.className = 'px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 font-bold border border-champagne-400/40 shadow-sm transition-all';
+          else btn.className = 'px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400 transition-all';
         }
       });
       updateAiAnalytics();
@@ -676,13 +754,13 @@
       if (confBadge) {
         if (stats.len < 10) {
           confBadge.innerText = 'LOW';
-          confBadge.className = 'text-[9px] font-extrabold text-amber-400 mt-0.5';
+          confBadge.className = 'text-[9px] font-black text-champagne-500 mt-0.5';
         } else if (stats.len < 30) {
           confBadge.innerText = 'MODERATE';
-          confBadge.className = 'text-[9px] font-extrabold text-blue-300 mt-0.5';
+          confBadge.className = 'text-[9px] font-black text-glacier mt-0.5';
         } else {
           confBadge.innerText = 'HIGH';
-          confBadge.className = 'text-[9px] font-extrabold text-emerald-400 mt-0.5';
+          confBadge.className = 'text-[9px] font-black text-neonEmerald mt-0.5';
         }
       }
 
@@ -753,8 +831,8 @@
       ['bead', 'big', 'bigEye', 'small', 'cockroach'].forEach(t => {
         const el = document.getElementById('tab-' + t);
         if (el) {
-          if (t === tab) el.className = 'touch-btn px-1 py-0.5 rounded text-[8px] font-mono border bg-champagne-500/20 text-champagne-300 border-champagne-500/30 font-bold';
-          else el.className = 'touch-btn px-1 py-0.5 rounded text-[8px] font-mono border border-transparent text-slate-400';
+          if (t === tab) el.className = 'touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold shadow-sm';
+          else el.className = 'touch-btn px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
         }
       });
       renderActiveRoad();
@@ -810,53 +888,6 @@
       return { grid, maxCol };
     }
 
-    function deriveDownroadMarkers(logicalColumns, k) {
-      const derived = [];
-      const validCols = logicalColumns.filter(c => c.winner === 'banker' || c.winner === 'player');
-      for (let i = 1; i < validCols.length; i++) {
-        const curCol = validCols[i];
-        const prevColIndex = i - k;
-        if (prevColIndex < 0) continue;
-        for (let j = 0; j < curCol.count; j++) {
-          if (j === 0) {
-            const compA = validCols[i - 1].count;
-            const compB = validCols[i - 1 - k] ? validCols[i - 1 - k].count : 0;
-            derived.push(compA === compB ? 'red' : 'blue');
-          } else {
-            const refCol = validCols[prevColIndex];
-            derived.push(refCol && refCol.count >= (j + 1) ? 'red' : 'blue');
-          }
-        }
-      }
-      return derived;
-    }
-
-    function buildDerivedGrid(markerList) {
-      const grid = {};
-      let maxCol = 22;
-      let c = 0, r = 0;
-      let lastMarker = null;
-
-      for (const m of markerList) {
-        if (lastMarker === null) {
-          grid[`0,0`] = m;
-          lastMarker = m;
-        } else if (m === lastMarker) {
-          if (r + 1 < 6 && !grid[`${r + 1},${c}`]) r++; else c++;
-          grid[`${r},${c}`] = m;
-        } else {
-          let nextCol = 0;
-          while (grid[`0,${nextCol}`]) nextCol++;
-          c = nextCol;
-          r = 0;
-          grid[`${r},${c}`] = m;
-          lastMarker = m;
-        }
-        if (c >= maxCol) maxCol = c + 4;
-      }
-      return { grid, maxCol };
-    }
-
     function renderActiveRoad() {
       const container = document.getElementById('road-matrix-container');
       if (!container) return;
@@ -871,10 +902,10 @@
             const idx = c * 6 + r;
             if (idx < total) {
               const res = history[idx];
-              let bg = 'bg-red-600', txt = '庄';
-              if (res === 'player') { bg = 'bg-blue-600'; txt = '闲'; }
-              else if (res === 'tie') { bg = 'bg-emerald-600'; txt = '和'; }
-              html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-bold text-white leading-none">${txt}</div></div>`;
+              let bg = 'bg-neonRed text-white shadow-[0_0_8px_rgba(244,63,94,0.6)]', txt = '庄';
+              if (res === 'player') { bg = 'bg-glacier text-slate-950 shadow-[0_0_8px_rgba(56,189,248,0.6)]'; txt = '闲'; }
+              else if (res === 'tie') { bg = 'bg-neonEmerald text-slate-950 shadow-[0_0_8px_rgba(16,185,129,0.6)]'; txt = '和'; }
+              html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-black leading-none">${txt}</div></div>`;
             } else {
               html += `<div class="road-cell"></div>`;
             }
@@ -890,8 +921,8 @@
             const cell = grid[`${r},${c}`];
             if (cell) {
               const isB = cell.winner === 'banker';
-              const ringCls = isB ? 'border-red-500' : (cell.winner === 'player' ? 'border-blue-500' : 'border-emerald-500');
-              const tieMark = (cell.ties && cell.ties > 0) ? `<span class="absolute text-[7px] font-black text-emerald-400 -rotate-45 leading-none">/</span>` : '';
+              const ringCls = isB ? 'border-neonRed shadow-[0_0_6px_rgba(244,63,94,0.5)]' : (cell.winner === 'player' ? 'border-glacier shadow-[0_0_6px_rgba(56,189,248,0.5)]' : 'border-neonEmerald shadow-[0_0_6px_rgba(16,185,129,0.5)]');
+              const tieMark = (cell.ties && cell.ties > 0) ? `<span class="absolute text-[7px] font-black text-neonEmerald -rotate-45 leading-none">/</span>` : '';
               html += `<div class="road-cell"><div class="w-2.5 h-2.5 rounded-full border-[1.5px] ${ringCls} flex items-center justify-center relative">${tieMark}</div></div>`;
             } else {
               html += `<div class="road-cell"></div>`;
@@ -936,41 +967,28 @@
         else if (item === 'player') { if (curB === 0) curP++; else break; }
       }
 
-      const statB = document.getElementById('stat-b');
-      if (statB) statB.innerText = bCount;
-      const statP = document.getElementById('stat-p');
-      if (statP) statP.innerText = pCount;
-      const statT = document.getElementById('stat-t');
-      if (statT) statT.innerText = tCount;
+      document.getElementById('stat-b').innerText = bCount;
+      document.getElementById('stat-p').innerText = pCount;
+      document.getElementById('stat-t').innerText = tCount;
 
-      const curBDisp = document.getElementById('streak-cur-b');
-      if (curBDisp) curBDisp.innerText = curB;
-      const curPDisp = document.getElementById('streak-cur-p');
-      if (curPDisp) curPDisp.innerText = curP;
-      const maxBDisp = document.getElementById('streak-max-b');
-      if (maxBDisp) maxBDisp.innerText = maxB;
-      const maxPDisp = document.getElementById('streak-max-p');
-      if (maxPDisp) maxPDisp.innerText = maxP;
-      const tieTotalDisp = document.getElementById('stat-tie-total');
-      if (tieTotalDisp) tieTotalDisp.innerText = tCount;
+      document.getElementById('streak-cur-b').innerText = curB;
+      document.getElementById('streak-cur-p').innerText = curP;
+      document.getElementById('streak-max-b').innerText = maxB;
+      document.getElementById('streak-max-p').innerText = maxP;
+      document.getElementById('stat-tie-total').innerText = tCount;
 
       renderActiveRoad();
     }
 
     function updateUI() {
-      const bankrollDisp = document.getElementById('bankroll-val');
-      if (bankrollDisp) bankrollDisp.innerText = '$' + bankroll.toLocaleString();
-      
+      document.getElementById('bankroll-val').innerText = '$' + bankroll.toLocaleString();
       const pVal = bets.player;
       const bVal = bets.banker;
       const tVal = bets.tie;
 
-      const pBetDisp = document.getElementById('bet-player');
-      if (pBetDisp) pBetDisp.innerText = pVal ? '$' + pVal.toLocaleString() : '';
-      const bBetDisp = document.getElementById('bet-banker');
-      if (bBetDisp) bBetDisp.innerText = bVal ? '$' + bVal.toLocaleString() : '';
-      const tBetDisp = document.getElementById('bet-tie');
-      if (tBetDisp) tBetDisp.innerText = tVal ? '$' + tVal.toLocaleString() : '';
+      document.getElementById('bet-player').innerText = pVal ? '$' + pVal.toLocaleString() : '';
+      document.getElementById('bet-banker').innerText = bVal ? '$' + bVal.toLocaleString() : '';
+      document.getElementById('bet-tie').innerText = tVal ? '$' + tVal.toLocaleString() : '';
 
       syncBetCardState('player', pVal > 0);
       syncBetCardState('banker', bVal > 0);
@@ -981,9 +999,9 @@
       const card = document.getElementById(`bet-card-${area}`);
       if (!card) return;
       if (isSelected) {
-        card.classList.add('border-champagne-400', '-translate-y-0.5', 'bg-white/5');
+        card.classList.add('border-champagne-400', '-translate-y-0.5', 'bg-white/10', 'shadow-chip-glow');
       } else {
-        card.classList.remove('border-champagne-400', '-translate-y-0.5', 'bg-white/5');
+        card.classList.remove('border-champagne-400', '-translate-y-0.5', 'bg-white/10', 'shadow-chip-glow');
       }
     }
 
