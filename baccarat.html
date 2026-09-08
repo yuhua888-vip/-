@@ -59,9 +59,7 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
     
-    /* 彻底杜绝全局手势放大与双击异常 */
     * {
-      touch-action: manipulation;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
@@ -71,6 +69,7 @@
       width: 100%;
       height: 100%;
       overflow-x: hidden;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       background-color: #08080a;
       background-image: 
@@ -97,7 +96,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* 牌桌卡牌与翻转 */
     .table-card {
       width: 3.4rem;
       height: 4.9rem;
@@ -134,13 +132,24 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
-    /* 物理搓牌舞台 */
+    /* 优化二：全屏物理搓牌层，彻底锁死触摸滚动与双击手势 */
+    #squeeze-overlay,
+    .squeeze-stage,
+    .squeeze-card-wrap,
+    .squeeze-card-back,
+    .squeeze-card-front {
+      touch-action: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+    }
+
     .squeeze-stage { perspective: 1200px; }
     .squeeze-card-wrap {
       width: 220px;
       height: 310px;
       position: relative;
       transform-style: preserve-3d;
+      will-change: transform;
     }
     .squeeze-card-face {
       position: absolute;
@@ -166,6 +175,7 @@
       position: absolute;
       inset: 0;
       background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent 70%);
+      pointer-events: none;
     }
 
     .chip-rim { border: 2px dashed rgba(255, 255, 255, 0.35); }
@@ -210,16 +220,16 @@
 
   <main class="w-full max-w-lg mx-auto px-3.5 flex-1 flex flex-col justify-between space-y-2.5 pt-2 pb-2">
     
-    <!-- 状态指示条 -->
+    <!-- 状态指示条与快捷操作 -->
     <section class="glass-panel rounded-2xl px-3 py-2 flex items-center justify-between">
-      <div class="flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-champagne-400 animate-ping"></span>
-        <span id="game-status-hint" class="text-[10px] font-mono text-champagne-300 font-bold tracking-wider">请选择【庄】或【闲】下注</span>
+      <div class="flex items-center gap-1.5 overflow-hidden">
+        <span class="w-2 h-2 rounded-full bg-champagne-400 shrink-0 animate-ping"></span>
+        <span id="game-status-hint" class="text-[10px] font-mono text-champagne-300 font-bold tracking-wider truncate">请选择【庄】或【闲】下注</span>
       </div>
-      <div class="text-[8px] font-mono text-slate-400">
-        庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b>
-        闲:<b id="stat-p" class="text-glacier ml-1">0</b>
-        和:<b id="stat-t" class="text-neonEmerald ml-1">0</b>
+      <div class="flex items-center gap-1 shrink-0">
+        <button id="btn-reveal-opponent" onclick="revealAllOpponentCards()" class="hidden px-2 py-0.5 rounded-lg text-[8px] font-mono bg-white/10 hover:bg-white/20 border border-white/20 text-champagne-300 font-bold">
+          全开对手
+        </button>
       </div>
     </section>
 
@@ -252,7 +262,7 @@
       <!-- 交互与结算提示 -->
       <div class="h-6 flex items-center justify-center mt-1 relative z-10">
         <div id="squeeze-hint-banner" class="hidden px-3 py-0.5 rounded-full text-[9px] font-mono text-champagne-300 border border-champagne-400/50 bg-black/70 shadow-lg animate-pulse">
-          👆 点击高亮光晕手牌，亲手进行搓牌
+          👆 点击高亮手牌搓牌，点击对手牌翻开
         </div>
         <div id="result-banner" class="hidden px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider text-slate-100 border shadow-lg backdrop-blur-xl"></div>
       </div>
@@ -264,7 +274,7 @@
       <div onclick="setBetSide('player')" id="bet-card-player" class="cursor-pointer bg-glacier-surface hover:bg-glacier-surface/80 border border-glacier-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[82px] relative overflow-hidden transition-all active:scale-95">
         <div>
           <div class="text-[11px] font-black text-glacier tracking-wider">PLAYER (闲)</div>
-          <div class="text-[8px] font-mono text-slate-400">1:1 · 主注开牌</div>
+          <div class="text-[8px] font-mono text-slate-400">1:1 · 拥有搓牌权</div>
         </div>
         <div id="bet-chip-player" class="h-6 flex items-center justify-center"></div>
       </div>
@@ -282,7 +292,7 @@
       <div onclick="setBetSide('banker')" id="bet-card-banker" class="cursor-pointer bg-neonRed-surface hover:bg-neonRed-surface/80 border border-neonRed-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[82px] relative overflow-hidden transition-all active:scale-95">
         <div>
           <div class="text-[11px] font-black text-neonRed tracking-wider">BANKER (庄)</div>
-          <div class="text-[8px] font-mono text-slate-400">1:0.95 · 主注开牌</div>
+          <div class="text-[8px] font-mono text-slate-400">1:0.95 · 拥有搓牌权</div>
         </div>
         <div id="bet-chip-banker" class="h-6 flex items-center justify-center"></div>
       </div>
@@ -292,7 +302,11 @@
     <section class="glass-panel rounded-2xl p-2.5 space-y-1">
       <div class="flex items-center justify-between text-[9px] font-mono text-slate-400 pb-1 border-b border-white/5">
         <span>VIP ROADMAP (大路)</span>
-        <span id="shoe-count" class="text-champagne-400">Shoe: 0/416</span>
+        <div class="text-[8px]">
+          庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b>
+          闲:<b id="stat-p" class="text-glacier ml-1">0</b>
+          和:<b id="stat-t" class="text-neonEmerald ml-1">0</b>
+        </div>
       </div>
       <div class="bg-black/50 rounded-xl p-1 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
         <div id="road-matrix-container" class="w-max min-w-full"></div>
@@ -316,21 +330,21 @@
     <!-- 底部控制栏 -->
     <footer class="grid grid-cols-4 gap-2.5 pt-0.5">
       <button id="btn-clear" onclick="clearBets()" class="col-span-1 py-2.5 rounded-2xl glass-surface text-slate-300 text-xs font-bold active:scale-95 transition-transform">清除</button>
-      <button id="deal-btn" onclick="startVipRound()" class="deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow active:scale-95 transition-transform">开局 · DEAL</button>
+      <button id="deal-btn" onclick="startVipRound()" class="deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow active:scale-95 transition-transform">发牌 · DEAL</button>
     </footer>
   </main>
 
-  <!-- 物理搓牌全屏模态舞台 -->
+  <!-- 沉浸式全屏物理搓牌舞台 (优化一 & 优化二) -->
   <div id="squeeze-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-3xl hidden flex-col items-center justify-between p-6">
     <div class="w-full flex items-center justify-between text-xs font-mono">
       <span id="squeeze-title" class="text-champagne-400 font-bold tracking-widest">SQUEEZE CARD</span>
-      <span class="text-slate-500 text-[10px]">指尖按住底部向上推牌</span>
+      <span class="text-slate-500 text-[10px]">滑动边缘以卷起底牌</span>
     </div>
 
-    <!-- 3D 物理卡牌 -->
+    <!-- 3D 物理卡牌容器 -->
     <div class="squeeze-stage my-auto flex items-center justify-center">
       <div id="squeeze-box" class="squeeze-card-wrap">
-        <!-- 底牌正面 -->
+        <!-- 底牌正面 (点数面) -->
         <div id="squeeze-front" class="squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between">
           <div class="flex justify-between items-start">
             <div id="sq-rank-top" class="text-3xl font-black font-mono leading-none">A</div>
@@ -343,28 +357,28 @@
           </div>
         </div>
 
-        <!-- 牌背滑块 -->
+        <!-- 牌背可拖拽滑块 -->
         <div id="squeeze-back" class="squeeze-card-face squeeze-card-back flex items-center justify-center cursor-grab active:cursor-grabbing">
           <div class="w-24 h-40 rounded-xl border border-champagne-400/30 flex items-center justify-center bg-champagne-400/5">
             <span class="text-4xl text-champagne-300 font-serif opacity-70">⚜</span>
           </div>
           <div class="absolute bottom-3 text-[9px] font-mono text-champagne-400/70 uppercase tracking-widest">
-            Slide Up to Reveal
+            Drag to Squeeze
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 快速看牌 -->
+    <!-- 直接翻开备用按钮 -->
     <div class="w-full space-y-2 max-w-xs">
-      <button onclick="instantRevealSqueeze()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase tracking-wider active:scale-95 transition-transform">
-        直接翻开 (Reveal)
+      <button onclick="instantRevealSqueeze()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase tracking-wider active:scale-95 transition-transform shadow-deal-glow">
+        直接翻开 (Reveal All)
       </button>
     </div>
   </div>
 
   <script>
-    // 阻断全局缩放
+    // 阻断全局默认滚动与缩放
     document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('gesturechange', (e) => e.preventDefault());
@@ -418,13 +432,12 @@
     let bankroll = 50000;
     let selectedChip = 100;
     
-    // 下注状态：mainSide 必须在 'player' 与 'banker' 之间二选一
     let playerMainBetSide = null; // 'player' | 'banker'
     let bets = { player: 0, banker: 0, tie: 0 };
     let history = []; 
     let isRoundRunning = false;
+    let isDrawingThirdStage = false; // 是否在补牌处理中
 
-    // 当前局牌组
     let activeHand = {
       pCards: [],
       bCards: [],
@@ -446,19 +459,12 @@
         }
       }
       shoe = deck.sort(() => Math.random() - 0.5);
-      updateShoeCount();
     }
     initShoe();
 
     function drawCard() {
       if (shoe.length < 52) initShoe();
-      const c = shoe.pop();
-      updateShoeCount();
-      return c;
-    }
-
-    function updateShoeCount() {
-      document.getElementById('shoe-count').innerText = `Shoe: ${416 - shoe.length}/416`;
+      return shoe.pop();
     }
 
     function calcCardsValue(arr) {
@@ -476,13 +482,11 @@
       document.getElementById('selected-chip-display').innerText = '$' + (val === 1000 ? '1,000' : val);
     }
 
-    // 核心规则：下注主方互斥（押闲即清空庄，押庄即清空闲）
     function setBetSide(side) {
       if (isRoundRunning) return;
       if (bankroll < selectedChip) { alert('余额不足！'); return; }
 
       if (playerMainBetSide !== side) {
-        // 返还原有主注
         if (playerMainBetSide) {
           bankroll += bets[playerMainBetSide];
           bets[playerMainBetSide] = 0;
@@ -496,7 +500,6 @@
       updateUI();
     }
 
-    // 和局副注
     function addTieBet() {
       if (isRoundRunning) return;
       if (bankroll < selectedChip) { alert('余额不足！'); return; }
@@ -515,7 +518,6 @@
       updateUI();
     }
 
-    // 创建牌桌卡牌节点
     function renderTableCardMarkup(side, index, card) {
       return `
         <div id="card-${side}-${index}" onclick="handleTableCardClick('${side}', ${index})" 
@@ -543,7 +545,7 @@
     const wait = ms => new Promise(r => setTimeout(r, ms));
 
     /* ===================================================
-       贵宾开局主线程 (严格遵循搓牌权限与发牌序列)
+       发牌主流程：发完牌全暗扣，等待玩家操作
        =================================================== */
     async function startVipRound() {
       if (isRoundRunning) return;
@@ -553,16 +555,17 @@
       }
 
       isRoundRunning = true;
+      isDrawingThirdStage = false;
       document.getElementById('deal-btn').disabled = true;
       document.getElementById('btn-clear').disabled = true;
       document.getElementById('result-banner').classList.add('hidden');
       document.getElementById('squeeze-hint-banner').classList.remove('hidden');
+      document.getElementById('btn-reveal-opponent').classList.remove('hidden');
 
-      const isPlayerSqueeze = (playerMainBetSide === 'player');
-      document.getElementById('game-status-hint').innerText = isPlayerSqueeze ? 
-        '系统发牌完成：请您亲手搓【闲家】手牌' : '系统发牌完成：请您亲手搓【庄家】手牌';
+      const sideName = playerMainBetSide === 'player' ? '闲家' : '庄家';
+      const oppName = playerMainBetSide === 'player' ? '庄家' : '闲家';
+      document.getElementById('game-status-hint').innerText = `发牌完毕：可搓【${sideName}】；可点击开【${oppName}】`;
 
-      // 初始化局数据
       activeHand.pCards = [drawCard(), drawCard()];
       activeHand.bCards = [drawCard(), drawCard()];
       activeHand.pRevealed = [false, false];
@@ -575,82 +578,87 @@
       document.getElementById('player-score').innerText = '-';
       document.getElementById('banker-score').innerText = '-';
 
-      // 1. 发闲1
+      // 发出两庄两闲（全部扣置）
       playCardSlideSound();
       pTray.innerHTML += renderTableCardMarkup('player', 0, activeHand.pCards[0]);
-      await wait(150);
+      await wait(140);
 
-      // 2. 发庄1
       playCardSlideSound();
       bTray.innerHTML += renderTableCardMarkup('banker', 0, activeHand.bCards[0]);
-      await wait(150);
+      await wait(140);
 
-      // 3. 发闲2
       playCardSlideSound();
       pTray.innerHTML += renderTableCardMarkup('player', 1, activeHand.pCards[1]);
-      await wait(150);
+      await wait(140);
 
-      // 4. 发庄2
       playCardSlideSound();
       bTray.innerHTML += renderTableCardMarkup('banker', 1, activeHand.bCards[1]);
-      await wait(200);
+      await wait(140);
 
-      // 5. 规则：非玩家下注方，由系统自动亮牌；玩家下注方等待手搓
-      if (isPlayerSqueeze) {
-        // 玩家押闲：庄家自动全开明牌，闲家由玩家搓
-        await revealCardBySystem('banker', 0);
-        await wait(180);
-        await revealCardBySystem('banker', 1);
-        highlightCardForSqueeze('player', 0);
-      } else {
-        // 玩家押庄：闲家自动全开明牌，庄家由玩家搓
-        await revealCardBySystem('player', 0);
-        await wait(180);
-        await revealCardBySystem('player', 1);
-        highlightCardForSqueeze('banker', 0);
+      highlightNextCard();
+    }
+
+    // 更新高光指导
+    function highlightNextCard() {
+      document.querySelectorAll('.table-card').forEach(el => {
+        el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse');
+      });
+
+      // 优先高光自己未开的手牌
+      const myRevealed = playerMainBetSide === 'player' ? activeHand.pRevealed : activeHand.bRevealed;
+      const myIndex = myRevealed.findIndex(r => !r);
+      if (myIndex !== -1) {
+        const target = document.getElementById(`card-${playerMainBetSide}-${myIndex}`);
+        if (target) target.classList.add('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse');
       }
     }
 
-    // 系统自动开明牌
-    async function revealCardBySystem(side, index) {
-      playCardSlideSound();
+    // 点击卡牌核心分流：自己牌搓，对手牌普通点击翻开
+    function handleTableCardClick(side, index) {
+      if (!isRoundRunning) return;
+
+      const isRevealed = (side === 'player') ? activeHand.pRevealed[index] : activeHand.bRevealed[index];
+      if (isRevealed) return;
+
+      if (side === playerMainBetSide) {
+        // 自己的牌：进入沉浸式 3D 手动搓牌
+        const card = (side === 'player') ? activeHand.pCards[index] : activeHand.bCards[index];
+        openSqueezeModal(side, index, card);
+      } else {
+        // 对手的牌：普通点击立即亮牌（不准搓）
+        revealOpponentCardDirect(side, index);
+      }
+    }
+
+    // 翻开对手单张牌
+    function revealOpponentCardDirect(side, index) {
+      playTone(450, 0.08);
       const inner = document.getElementById(`inner-${side}-${index}`);
       if (inner) inner.classList.add('is-flipped');
       if (side === 'player') activeHand.pRevealed[index] = true;
       if (side === 'banker') activeHand.bRevealed[index] = true;
       updateBoardScores();
+      checkRoundProgression();
     }
 
-    function highlightCardForSqueeze(side, index) {
-      // 清理其他高光
-      document.querySelectorAll('.table-card').forEach(el => el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse'));
-      const target = document.getElementById(`card-${side}-${index}`);
-      if (target) {
-        target.classList.add('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse');
-      }
-    }
-
-    // 点击牌桌卡牌触发手搓（严格校验权限）
-    function handleTableCardClick(side, index) {
+    // 全开对手牌
+    function revealAllOpponentCards() {
       if (!isRoundRunning) return;
-      // 只有玩家押注的这一方，且尚未翻开的牌，才有搓牌权
-      if (side !== playerMainBetSide) {
-        document.getElementById('game-status-hint').innerText = `不可搓对方牌面！您仅持有【${playerMainBetSide === 'player' ? '闲家' : '庄家'}】开牌权`;
-        playTone(200, 0.1, 'sawtooth');
-        return;
-      }
+      const oppSide = playerMainBetSide === 'player' ? 'banker' : 'player';
+      const oppCards = oppSide === 'player' ? activeHand.pCards : activeHand.bCards;
+      const oppRevealed = oppSide === 'player' ? activeHand.pRevealed : activeHand.bRevealed;
 
-      const isRevealed = (side === 'player') ? activeHand.pRevealed[index] : activeHand.bRevealed[index];
-      if (isRevealed) return;
-
-      const card = (side === 'player') ? activeHand.pCards[index] : activeHand.bCards[index];
-      openSqueezeModal(side, index, card);
+      oppCards.forEach((_, i) => {
+        if (!oppRevealed[i]) {
+          revealOpponentCardDirect(oppSide, i);
+        }
+      });
     }
 
     /* ===================================================
-       物理手搓牌模态系统
+       全屏 3D 物理手搓牌模态引擎
        =================================================== */
-    let currentSqueezeTarget = null; // { side, index, card }
+    let currentSqueezeTarget = null;
     let touchStartY = 0;
     let touchStartX = 0;
     let isTouchingCard = false;
@@ -684,7 +692,9 @@
       sqBox.style.transform = 'rotateX(0deg) rotateY(0deg)';
     }
 
+    // 绑定物理拖拽触摸事件
     sqBack.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
       isTouchingCard = true;
       touchStartY = e.clientY;
       touchStartX = e.clientX;
@@ -693,21 +703,21 @@
 
     sqBack.addEventListener('pointermove', (e) => {
       if (!isTouchingCard) return;
+      e.preventDefault();
       const deltaY = e.clientY - touchStartY;
       const deltaX = e.clientX - touchStartX;
 
-      // 仅允许向上手搓推开
       if (deltaY < 0) {
         const dist = Math.abs(deltaY);
         const percent = Math.min(dist / 260, 1.0);
 
-        // 真实物理卷边形变
+        // 真实 3D 卷起与位移形变
         const deg = percent * 75;
         const lift = percent * 40;
         sqBack.style.transform = `translate3d(0, -${dist * 0.85}px, ${lift}px) rotateX(${deg}deg)`;
         sqBox.style.transform = `rotateY(${deltaX * 0.08}deg)`;
 
-        // 搓开达 65% 触发物理回弹全揭开
+        // 超过 65% 幅度自动触发翻全牌
         if (percent > 0.65) {
           isTouchingCard = false;
           completeSqueezeReveal();
@@ -715,10 +725,11 @@
       }
     });
 
-    sqBack.addEventListener('pointerup', () => {
+    sqBack.addEventListener('pointerup', (e) => {
       if (!isTouchingCard) return;
+      e.preventDefault();
       isTouchingCard = false;
-      // 回弹弹簧动效
+      // 物理回弹恢复原状
       sqBack.style.transition = 'all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
       sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
       setTimeout(() => sqBack.style.transition = '', 220);
@@ -739,107 +750,15 @@
         sqOverlay.classList.remove('flex');
         
         const { side, index } = currentSqueezeTarget;
-        revealCardBySystem(side, index);
-        proceedAfterCardSqueezed(side, index);
+        const inner = document.getElementById(`inner-${side}-${index}`);
+        if (inner) inner.classList.add('is-flipped');
+        if (side === 'player') activeHand.pRevealed[index] = true;
+        if (side === 'banker') activeHand.bRevealed[index] = true;
+        
+        updateBoardScores();
+        highlightNextCard();
+        checkRoundProgression();
       }, 220);
-    }
-
-    /* ===================================================
-       开牌进度机与国际百家补牌算法
-       =================================================== */
-    async function proceedAfterCardSqueezed(side, index) {
-      // 若当前搓完的是第一张，提示搓第二张
-      if (index === 0) {
-        highlightCardForSqueeze(side, 1);
-        return;
-      }
-
-      // 若前两张已开齐，进入天牌与补牌研判
-      if (index === 1) {
-        document.querySelectorAll('.table-card').forEach(el => el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse'));
-        await evaluateTableRulesAndDraw();
-        return;
-      }
-
-      // 第三张（补牌）搓完，直接进入终局
-      if (index === 2) {
-        document.querySelectorAll('.table-card').forEach(el => el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse'));
-        finalizeRoundOutcome();
-      }
-    }
-
-    async function evaluateTableRulesAndDraw() {
-      let pScore = calcCardsValue([activeHand.pCards[0], activeHand.pCards[1]]);
-      let bScore = calcCardsValue([activeHand.bCards[0], activeHand.bCards[1]]);
-
-      // 1. 判定例牌天牌（8点或9点）
-      if (pScore >= 8 || bScore >= 8) {
-        finalizeRoundOutcome();
-        return;
-      }
-
-      // 2. 闲家补牌判定 (0-5 补，6-7 停)
-      let pDrawCard = null;
-      if (pScore <= 5) {
-        pDrawCard = drawCard();
-        activeHand.pCards.push(pDrawCard);
-        activeHand.pRevealed.push(false);
-        playCardSlideSound();
-        document.getElementById('player-cards').innerHTML += renderTableCardMarkup('player', 2, pDrawCard);
-        await wait(180);
-
-        // 如果玩家押闲，补牌交给玩家搓；否则系统自动翻开
-        if (playerMainBetSide === 'player') {
-          highlightCardForSqueeze('player', 2);
-          document.getElementById('game-status-hint').innerText = '闲家需补第三张：请您亲自搓牌';
-          return; // 等待玩家搓完第三张触发 proceedAfterCardSqueezed
-        } else {
-          await revealCardBySystem('player', 2);
-          await wait(240);
-        }
-      }
-
-      // 3. 庄家补牌判定
-      await checkAndDrawBankerCard(pDrawCard);
-    }
-
-    async function checkAndDrawBankerCard(p3Card) {
-      let bScore = calcCardsValue([activeHand.bCards[0], activeHand.bCards[1]]);
-      let bDraw = false;
-
-      if (!p3Card) {
-        // 闲家未补牌，庄家 0-5 补，6-7 停
-        if (bScore <= 5) bDraw = true;
-      } else {
-        const v = p3Card.val;
-        if (bScore <= 2) bDraw = true;
-        else if (bScore === 3 && v !== 8) bDraw = true;
-        else if (bScore === 4 && [2,3,4,5,6,7].includes(v)) bDraw = true;
-        else if (bScore === 5 && [4,5,6,7].includes(v)) bDraw = true;
-        else if (bScore === 6 && [6,7].includes(v)) bDraw = true;
-      }
-
-      if (bDraw) {
-        const bDrawCard = drawCard();
-        activeHand.bCards.push(bDrawCard);
-        activeHand.bRevealed.push(false);
-        playCardSlideSound();
-        document.getElementById('banker-cards').innerHTML += renderTableCardMarkup('banker', 2, bDrawCard);
-        await wait(180);
-
-        // 如果玩家押庄，补牌交给玩家搓；否则系统自动翻开
-        if (playerMainBetSide === 'banker') {
-          highlightCardForSqueeze('banker', 2);
-          document.getElementById('game-status-hint').innerText = '庄家需补第三张：请您亲自搓牌';
-          return; // 等待玩家搓完
-        } else {
-          await revealCardBySystem('banker', 2);
-          await wait(240);
-        }
-      }
-
-      // 补牌全部处理完毕，结算
-      finalizeRoundOutcome();
     }
 
     function updateBoardScores() {
@@ -851,11 +770,95 @@
     }
 
     /* ===================================================
-       终局结算与路单沉淀
+       百家乐阶段研判：前两张开齐 -> 补牌阶段 -> 终局结算
+       =================================================== */
+    async function checkRoundProgression() {
+      if (!isRoundRunning) return;
+
+      // 阶段一：检查前两张是否全开
+      const baseFourRevealed = activeHand.pRevealed[0] && activeHand.pRevealed[1] &&
+                                activeHand.bRevealed[0] && activeHand.bRevealed[1];
+
+      if (!baseFourRevealed) return;
+
+      // 如果尚未处理补牌，触发补牌判定
+      if (!isDrawingThirdStage) {
+        isDrawingThirdStage = true;
+        await processThirdCardDrawing();
+      } else {
+        // 补牌阶段：检查第三张是否均已开完
+        const pThirdDone = (activeHand.pCards.length === 2) || (activeHand.pRevealed[2] === true);
+        const bThirdDone = (activeHand.bCards.length === 2) || (activeHand.bRevealed[2] === true);
+
+        if (pThirdDone && bThirdDone) {
+          finalizeRoundOutcome();
+        }
+      }
+    }
+
+    async function processThirdCardDrawing() {
+      let pScore = calcCardsValue([activeHand.pCards[0], activeHand.pCards[1]]);
+      let bScore = calcCardsValue([activeHand.bCards[0], activeHand.bCards[1]]);
+
+      // 1. 例牌天牌 (8或9点)，直接结算
+      if (pScore >= 8 || bScore >= 8) {
+        finalizeRoundOutcome();
+        return;
+      }
+
+      let p3 = null;
+      // 2. 闲家补牌判定 (0-5 补，6-7 停)
+      if (pScore <= 5) {
+        p3 = drawCard();
+        activeHand.pCards.push(p3);
+        activeHand.pRevealed.push(false);
+        playCardSlideSound();
+        document.getElementById('player-cards').innerHTML += renderTableCardMarkup('player', 2, p3);
+        await wait(180);
+      }
+
+      // 3. 庄家补牌判定
+      let bDraw = false;
+      if (!p3) {
+        if (bScore <= 5) bDraw = true;
+      } else {
+        const v = p3.val;
+        if (bScore <= 2) bDraw = true;
+        else if (bScore === 3 && v !== 8) bDraw = true;
+        else if (bScore === 4 && [2,3,4,5,6,7].includes(v)) bDraw = true;
+        else if (bScore === 5 && [4,5,6,7].includes(v)) bDraw = true;
+        else if (bScore === 6 && [6,7].includes(v)) bDraw = true;
+      }
+
+      if (bDraw) {
+        const b3 = drawCard();
+        activeHand.bCards.push(b3);
+        activeHand.bRevealed.push(false);
+        playCardSlideSound();
+        document.getElementById('banker-cards').innerHTML += renderTableCardMarkup('banker', 2, b3);
+        await wait(180);
+      }
+
+      // 若双方均无补牌，直接结算
+      if (!p3 && !bDraw) {
+        finalizeRoundOutcome();
+        return;
+      }
+
+      document.getElementById('game-status-hint').innerText = '进入补牌决战：请开决胜牌';
+      highlightNextCard();
+    }
+
+    /* ===================================================
+       终局清算与数据回写
        =================================================== */
     function finalizeRoundOutcome() {
       document.getElementById('squeeze-hint-banner').classList.add('hidden');
-      
+      document.getElementById('btn-reveal-opponent').classList.add('hidden');
+      document.querySelectorAll('.table-card').forEach(el => {
+        el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse');
+      });
+
       const pFinal = calcCardsValue(activeHand.pCards);
       const bFinal = calcCardsValue(activeHand.bCards);
       document.getElementById('player-score').innerText = pFinal;
@@ -868,7 +871,7 @@
       let winAmt = 0;
       if (winner === 'player') winAmt += bets.player * 2;
       else if (winner === 'banker') winAmt += Math.floor(bets.banker * 1.95);
-      else winAmt += bets.player + bets.banker + (bets.tie * 9); // 和局主注退回，副注1赔8
+      else winAmt += bets.player + bets.banker + (bets.tie * 9);
 
       bankroll += winAmt;
       history.push(winner);
@@ -956,7 +959,6 @@
       renderBetChipStack('banker', bets.banker);
       renderBetChipStack('tie', bets.tie);
 
-      // 高亮选中的主注区
       ['player', 'banker', 'tie'].forEach(side => {
         const el = document.getElementById(`bet-card-${side}`);
         if (bets[side] > 0) {
