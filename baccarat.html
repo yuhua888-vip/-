@@ -97,6 +97,7 @@
   </style>
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col font-sans select-none overflow-x-hidden antialiased">
+
   <!-- 顶部导航与资金卡 -->
   <header class="w-full max-w-lg mx-auto px-4 pt-3 pb-2 flex items-center justify-between border-b border-table-border/60">
     <div>
@@ -293,6 +294,7 @@
       <button onclick="closeAiTerminalModal()" class="w-full py-2 bg-champagne-500 text-stone-950 font-black rounded-xl text-xs">关闭分析终端</button>
     </div>
   </div>
+
   <script>
     let audioCtx = null;
     let soundEnabled = true;
@@ -808,6 +810,53 @@
       return { grid, maxCol };
     }
 
+    function deriveDownroadMarkers(logicalColumns, k) {
+      const derived = [];
+      const validCols = logicalColumns.filter(c => c.winner === 'banker' || c.winner === 'player');
+      for (let i = 1; i < validCols.length; i++) {
+        const curCol = validCols[i];
+        const prevColIndex = i - k;
+        if (prevColIndex < 0) continue;
+        for (let j = 0; j < curCol.count; j++) {
+          if (j === 0) {
+            const compA = validCols[i - 1].count;
+            const compB = validCols[i - 1 - k] ? validCols[i - 1 - k].count : 0;
+            derived.push(compA === compB ? 'red' : 'blue');
+          } else {
+            const refCol = validCols[prevColIndex];
+            derived.push(refCol && refCol.count >= (j + 1) ? 'red' : 'blue');
+          }
+        }
+      }
+      return derived;
+    }
+
+    function buildDerivedGrid(markerList) {
+      const grid = {};
+      let maxCol = 22;
+      let c = 0, r = 0;
+      let lastMarker = null;
+
+      for (const m of markerList) {
+        if (lastMarker === null) {
+          grid[`0,0`] = m;
+          lastMarker = m;
+        } else if (m === lastMarker) {
+          if (r + 1 < 6 && !grid[`${r + 1},${c}`]) r++; else c++;
+          grid[`${r},${c}`] = m;
+        } else {
+          let nextCol = 0;
+          while (grid[`0,${nextCol}`]) nextCol++;
+          c = nextCol;
+          r = 0;
+          grid[`${r},${c}`] = m;
+          lastMarker = m;
+        }
+        if (c >= maxCol) maxCol = c + 4;
+      }
+      return { grid, maxCol };
+    }
+
     function renderActiveRoad() {
       const container = document.getElementById('road-matrix-container');
       if (!container) return;
@@ -887,28 +936,41 @@
         else if (item === 'player') { if (curB === 0) curP++; else break; }
       }
 
-      document.getElementById('stat-b').innerText = bCount;
-      document.getElementById('stat-p').innerText = pCount;
-      document.getElementById('stat-t').innerText = tCount;
+      const statB = document.getElementById('stat-b');
+      if (statB) statB.innerText = bCount;
+      const statP = document.getElementById('stat-p');
+      if (statP) statP.innerText = pCount;
+      const statT = document.getElementById('stat-t');
+      if (statT) statT.innerText = tCount;
 
-      document.getElementById('streak-cur-b').innerText = curB;
-      document.getElementById('streak-cur-p').innerText = curP;
-      document.getElementById('streak-max-b').innerText = maxB;
-      document.getElementById('streak-max-p').innerText = maxP;
-      document.getElementById('stat-tie-total').innerText = tCount;
+      const curBDisp = document.getElementById('streak-cur-b');
+      if (curBDisp) curBDisp.innerText = curB;
+      const curPDisp = document.getElementById('streak-cur-p');
+      if (curPDisp) curPDisp.innerText = curP;
+      const maxBDisp = document.getElementById('streak-max-b');
+      if (maxBDisp) maxBDisp.innerText = maxB;
+      const maxPDisp = document.getElementById('streak-max-p');
+      if (maxPDisp) maxPDisp.innerText = maxP;
+      const tieTotalDisp = document.getElementById('stat-tie-total');
+      if (tieTotalDisp) tieTotalDisp.innerText = tCount;
 
       renderActiveRoad();
     }
 
     function updateUI() {
-      document.getElementById('bankroll-val').innerText = '$' + bankroll.toLocaleString();
+      const bankrollDisp = document.getElementById('bankroll-val');
+      if (bankrollDisp) bankrollDisp.innerText = '$' + bankroll.toLocaleString();
+      
       const pVal = bets.player;
       const bVal = bets.banker;
       const tVal = bets.tie;
 
-      document.getElementById('bet-player').innerText = pVal ? '$' + pVal.toLocaleString() : '';
-      document.getElementById('bet-banker').innerText = bVal ? '$' + bVal.toLocaleString() : '';
-      document.getElementById('bet-tie').innerText = tVal ? '$' + tVal.toLocaleString() : '';
+      const pBetDisp = document.getElementById('bet-player');
+      if (pBetDisp) pBetDisp.innerText = pVal ? '$' + pVal.toLocaleString() : '';
+      const bBetDisp = document.getElementById('bet-banker');
+      if (bBetDisp) bBetDisp.innerText = bVal ? '$' + bVal.toLocaleString() : '';
+      const tBetDisp = document.getElementById('bet-tie');
+      if (tBetDisp) tBetDisp.innerText = tVal ? '$' + tVal.toLocaleString() : '';
 
       syncBetCardState('player', pVal > 0);
       syncBetCardState('banker', bVal > 0);
