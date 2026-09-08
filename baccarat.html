@@ -47,7 +47,7 @@
             'ios-glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
             'deal-glow': '0 0 24px rgba(212, 175, 55, 0.45), 0 4px 12px rgba(0, 0, 0, 0.5)',
             'chip-glow': '0 0 16px rgba(212, 175, 55, 0.35)',
-            'squeeze-glow': '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.2)'
+            'active-card': '0 0 14px rgba(212, 175, 55, 0.6)'
           }
         }
       }
@@ -59,7 +59,7 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
     
-    /* 优化二：彻底禁用所有手势与双击缩放 */
+    /* 彻底杜绝全局手势放大与双击异常 */
     * {
       touch-action: manipulation;
       -webkit-touch-callout: none;
@@ -78,7 +78,7 @@
         linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
       background-size: 100% 100%, 100% 32px;
       padding-top: var(--safe-top);
-      padding-bottom: calc(var(--safe-bottom) + 12px);
+      padding-bottom: calc(var(--safe-bottom) + 10px);
     }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -90,7 +90,6 @@
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(212, 175, 55, 0.18);
     }
-
     .glass-surface {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(16px);
@@ -98,13 +97,14 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* 桌面卡牌样式 */
+    /* 牌桌卡牌与翻转 */
     .table-card {
       width: 3.4rem;
       height: 4.9rem;
       border-radius: 0.55rem;
       perspective: 800px;
       transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+      position: relative;
     }
     .table-card-inner {
       position: relative;
@@ -123,8 +123,8 @@
       border-radius: 0.55rem;
     }
     .table-card-back {
-      background: linear-gradient(135deg, #11141f 0%, #090a0f 100%);
-      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: linear-gradient(135deg, #161926 0%, #090b12 100%);
+      border: 1px solid rgba(212, 175, 55, 0.4);
       box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.15);
     }
     .table-card-front {
@@ -134,16 +134,13 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
-    /* 优化一：高保真 3D 物理搓牌台 */
-    .squeeze-stage {
-      perspective: 1200px;
-    }
+    /* 物理搓牌舞台 */
+    .squeeze-stage { perspective: 1200px; }
     .squeeze-card-wrap {
       width: 220px;
       height: 310px;
       position: relative;
       transform-style: preserve-3d;
-      will-change: transform;
     }
     .squeeze-card-face {
       position: absolute;
@@ -158,11 +155,10 @@
       z-index: 10;
     }
     .squeeze-card-back {
-      background: linear-gradient(135deg, #161a29 0%, #090b10 100%);
-      border: 2px solid rgba(212, 175, 55, 0.5);
+      background: linear-gradient(135deg, #181d2d 0%, #090b10 100%);
+      border: 2px solid rgba(212, 175, 55, 0.55);
       z-index: 20;
       transform-origin: top center;
-      transition: box-shadow 0.1s ease;
       overflow: hidden;
     }
     .squeeze-card-back::after {
@@ -170,7 +166,6 @@
       position: absolute;
       inset: 0;
       background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent 70%);
-      pointer-events: none;
     }
 
     .chip-rim { border: 2px dashed rgba(255, 255, 255, 0.35); }
@@ -201,7 +196,7 @@
         皇后娱乐 · EMPRESS ROYALE <span class="text-[9px] font-mono tracking-widest text-champagne-400 font-semibold ml-0.5 border border-champagne-400/30 px-1 py-0.2 rounded-full">VIP</span>
       </div>
       <div class="text-[8px] font-mono tracking-widest text-slate-400 uppercase mt-0.5">
-        8 Card · Punto Banco
+        VIP Room · 8-Deck Punto Banco
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -215,95 +210,91 @@
 
   <main class="w-full max-w-lg mx-auto px-3.5 flex-1 flex flex-col justify-between space-y-2.5 pt-2 pb-2">
     
-    <!-- AI 数据分析小窗 -->
-    <section class="glass-panel rounded-2xl p-2.5 space-y-1.5">
-      <div class="flex items-center justify-between border-b border-white/5 pb-1">
-        <div class="flex items-center gap-1.5">
-          <div class="w-5 h-5 rounded-md bg-champagne-400/10 border border-champagne-400/30 flex items-center justify-center text-champagne-300 font-mono text-[9px] font-black">Σ</div>
-          <span class="text-[10px] font-black text-champagne-200 tracking-wider">SOPHIA AI ANALYTICS</span>
-        </div>
-        <span id="game-status-hint" class="text-[9px] font-mono text-champagne-400 font-bold tracking-wider">请选择筹码下注</span>
+    <!-- 状态指示条 -->
+    <section class="glass-panel rounded-2xl px-3 py-2 flex items-center justify-between">
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-champagne-400 animate-ping"></span>
+        <span id="game-status-hint" class="text-[10px] font-mono text-champagne-300 font-bold tracking-wider">请选择【庄】或【闲】下注</span>
       </div>
-      <div class="grid grid-cols-3 gap-2 text-center font-mono text-[10px]">
-        <div class="glass-surface p-1 rounded-xl"><span class="text-[7px] text-slate-400">庄胜</span> <b id="ai-tile-b" class="text-neonRed ml-1">0%</b></div>
-        <div class="glass-surface p-1 rounded-xl"><span class="text-[7px] text-slate-400">闲胜</span> <b id="ai-tile-p" class="text-glacier ml-1">0%</b></div>
-        <div class="glass-surface p-1 rounded-xl"><span class="text-[7px] text-slate-400">和局</span> <b id="ai-tile-t" class="text-neonEmerald ml-1">0%</b></div>
+      <div class="text-[8px] font-mono text-slate-400">
+        庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b>
+        闲:<b id="stat-p" class="text-glacier ml-1">0</b>
+        和:<b id="stat-t" class="text-neonEmerald ml-1">0</b>
       </div>
     </section>
 
-    <!-- 牌桌区域 (发牌后带点击手搓提示) -->
-    <section class="relative glass-panel rounded-3xl p-3 min-h-[175px] flex flex-col justify-between overflow-hidden">
+    <!-- 牌桌区域 -->
+    <section class="relative glass-panel rounded-3xl p-3 min-h-[185px] flex flex-col justify-between overflow-hidden">
       <div class="grid grid-cols-2 gap-3 relative z-10">
-        <!-- 闲家 -->
+        <!-- 闲家牌区 -->
         <div class="flex flex-col items-center">
           <div class="flex items-center gap-1.5 mb-1.5">
             <span class="text-[10px] font-black tracking-widest text-glacier">PLAYER</span>
             <span id="player-score" class="w-5 h-5 rounded-full bg-glacier-surface border border-glacier-border flex items-center justify-center font-mono font-black text-[10px] text-glacier">-</span>
           </div>
           <div id="player-cards" class="flex gap-1.5 min-h-[82px] items-center justify-center">
-            <div class="table-card rounded-xl border border-dashed border-glacier/30 bg-glacier/5 flex items-center justify-center text-[9px] font-mono text-glacier/40">闲牌区</div>
+            <div class="table-card rounded-xl border border-dashed border-glacier/30 bg-glacier/5 flex items-center justify-center text-[9px] font-mono text-glacier/40">闲家等待</div>
           </div>
         </div>
-        <!-- 庄家 -->
+
+        <!-- 庄家牌区 -->
         <div class="flex flex-col items-center">
           <div class="flex items-center gap-1.5 mb-1.5">
             <span id="banker-score" class="w-5 h-5 rounded-full bg-neonRed-surface border border-neonRed-border flex items-center justify-center font-mono font-black text-[10px] text-neonRed">-</span>
             <span class="text-[10px] font-black tracking-widest text-neonRed">BANKER</span>
           </div>
           <div id="banker-cards" class="flex gap-1.5 min-h-[82px] items-center justify-center">
-            <div class="table-card rounded-xl border border-dashed border-neonRed/30 bg-neonRed/5 flex items-center justify-center text-[9px] font-mono text-neonRed/40">庄牌区</div>
+            <div class="table-card rounded-xl border border-dashed border-neonRed/30 bg-neonRed/5 flex items-center justify-center text-[9px] font-mono text-neonRed/40">庄家等待</div>
           </div>
         </div>
       </div>
 
-      <!-- 搓牌提示/结果状态栏 -->
+      <!-- 交互与结算提示 -->
       <div class="h-6 flex items-center justify-center mt-1 relative z-10">
-        <div id="squeeze-hint-banner" class="hidden px-3 py-0.5 rounded-full text-[9px] font-mono text-champagne-300 border border-champagne-400/40 bg-black/60 shadow-lg animate-pulse">
-          👆 点击盖牌可进行手动物理搓牌
+        <div id="squeeze-hint-banner" class="hidden px-3 py-0.5 rounded-full text-[9px] font-mono text-champagne-300 border border-champagne-400/50 bg-black/70 shadow-lg animate-pulse">
+          👆 点击高亮光晕手牌，亲手进行搓牌
         </div>
         <div id="result-banner" class="hidden px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider text-slate-100 border shadow-lg backdrop-blur-xl"></div>
       </div>
     </section>
 
-    <!-- 下注区域 -->
+    <!-- 下注区域（互斥单选：押庄或押闲，和局为副注） -->
     <section id="betting-area" class="grid grid-cols-3 gap-2.5">
-      <div onclick="addBet('player')" id="bet-card-player" class="cursor-pointer bg-glacier-surface hover:bg-glacier-surface/80 border border-glacier-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] relative overflow-hidden transition-all active:scale-95">
+      <!-- 闲家 -->
+      <div onclick="setBetSide('player')" id="bet-card-player" class="cursor-pointer bg-glacier-surface hover:bg-glacier-surface/80 border border-glacier-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[82px] relative overflow-hidden transition-all active:scale-95">
         <div>
-          <div class="text-[11px] font-black text-glacier tracking-wider">PLAYER</div>
-          <div class="text-[8px] font-mono text-slate-400">1:1</div>
+          <div class="text-[11px] font-black text-glacier tracking-wider">PLAYER (闲)</div>
+          <div class="text-[8px] font-mono text-slate-400">1:1 · 主注开牌</div>
         </div>
         <div id="bet-chip-player" class="h-6 flex items-center justify-center"></div>
       </div>
-      <div onclick="addBet('tie')" id="bet-card-tie" class="cursor-pointer bg-neonEmerald-surface hover:bg-neonEmerald-surface/80 border border-neonEmerald-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] relative overflow-hidden transition-all active:scale-95">
+
+      <!-- 和局 (副注) -->
+      <div onclick="addTieBet()" id="bet-card-tie" class="cursor-pointer bg-neonEmerald-surface hover:bg-neonEmerald-surface/80 border border-neonEmerald-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[82px] relative overflow-hidden transition-all active:scale-95">
         <div>
-          <div class="text-[11px] font-black text-neonEmerald tracking-wider">TIE</div>
-          <div class="text-[8px] font-mono text-slate-400">1:8</div>
+          <div class="text-[11px] font-black text-neonEmerald tracking-wider">TIE (和)</div>
+          <div class="text-[8px] font-mono text-slate-400">1:8 · 副注</div>
         </div>
         <div id="bet-chip-tie" class="h-6 flex items-center justify-center"></div>
       </div>
-      <div onclick="addBet('banker')" id="bet-card-banker" class="cursor-pointer bg-neonRed-surface hover:bg-neonRed-surface/80 border border-neonRed-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[78px] relative overflow-hidden transition-all active:scale-95">
+
+      <!-- 庄家 -->
+      <div onclick="setBetSide('banker')" id="bet-card-banker" class="cursor-pointer bg-neonRed-surface hover:bg-neonRed-surface/80 border border-neonRed-border rounded-2xl p-2 text-center flex flex-col justify-between min-h-[82px] relative overflow-hidden transition-all active:scale-95">
         <div>
-          <div class="text-[11px] font-black text-neonRed tracking-wider">BANKER</div>
-          <div class="text-[8px] font-mono text-slate-400">1:0.95</div>
+          <div class="text-[11px] font-black text-neonRed tracking-wider">BANKER (庄)</div>
+          <div class="text-[8px] font-mono text-slate-400">1:0.95 · 主注开牌</div>
         </div>
         <div id="bet-chip-banker" class="h-6 flex items-center justify-center"></div>
       </div>
     </section>
 
-    <!-- 五路路单 -->
-    <section class="glass-panel rounded-2xl p-2.5 space-y-1.5">
-      <div class="flex items-center justify-between border-b border-white/5 pb-1 gap-1">
-        <div class="flex items-center gap-1">
-          <button onclick="switchRoadTab('bead')" id="tab-bead" class="px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400">珠盘</button>
-          <button onclick="switchRoadTab('big')" id="tab-big" class="px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold">大路</button>
-        </div>
-        <div class="text-[8px] font-mono text-slate-400">
-          庄:<b id="stat-b" class="text-neonRed ml-0.5">0</b>
-          闲:<b id="stat-p" class="text-glacier ml-1">0</b>
-          和:<b id="stat-t" class="text-neonEmerald ml-1">0</b>
-        </div>
+    <!-- 路单 -->
+    <section class="glass-panel rounded-2xl p-2.5 space-y-1">
+      <div class="flex items-center justify-between text-[9px] font-mono text-slate-400 pb-1 border-b border-white/5">
+        <span>VIP ROADMAP (大路)</span>
+        <span id="shoe-count" class="text-champagne-400">Shoe: 0/416</span>
       </div>
-      <div class="bg-black/50 rounded-xl p-1.5 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
+      <div class="bg-black/50 rounded-xl p-1 border border-white/5 overflow-x-auto no-scrollbar" id="road-viewport">
         <div id="road-matrix-container" class="w-max min-w-full"></div>
       </div>
     </section>
@@ -322,24 +313,24 @@
       </div>
     </section>
 
-    <!-- 底部控制按钮 -->
+    <!-- 底部控制栏 -->
     <footer class="grid grid-cols-4 gap-2.5 pt-0.5">
       <button id="btn-clear" onclick="clearBets()" class="col-span-1 py-2.5 rounded-2xl glass-surface text-slate-300 text-xs font-bold active:scale-95 transition-transform">清除</button>
-      <button id="deal-btn" onclick="dealRound()" class="deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow active:scale-95 transition-transform">发牌 · DEAL</button>
+      <button id="deal-btn" onclick="startVipRound()" class="deal-pulse col-span-3 py-2.5 rounded-2xl bg-gradient-to-r from-champagne-400 via-champagne-300 to-champagne-500 text-stone-950 font-black text-sm tracking-widest uppercase shadow-deal-glow active:scale-95 transition-transform">开局 · DEAL</button>
     </footer>
   </main>
 
-  <!-- 优化一：物理手搓牌模态舞台 (Full 3D Squeeze Stage) -->
+  <!-- 物理搓牌全屏模态舞台 -->
   <div id="squeeze-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-3xl hidden flex-col items-center justify-between p-6">
     <div class="w-full flex items-center justify-between text-xs font-mono">
-      <span id="squeeze-title" class="text-champagne-400 font-bold tracking-widest">PLAYER CARD 1</span>
-      <span class="text-slate-500 text-[10px]">手指按住牌角向内搓动</span>
+      <span id="squeeze-title" class="text-champagne-400 font-bold tracking-widest">SQUEEZE CARD</span>
+      <span class="text-slate-500 text-[10px]">指尖按住底部向上推牌</span>
     </div>
 
-    <!-- 3D 拟真卡牌容器 -->
+    <!-- 3D 物理卡牌 -->
     <div class="squeeze-stage my-auto flex items-center justify-center">
       <div id="squeeze-box" class="squeeze-card-wrap">
-        <!-- 底牌（正面） -->
+        <!-- 底牌正面 -->
         <div id="squeeze-front" class="squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between">
           <div class="flex justify-between items-start">
             <div id="sq-rank-top" class="text-3xl font-black font-mono leading-none">A</div>
@@ -352,38 +343,34 @@
           </div>
         </div>
 
-        <!-- 遮罩牌背（手搓受体） -->
+        <!-- 牌背滑块 -->
         <div id="squeeze-back" class="squeeze-card-face squeeze-card-back flex items-center justify-center cursor-grab active:cursor-grabbing">
           <div class="w-24 h-40 rounded-xl border border-champagne-400/30 flex items-center justify-center bg-champagne-400/5">
             <span class="text-4xl text-champagne-300 font-serif opacity-70">⚜</span>
           </div>
-          <div class="absolute bottom-3 text-[9px] font-mono text-champagne-400/60 uppercase tracking-widest">
-            Drag to Squeeze
+          <div class="absolute bottom-3 text-[9px] font-mono text-champagne-400/70 uppercase tracking-widest">
+            Slide Up to Reveal
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 控制动作 -->
+    <!-- 快速看牌 -->
     <div class="w-full space-y-2 max-w-xs">
       <button onclick="instantRevealSqueeze()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase tracking-wider active:scale-95 transition-transform">
-        直接全开 (Reveal All)
+        直接翻开 (Reveal)
       </button>
     </div>
   </div>
 
   <script>
-    /* ===================================================
-       优化二：全面阻断双击放大与多点手势
-       =================================================== */
+    // 阻断全局缩放
     document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('gesturechange', (e) => e.preventDefault());
     document.addEventListener('gestureend', (e) => e.preventDefault());
 
-    /* ===================================================
-       原生 Web Audio 引擎
-       =================================================== */
+    // 音频引擎
     let audioCtx = null;
     let soundEnabled = true;
 
@@ -405,7 +392,7 @@
         const gain = ctx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -415,36 +402,34 @@
     }
 
     function playChipSound() {
-      playTone(1100, 0.04, 'sine');
-      setTimeout(() => playTone(800, 0.03, 'triangle'), 15);
+      playTone(1200, 0.04, 'sine');
+      setTimeout(() => playTone(850, 0.03, 'triangle'), 15);
     }
-    function playCardSlideSound() { playTone(320, 0.08, 'triangle'); }
+    function playCardSlideSound() { playTone(340, 0.08, 'triangle'); }
     function toggleAudio() {
       soundEnabled = !soundEnabled;
       document.getElementById('sound-btn').innerHTML = soundEnabled ? '🔊' : '🔇';
     }
 
-    /* ===================================================
-       游戏逻辑与开牌/手搓状态机
-       =================================================== */
+    // 扑克牌与规则定义
     const SUITS = ['♠', '♥', '♣', '♦'];
     const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    let shoe = [];
     let bankroll = 50000;
     let selectedChip = 100;
+    
+    // 下注状态：mainSide 必须在 'player' 与 'banker' 之间二选一
+    let playerMainBetSide = null; // 'player' | 'banker'
     let bets = { player: 0, banker: 0, tie: 0 };
     let history = []; 
-    let currentRoadTab = 'big';
-    let isDealing = false;
-    let shoe = [];
+    let isRoundRunning = false;
 
-    // 当前局发出的卡牌实体
-    let roundCards = {
-      p1: null, p2: null, p3: null,
-      b1: null, b2: null, b3: null
-    };
-    let cardFlippedState = {
-      p1: false, p2: false, p3: false,
-      b1: false, b2: false, b3: false
+    // 当前局牌组
+    let activeHand = {
+      pCards: [],
+      bCards: [],
+      pRevealed: [],
+      bRevealed: []
     };
 
     function initShoe() {
@@ -461,20 +446,27 @@
         }
       }
       shoe = deck.sort(() => Math.random() - 0.5);
+      updateShoeCount();
     }
     initShoe();
 
     function drawCard() {
       if (shoe.length < 52) initShoe();
-      return shoe.pop();
+      const c = shoe.pop();
+      updateShoeCount();
+      return c;
     }
 
-    function calcHand(cards) {
-      return cards.reduce((acc, cur) => acc + (cur ? cur.val : 0), 0) % 10;
+    function updateShoeCount() {
+      document.getElementById('shoe-count').innerText = `Shoe: ${416 - shoe.length}/416`;
+    }
+
+    function calcCardsValue(arr) {
+      return arr.reduce((acc, c) => acc + (c ? c.val : 0), 0) % 10;
     }
 
     function pickChip(val, btn) {
-      if (isDealing) return;
+      if (isRoundRunning) return;
       selectedChip = val;
       playChipSound();
       document.querySelectorAll('.chip-btn').forEach(b => {
@@ -484,44 +476,63 @@
       document.getElementById('selected-chip-display').innerText = '$' + (val === 1000 ? '1,000' : val);
     }
 
-    function addBet(area) {
-      if (isDealing) return;
-      if (bankroll < selectedChip) {
-        alert('筹码不足！');
-        return;
+    // 核心规则：下注主方互斥（押闲即清空庄，押庄即清空闲）
+    function setBetSide(side) {
+      if (isRoundRunning) return;
+      if (bankroll < selectedChip) { alert('余额不足！'); return; }
+
+      if (playerMainBetSide !== side) {
+        // 返还原有主注
+        if (playerMainBetSide) {
+          bankroll += bets[playerMainBetSide];
+          bets[playerMainBetSide] = 0;
+        }
+        playerMainBetSide = side;
       }
+
       bankroll -= selectedChip;
-      bets[area] += selectedChip;
+      bets[side] += selectedChip;
+      playChipSound();
+      updateUI();
+    }
+
+    // 和局副注
+    function addTieBet() {
+      if (isRoundRunning) return;
+      if (bankroll < selectedChip) { alert('余额不足！'); return; }
+      bankroll -= selectedChip;
+      bets.tie += selectedChip;
       playChipSound();
       updateUI();
     }
 
     function clearBets() {
-      if (isDealing) return;
+      if (isRoundRunning) return;
       bankroll += (bets.player + bets.banker + bets.tie);
       bets = { player: 0, banker: 0, tie: 0 };
+      playerMainBetSide = null;
       playTone(400, 0.05);
       updateUI();
     }
 
-    // 渲染桌面盖牌（绑定搓牌点击事件）
-    function createTableCardDOM(cardKey, sideLabel) {
+    // 创建牌桌卡牌节点
+    function renderTableCardMarkup(side, index, card) {
       return `
-        <div id="card-${cardKey}" onclick="userRequestSqueeze('${cardKey}', '${sideLabel}')" 
-             class="table-card cursor-pointer active:scale-95 transform transition">
-          <div class="table-card-inner" id="inner-${cardKey}">
+        <div id="card-${side}-${index}" onclick="handleTableCardClick('${side}', ${index})" 
+             class="table-card cursor-pointer">
+          <div class="table-card-inner" id="inner-${side}-${index}">
             <div class="table-card-back flex items-center justify-center">
-              <span class="text-[11px] text-champagne-400/80 font-serif">⚜</span>
+              <span class="text-[11px] text-champagne-400 font-serif">⚜</span>
             </div>
-            <div class="table-card-front p-1 flex flex-col justify-between text-[11px] font-black leading-none">
+            <div class="table-card-front p-1 flex flex-col justify-between text-[11px] font-black leading-none ${card.isRed ? 'text-neonRed' : 'text-slate-950'}">
               <div class="flex justify-between items-start">
-                <span class="card-rank">-</span>
-                <span class="card-suit text-[10px]">-</span>
+                <span>${card.rank}</span>
+                <span class="text-[10px]">${card.suit}</span>
               </div>
-              <div class="text-center text-lg leading-none card-suit-center">-</div>
+              <div class="text-center text-lg leading-none">${card.suit}</div>
               <div class="flex justify-between items-end rotate-180">
-                <span class="card-rank">-</span>
-                <span class="card-suit text-[10px]">-</span>
+                <span>${card.rank}</span>
+                <span class="text-[10px]">${card.suit}</span>
               </div>
             </div>
           </div>
@@ -529,29 +540,33 @@
       `;
     }
 
-    function populateCardContent(cardKey, card) {
-      const el = document.getElementById(`card-${cardKey}`);
-      if (!el || !card) return;
-      const front = el.querySelector('.table-card-front');
-      front.className = `table-card-front p-1 flex flex-col justify-between text-[11px] font-black leading-none ${card.isRed ? 'text-neonRed' : 'text-slate-950'}`;
-      el.querySelectorAll('.card-rank').forEach(r => r.innerText = card.rank);
-      el.querySelectorAll('.card-suit').forEach(s => s.innerText = card.suit);
-      el.querySelector('.card-suit-center').innerText = card.suit;
-    }
+    const wait = ms => new Promise(r => setTimeout(r, ms));
 
     /* ===================================================
-       发牌流程 (发下即支持全程自主搓牌)
+       贵宾开局主线程 (严格遵循搓牌权限与发牌序列)
        =================================================== */
-    async function dealRound() {
-      const totalBet = bets.player + bets.banker + bets.tie;
-      if (totalBet === 0 || isDealing) return;
+    async function startVipRound() {
+      if (isRoundRunning) return;
+      if (!playerMainBetSide || bets[playerMainBetSide] <= 0) {
+        alert('请在【庄】或【闲】中选择一方下注！');
+        return;
+      }
 
-      isDealing = true;
+      isRoundRunning = true;
       document.getElementById('deal-btn').disabled = true;
       document.getElementById('btn-clear').disabled = true;
       document.getElementById('result-banner').classList.add('hidden');
       document.getElementById('squeeze-hint-banner').classList.remove('hidden');
-      document.getElementById('game-status-hint').innerText = '开牌中：点击卡牌可搓牌';
+
+      const isPlayerSqueeze = (playerMainBetSide === 'player');
+      document.getElementById('game-status-hint').innerText = isPlayerSqueeze ? 
+        '系统发牌完成：请您亲手搓【闲家】手牌' : '系统发牌完成：请您亲手搓【庄家】手牌';
+
+      // 初始化局数据
+      activeHand.pCards = [drawCard(), drawCard()];
+      activeHand.bCards = [drawCard(), drawCard()];
+      activeHand.pRevealed = [false, false];
+      activeHand.bRevealed = [false, false];
 
       const pTray = document.getElementById('player-cards');
       const bTray = document.getElementById('banker-cards');
@@ -560,98 +575,94 @@
       document.getElementById('player-score').innerText = '-';
       document.getElementById('banker-score').innerText = '-';
 
-      // 发出基础 4 张牌 (全部处于盖牌状态)
-      roundCards.p1 = drawCard();
-      roundCards.b1 = drawCard();
-      roundCards.p2 = drawCard();
-      roundCards.b2 = drawCard();
-      roundCards.p3 = null;
-      roundCards.b3 = null;
-
-      Object.keys(cardFlippedState).forEach(k => cardFlippedState[k] = false);
-
+      // 1. 发闲1
       playCardSlideSound();
-      pTray.innerHTML += createTableCardDOM('p1', '闲家 第1张');
+      pTray.innerHTML += renderTableCardMarkup('player', 0, activeHand.pCards[0]);
       await wait(150);
-      populateCardContent('p1', roundCards.p1);
 
+      // 2. 发庄1
       playCardSlideSound();
-      bTray.innerHTML += createTableCardDOM('b1', '庄家 第1张');
+      bTray.innerHTML += renderTableCardMarkup('banker', 0, activeHand.bCards[0]);
       await wait(150);
-      populateCardContent('b1', roundCards.b1);
 
+      // 3. 发闲2
       playCardSlideSound();
-      pTray.innerHTML += createTableCardDOM('p2', '闲家 第2张');
+      pTray.innerHTML += renderTableCardMarkup('player', 1, activeHand.pCards[1]);
       await wait(150);
-      populateCardContent('p2', roundCards.p2);
 
+      // 4. 发庄2
       playCardSlideSound();
-      bTray.innerHTML += createTableCardDOM('b2', '庄家 第2张');
-      await wait(150);
-      populateCardContent('b2', roundCards.b2);
+      bTray.innerHTML += renderTableCardMarkup('banker', 1, activeHand.bCards[1]);
+      await wait(200);
 
-      // 计算是否需要补牌
-      let pScore = calcHand([roundCards.p1, roundCards.p2]);
-      let bScore = calcHand([roundCards.b1, roundCards.b2]);
-
-      const isNatural = (pScore >= 8 || bScore >= 8);
-      if (!isNatural) {
-        if (pScore <= 5) {
-          roundCards.p3 = drawCard();
-          playCardSlideSound();
-          pTray.innerHTML += createTableCardDOM('p3', '闲家 补牌');
-          populateCardContent('p3', roundCards.p3);
-          await wait(150);
-        }
-
-        const p3Val = roundCards.p3 ? roundCards.p3.val : null;
-        let bDraw = false;
-        if (p3Val === null) {
-          if (bScore <= 5) bDraw = true;
-        } else {
-          if (bScore <= 2) bDraw = true;
-          else if (bScore === 3 && p3Val !== 8) bDraw = true;
-          else if (bScore === 4 && [2,3,4,5,6,7].includes(p3Val)) bDraw = true;
-          else if (bScore === 5 && [4,5,6,7].includes(p3Val)) bDraw = true;
-          else if (bScore === 6 && [6,7].includes(p3Val)) bDraw = true;
-        }
-
-        if (bDraw) {
-          roundCards.b3 = drawCard();
-          playCardSlideSound();
-          bTray.innerHTML += createTableCardDOM('b3', '庄家 补牌');
-          populateCardContent('b3', roundCards.b3);
-          await wait(150);
-        }
+      // 5. 规则：非玩家下注方，由系统自动亮牌；玩家下注方等待手搓
+      if (isPlayerSqueeze) {
+        // 玩家押闲：庄家自动全开明牌，闲家由玩家搓
+        await revealCardBySystem('banker', 0);
+        await wait(180);
+        await revealCardBySystem('banker', 1);
+        highlightCardForSqueeze('player', 0);
+      } else {
+        // 玩家押庄：闲家自动全开明牌，庄家由玩家搓
+        await revealCardBySystem('player', 0);
+        await wait(180);
+        await revealCardBySystem('player', 1);
+        highlightCardForSqueeze('banker', 0);
       }
-
-      // 等待玩家搓牌或者点击全开
-      checkAutoRevealProgress();
     }
 
-    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+    // 系统自动开明牌
+    async function revealCardBySystem(side, index) {
+      playCardSlideSound();
+      const inner = document.getElementById(`inner-${side}-${index}`);
+      if (inner) inner.classList.add('is-flipped');
+      if (side === 'player') activeHand.pRevealed[index] = true;
+      if (side === 'banker') activeHand.bRevealed[index] = true;
+      updateBoardScores();
+    }
+
+    function highlightCardForSqueeze(side, index) {
+      // 清理其他高光
+      document.querySelectorAll('.table-card').forEach(el => el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse'));
+      const target = document.getElementById(`card-${side}-${index}`);
+      if (target) {
+        target.classList.add('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse');
+      }
+    }
+
+    // 点击牌桌卡牌触发手搓（严格校验权限）
+    function handleTableCardClick(side, index) {
+      if (!isRoundRunning) return;
+      // 只有玩家押注的这一方，且尚未翻开的牌，才有搓牌权
+      if (side !== playerMainBetSide) {
+        document.getElementById('game-status-hint').innerText = `不可搓对方牌面！您仅持有【${playerMainBetSide === 'player' ? '闲家' : '庄家'}】开牌权`;
+        playTone(200, 0.1, 'sawtooth');
+        return;
+      }
+
+      const isRevealed = (side === 'player') ? activeHand.pRevealed[index] : activeHand.bRevealed[index];
+      if (isRevealed) return;
+
+      const card = (side === 'player') ? activeHand.pCards[index] : activeHand.bCards[index];
+      openSqueezeModal(side, index, card);
+    }
 
     /* ===================================================
-       优化一：物理触摸/鼠标搓牌交互核心
+       物理手搓牌模态系统
        =================================================== */
-    let currentSqueezingKey = null;
+    let currentSqueezeTarget = null; // { side, index, card }
     let touchStartY = 0;
     let touchStartX = 0;
-    let currentDragDist = 0;
-    let isDraggingCard = false;
+    let isTouchingCard = false;
 
     const sqOverlay = document.getElementById('squeeze-overlay');
     const sqBack = document.getElementById('squeeze-back');
     const sqBox = document.getElementById('squeeze-box');
 
-    function userRequestSqueeze(cardKey, label) {
-      const card = roundCards[cardKey];
-      if (!card || cardFlippedState[cardKey]) return; // 已翻开的不重复搓
+    function openSqueezeModal(side, index, card) {
+      currentSqueezeTarget = { side, index, card };
+      document.getElementById('squeeze-title').innerText = `${side === 'player' ? 'PLAYER (闲)' : 'BANKER (庄)'} · CARD ${index + 1}`;
 
-      currentSqueezingKey = cardKey;
-      document.getElementById('squeeze-title').innerText = `${label} (${cardKey.toUpperCase()})`;
-
-      // 填充搓牌正面数值
       const front = document.getElementById('squeeze-front');
       front.className = `squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between ${card.isRed ? 'text-neonRed' : 'text-slate-950'}`;
       document.getElementById('sq-rank-top').innerText = card.rank;
@@ -660,128 +671,193 @@
       document.getElementById('sq-suit-bot').innerText = card.suit;
       document.getElementById('sq-suit-center').innerText = card.suit;
 
-      // 重置手搓物理形变
-      resetSqueezePhysics();
-
+      resetSqueezeBack();
       sqOverlay.classList.remove('hidden');
       sqOverlay.classList.add('flex');
     }
 
-    function resetSqueezePhysics() {
-      currentDragDist = 0;
-      isDraggingCard = false;
+    function resetSqueezeBack() {
+      isTouchingCard = false;
+      sqBack.style.transition = '';
       sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
       sqBack.style.opacity = '1';
       sqBox.style.transform = 'rotateX(0deg) rotateY(0deg)';
     }
 
-    // 绑定触摸与鼠标物理手搓监听
     sqBack.addEventListener('pointerdown', (e) => {
-      isDraggingCard = true;
+      isTouchingCard = true;
       touchStartY = e.clientY;
       touchStartX = e.clientX;
       sqBack.setPointerCapture(e.pointerId);
     });
 
     sqBack.addEventListener('pointermove', (e) => {
-      if (!isDraggingCard) return;
+      if (!isTouchingCard) return;
       const deltaY = e.clientY - touchStartY;
       const deltaX = e.clientX - touchStartX;
 
-      // 仅允许向上或向内卷起
+      // 仅允许向上手搓推开
       if (deltaY < 0) {
-        currentDragDist = Math.abs(deltaY);
-        const percent = Math.min(currentDragDist / 260, 1.0);
+        const dist = Math.abs(deltaY);
+        const percent = Math.min(dist / 260, 1.0);
 
-        // 真实物理卷曲算法：位移 + 3D 透视角度倾斜 + 动态阴影衰减
-        const rotateAngle = percent * 75;
-        const liftZ = percent * 40;
-        sqBack.style.transform = `translate3d(0, -${currentDragDist * 0.85}px, ${liftZ}px) rotateX(${rotateAngle}deg)`;
-        sqBack.style.boxShadow = `0 ${25 + percent * 30}px ${40}px rgba(0,0,0,0.85)`;
-
-        // 整个舞台微幅偏转，增强手指操控实体感
+        // 真实物理卷边形变
+        const deg = percent * 75;
+        const lift = percent * 40;
+        sqBack.style.transform = `translate3d(0, -${dist * 0.85}px, ${lift}px) rotateX(${deg}deg)`;
         sqBox.style.transform = `rotateY(${deltaX * 0.08}deg)`;
 
-        // 揭开超过 68% 触发顺畅回弹全开
-        if (percent > 0.68) {
-          isDraggingCard = false;
-          finishSqueezeCard();
+        // 搓开达 65% 触发物理回弹全揭开
+        if (percent > 0.65) {
+          isTouchingCard = false;
+          completeSqueezeReveal();
         }
       }
     });
 
     sqBack.addEventListener('pointerup', () => {
-      if (!isDraggingCard) return;
-      isDraggingCard = false;
-      // 释放时如果没搓开，平滑弹回原位（物理弹性）
-      sqBack.style.transition = 'all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      if (!isTouchingCard) return;
+      isTouchingCard = false;
+      // 回弹弹簧动效
+      sqBack.style.transition = 'all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
       sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
-      setTimeout(() => sqBack.style.transition = '', 250);
+      setTimeout(() => sqBack.style.transition = '', 220);
     });
 
-    function finishSqueezeCard() {
+    function instantRevealSqueeze() {
+      completeSqueezeReveal();
+    }
+
+    function completeSqueezeReveal() {
       playTone(560, 0.1, 'triangle');
-      sqBack.style.transition = 'all 0.25s ease-out';
+      sqBack.style.transition = 'all 0.22s ease-out';
       sqBack.style.transform = 'translateY(-280px) rotateX(85deg)';
       sqBack.style.opacity = '0';
 
       setTimeout(() => {
         sqOverlay.classList.add('hidden');
         sqOverlay.classList.remove('flex');
-        // 将桌面上对应的卡牌置为翻开
-        markCardAsRevealed(currentSqueezingKey);
-      }, 250);
+        
+        const { side, index } = currentSqueezeTarget;
+        revealCardBySystem(side, index);
+        proceedAfterCardSqueezed(side, index);
+      }, 220);
     }
 
-    function instantRevealSqueeze() {
-      finishSqueezeCard();
-    }
+    /* ===================================================
+       开牌进度机与国际百家补牌算法
+       =================================================== */
+    async function proceedAfterCardSqueezed(side, index) {
+      // 若当前搓完的是第一张，提示搓第二张
+      if (index === 0) {
+        highlightCardForSqueeze(side, 1);
+        return;
+      }
 
-    function markCardAsRevealed(cardKey) {
-      if (!cardKey) return;
-      cardFlippedState[cardKey] = true;
-      const inner = document.getElementById(`inner-${cardKey}`);
-      if (inner) inner.classList.add('is-flipped');
-      updateRealtimeScores();
-      checkAutoRevealProgress();
-    }
+      // 若前两张已开齐，进入天牌与补牌研判
+      if (index === 1) {
+        document.querySelectorAll('.table-card').forEach(el => el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse'));
+        await evaluateTableRulesAndDraw();
+        return;
+      }
 
-    // 检查是否所有牌均已开完，若全开则进行最终结算
-    function checkAutoRevealProgress() {
-      const activeKeys = ['p1', 'p2', 'b1', 'b2'];
-      if (roundCards.p3) activeKeys.push('p3');
-      if (roundCards.b3) activeKeys.push('b3');
-
-      const allRevealed = activeKeys.every(k => cardFlippedState[k]);
-      if (allRevealed) {
+      // 第三张（补牌）搓完，直接进入终局
+      if (index === 2) {
+        document.querySelectorAll('.table-card').forEach(el => el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse'));
         finalizeRoundOutcome();
       }
     }
 
-    function updateRealtimeScores() {
-      const pFlipped = [roundCards.p1, roundCards.p2, roundCards.p3].filter((c, i) => {
-        const k = ['p1', 'p2', 'p3'][i];
-        return c && cardFlippedState[k];
-      });
-      const bFlipped = [roundCards.b1, roundCards.b2, roundCards.b3].filter((c, i) => {
-        const k = ['b1', 'b2', 'b3'][i];
-        return c && cardFlippedState[k];
-      });
+    async function evaluateTableRulesAndDraw() {
+      let pScore = calcCardsValue([activeHand.pCards[0], activeHand.pCards[1]]);
+      let bScore = calcCardsValue([activeHand.bCards[0], activeHand.bCards[1]]);
 
-      if (pFlipped.length > 0) {
-        document.getElementById('player-score').innerText = calcHand(pFlipped);
+      // 1. 判定例牌天牌（8点或9点）
+      if (pScore >= 8 || bScore >= 8) {
+        finalizeRoundOutcome();
+        return;
       }
-      if (bFlipped.length > 0) {
-        document.getElementById('banker-score').innerText = calcHand(bFlipped);
+
+      // 2. 闲家补牌判定 (0-5 补，6-7 停)
+      let pDrawCard = null;
+      if (pScore <= 5) {
+        pDrawCard = drawCard();
+        activeHand.pCards.push(pDrawCard);
+        activeHand.pRevealed.push(false);
+        playCardSlideSound();
+        document.getElementById('player-cards').innerHTML += renderTableCardMarkup('player', 2, pDrawCard);
+        await wait(180);
+
+        // 如果玩家押闲，补牌交给玩家搓；否则系统自动翻开
+        if (playerMainBetSide === 'player') {
+          highlightCardForSqueeze('player', 2);
+          document.getElementById('game-status-hint').innerText = '闲家需补第三张：请您亲自搓牌';
+          return; // 等待玩家搓完第三张触发 proceedAfterCardSqueezed
+        } else {
+          await revealCardBySystem('player', 2);
+          await wait(240);
+        }
       }
+
+      // 3. 庄家补牌判定
+      await checkAndDrawBankerCard(pDrawCard);
     }
 
-    // 结算本局
+    async function checkAndDrawBankerCard(p3Card) {
+      let bScore = calcCardsValue([activeHand.bCards[0], activeHand.bCards[1]]);
+      let bDraw = false;
+
+      if (!p3Card) {
+        // 闲家未补牌，庄家 0-5 补，6-7 停
+        if (bScore <= 5) bDraw = true;
+      } else {
+        const v = p3Card.val;
+        if (bScore <= 2) bDraw = true;
+        else if (bScore === 3 && v !== 8) bDraw = true;
+        else if (bScore === 4 && [2,3,4,5,6,7].includes(v)) bDraw = true;
+        else if (bScore === 5 && [4,5,6,7].includes(v)) bDraw = true;
+        else if (bScore === 6 && [6,7].includes(v)) bDraw = true;
+      }
+
+      if (bDraw) {
+        const bDrawCard = drawCard();
+        activeHand.bCards.push(bDrawCard);
+        activeHand.bRevealed.push(false);
+        playCardSlideSound();
+        document.getElementById('banker-cards').innerHTML += renderTableCardMarkup('banker', 2, bDrawCard);
+        await wait(180);
+
+        // 如果玩家押庄，补牌交给玩家搓；否则系统自动翻开
+        if (playerMainBetSide === 'banker') {
+          highlightCardForSqueeze('banker', 2);
+          document.getElementById('game-status-hint').innerText = '庄家需补第三张：请您亲自搓牌';
+          return; // 等待玩家搓完
+        } else {
+          await revealCardBySystem('banker', 2);
+          await wait(240);
+        }
+      }
+
+      // 补牌全部处理完毕，结算
+      finalizeRoundOutcome();
+    }
+
+    function updateBoardScores() {
+      const pActive = activeHand.pCards.filter((c, i) => activeHand.pRevealed[i]);
+      const bActive = activeHand.bCards.filter((c, i) => activeHand.bRevealed[i]);
+
+      if (pActive.length > 0) document.getElementById('player-score').innerText = calcCardsValue(pActive);
+      if (bActive.length > 0) document.getElementById('banker-score').innerText = calcCardsValue(bActive);
+    }
+
+    /* ===================================================
+       终局结算与路单沉淀
+       =================================================== */
     function finalizeRoundOutcome() {
       document.getElementById('squeeze-hint-banner').classList.add('hidden');
       
-      const pFinal = calcHand([roundCards.p1, roundCards.p2, roundCards.p3]);
-      const bFinal = calcHand([roundCards.b1, roundCards.b2, roundCards.b3]);
+      const pFinal = calcCardsValue(activeHand.pCards);
+      const bFinal = calcCardsValue(activeHand.bCards);
       document.getElementById('player-score').innerText = pFinal;
       document.getElementById('banker-score').innerText = bFinal;
 
@@ -790,9 +866,9 @@
       else if (bFinal > pFinal) winner = 'banker';
 
       let winAmt = 0;
-      if (winner === 'player') winAmt = bets.player * 2;
-      else if (winner === 'banker') winAmt = Math.floor(bets.banker * 1.95);
-      else winAmt = bets.player + bets.banker + (bets.tie * 9);
+      if (winner === 'player') winAmt += bets.player * 2;
+      else if (winner === 'banker') winAmt += Math.floor(bets.banker * 1.95);
+      else winAmt += bets.player + bets.banker + (bets.tie * 9); // 和局主注退回，副注1赔8
 
       bankroll += winAmt;
       history.push(winner);
@@ -802,63 +878,32 @@
       if (winner === 'player') {
         banner.classList.add('bg-glacier-surface', 'border-glacier-border', 'text-glacier');
         banner.innerHTML = `PLAYER WINS <span class="text-white ml-1">${pFinal} — ${bFinal}</span>`;
-        playTone(680, 0.22);
+        playTone(680, 0.25);
       } else if (winner === 'banker') {
         banner.classList.add('bg-neonRed-surface', 'border-neonRed-border', 'text-neonRed');
         banner.innerHTML = `BANKER WINS <span class="text-white ml-1">${bFinal} — ${pFinal}</span>`;
-        playTone(680, 0.22);
+        playTone(680, 0.25);
       } else {
         banner.classList.add('bg-neonEmerald-surface', 'border-neonEmerald-border', 'text-neonEmerald');
         banner.innerHTML = `TIE GAME <span class="text-white ml-1">${pFinal}</span>`;
-        playTone(520, 0.22);
+        playTone(520, 0.25);
       }
       banner.classList.remove('hidden');
 
       bets = { player: 0, banker: 0, tie: 0 };
-      isDealing = false;
+      playerMainBetSide = null;
+      isRoundRunning = false;
       document.getElementById('deal-btn').disabled = false;
       document.getElementById('btn-clear').disabled = false;
-      document.getElementById('game-status-hint').innerText = '下注已结算';
+      document.getElementById('game-status-hint').innerText = '本局已结算，请重新下注';
 
       updateRoad();
       updateUI();
     }
 
     /* ===================================================
-       路单与统计渲染
+       路单渲染
        =================================================== */
-    function switchRoadTab(tab) {
-      currentRoadTab = tab;
-      document.getElementById('tab-bead').className = tab === 'bead' ? 'px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold' : 'px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
-      document.getElementById('tab-big').className = tab === 'big' ? 'px-2 py-0.5 rounded-lg text-[8px] font-mono bg-champagne-400/20 text-champagne-300 border border-champagne-400/40 font-bold' : 'px-2 py-0.5 rounded-lg text-[8px] font-mono text-slate-400';
-      renderRoad();
-    }
-
-    function renderRoad() {
-      const container = document.getElementById('road-matrix-container');
-      const total = history.length;
-      const cols = Math.max(24, Math.ceil(total / 6) + 2);
-      let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${cols}, 14px);">`;
-
-      for (let c = 0; c < cols; c++) {
-        for (let r = 0; r < 6; r++) {
-          const idx = c * 6 + r;
-          if (idx < total) {
-            const res = history[idx];
-            let bg = 'bg-neonRed text-white', txt = '庄';
-            if (res === 'player') { bg = 'bg-glacier text-slate-950'; txt = '闲'; }
-            else if (res === 'tie') { bg = 'bg-neonEmerald text-slate-950'; txt = '和'; }
-            html += `<div class="road-cell"><div class="w-3 h-3 rounded-full ${bg} flex items-center justify-center text-[7px] font-black leading-none">${txt}</div></div>`;
-          } else {
-            html += `<div class="road-cell"></div>`;
-          }
-        }
-      }
-      html += '</div>';
-      container.innerHTML = html;
-      document.getElementById('road-viewport').scrollLeft = 9999;
-    }
-
     function updateRoad() {
       let b = 0, p = 0, t = 0;
       history.forEach(x => {
@@ -870,30 +915,56 @@
       document.getElementById('stat-p').innerText = p;
       document.getElementById('stat-t').innerText = t;
 
-      const total = history.length || 1;
-      document.getElementById('ai-tile-b').innerText = Math.round((b/total)*100) + '%';
-      document.getElementById('ai-tile-p').innerText = Math.round((p/total)*100) + '%';
-      document.getElementById('ai-tile-t').innerText = Math.round((t/total)*100) + '%';
+      const container = document.getElementById('road-matrix-container');
+      const total = history.length;
+      const cols = Math.max(26, Math.ceil(total / 6) + 2);
+      let html = `<div class="grid grid-rows-6 grid-flow-col" style="grid-template-columns: repeat(${cols}, 14px);">`;
 
-      renderRoad();
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < 6; r++) {
+          const idx = c * 6 + r;
+          if (idx < total) {
+            const res = history[idx];
+            let ring = 'border-neonRed text-neonRed', txt = '庄';
+            if (res === 'player') { ring = 'border-glacier text-glacier'; txt = '闲'; }
+            else if (res === 'tie') { ring = 'border-neonEmerald text-neonEmerald'; txt = '和'; }
+            html += `<div class="road-cell"><div class="w-2.5 h-2.5 rounded-full border-[1.5px] ${ring} flex items-center justify-center text-[6px] font-black leading-none">${txt}</div></div>`;
+          } else {
+            html += `<div class="road-cell"></div>`;
+          }
+        }
+      }
+      html += '</div>';
+      container.innerHTML = html;
+      document.getElementById('road-viewport').scrollLeft = 9999;
     }
 
-    function renderBetChips(area, amount) {
+    function renderBetChipStack(area, amt) {
       const el = document.getElementById(`bet-chip-${area}`);
       if (!el) return;
-      if (amount <= 0) { el.innerHTML = ''; return; }
+      if (amt <= 0) { el.innerHTML = ''; return; }
       el.innerHTML = `
         <div class="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-900 to-champagne-500 border border-champagne-300 text-stone-950 font-mono font-black text-[9px] shadow-md">
-          $${amount.toLocaleString()}
+          $${amt.toLocaleString()}
         </div>
       `;
     }
 
     function updateUI() {
       document.getElementById('bankroll-val').innerText = '$' + bankroll.toLocaleString();
-      renderBetChips('player', bets.player);
-      renderBetChips('banker', bets.banker);
-      renderBetChips('tie', bets.tie);
+      renderBetChipStack('player', bets.player);
+      renderBetChipStack('banker', bets.banker);
+      renderBetChipStack('tie', bets.tie);
+
+      // 高亮选中的主注区
+      ['player', 'banker', 'tie'].forEach(side => {
+        const el = document.getElementById(`bet-card-${side}`);
+        if (bets[side] > 0) {
+          el.classList.add('border-champagne-400', 'shadow-chip-glow', '-translate-y-0.5');
+        } else {
+          el.classList.remove('border-champagne-400', 'shadow-chip-glow', '-translate-y-0.5');
+        }
+      });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
