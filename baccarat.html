@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>皇后娱乐 · EMPRESS ROYALE VIP</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -132,50 +133,11 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
-    /* 优化二：全屏物理搓牌层，彻底锁死触摸滚动与双击手势 */
     #squeeze-overlay,
-    .squeeze-stage,
-    .squeeze-card-wrap,
-    .squeeze-card-back,
-    .squeeze-card-front {
+    #squeeze-webgl-canvas {
       touch-action: none !important;
       user-select: none !important;
       -webkit-user-select: none !important;
-    }
-
-    .squeeze-stage { perspective: 1200px; }
-    .squeeze-card-wrap {
-      width: 220px;
-      height: 310px;
-      position: relative;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .squeeze-card-face {
-      position: absolute;
-      inset: 0;
-      border-radius: 1rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
-    }
-    .squeeze-card-front {
-      background: #ffffff;
-      border: 2px solid #e2e8f0;
-      transform: rotateY(0deg);
-      z-index: 10;
-    }
-    .squeeze-card-back {
-      background: linear-gradient(135deg, #181d2d 0%, #090b10 100%);
-      border: 2px solid rgba(212, 175, 55, 0.55);
-      z-index: 20;
-      transform-origin: top center;
-      overflow: hidden;
-    }
-    .squeeze-card-back::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent 70%);
-      pointer-events: none;
     }
 
     .chip-rim { border: 2px dashed rgba(255, 255, 255, 0.35); }
@@ -262,7 +224,7 @@
       <!-- 交互与结算提示 -->
       <div class="h-6 flex items-center justify-center mt-1 relative z-10">
         <div id="squeeze-hint-banner" class="hidden px-3 py-0.5 rounded-full text-[9px] font-mono text-champagne-300 border border-champagne-400/50 bg-black/70 shadow-lg animate-pulse">
-          👆 点击高亮手牌搓牌，点击对手牌翻开
+          👆 点击高亮牌进入3D物理搓牌，点击对手牌翻开
         </div>
         <div id="result-banner" class="hidden px-4 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider text-slate-100 border shadow-lg backdrop-blur-xl"></div>
       </div>
@@ -334,42 +296,22 @@
     </footer>
   </main>
 
-  <!-- 沉浸式全屏物理搓牌舞台 (优化一 & 优化二) -->
+  <!-- WebGL 顶点着色器物理折角搓牌模态舞台 -->
   <div id="squeeze-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-3xl hidden flex-col items-center justify-between p-6">
     <div class="w-full flex items-center justify-between text-xs font-mono">
-      <span id="squeeze-title" class="text-champagne-400 font-bold tracking-widest">SQUEEZE CARD</span>
-      <span class="text-slate-500 text-[10px]">滑动边缘以卷起底牌</span>
+      <span id="squeeze-title" class="text-champagne-400 font-bold tracking-widest">3D VERTEX SQUEEZE</span>
+      <span id="squeeze-progress-text" class="text-champagne-300 text-[10px]">弯曲度: 0%</span>
     </div>
 
-    <!-- 3D 物理卡牌容器 -->
-    <div class="squeeze-stage my-auto flex items-center justify-center">
-      <div id="squeeze-box" class="squeeze-card-wrap">
-        <!-- 底牌正面 (点数面) -->
-        <div id="squeeze-front" class="squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between">
-          <div class="flex justify-between items-start">
-            <div id="sq-rank-top" class="text-3xl font-black font-mono leading-none">A</div>
-            <div id="sq-suit-top" class="text-2xl leading-none">♠</div>
-          </div>
-          <div id="sq-suit-center" class="text-7xl self-center">♠</div>
-          <div class="flex justify-between items-end rotate-180">
-            <div id="sq-rank-bot" class="text-3xl font-black font-mono leading-none">A</div>
-            <div id="sq-suit-bot" class="text-2xl leading-none">♠</div>
-          </div>
-        </div>
-
-        <!-- 牌背可拖拽滑块 -->
-        <div id="squeeze-back" class="squeeze-card-face squeeze-card-back flex items-center justify-center cursor-grab active:cursor-grabbing">
-          <div class="w-24 h-40 rounded-xl border border-champagne-400/30 flex items-center justify-center bg-champagne-400/5">
-            <span class="text-4xl text-champagne-300 font-serif opacity-70">⚜</span>
-          </div>
-          <div class="absolute bottom-3 text-[9px] font-mono text-champagne-400/70 uppercase tracking-widest">
-            Drag to Squeeze
-          </div>
-        </div>
+    <!-- WebGL 物理渲染挂载点 -->
+    <div class="my-auto flex items-center justify-center relative w-[280px] h-[390px]">
+      <canvas id="squeeze-webgl-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+      <div class="absolute bottom-2 pointer-events-none text-[9px] font-mono text-champagne-400/60 uppercase tracking-widest">
+        Drag corner or edge to peel
       </div>
     </div>
 
-    <!-- 直接翻开备用按钮 -->
+    <!-- 备用通道与一键翻全牌 -->
     <div class="w-full space-y-2 max-w-xs">
       <button onclick="instantRevealSqueeze()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-champagne-400 to-champagne-500 text-stone-950 font-black text-xs uppercase tracking-wider active:scale-95 transition-transform shadow-deal-glow">
         直接翻开 (Reveal All)
@@ -378,7 +320,7 @@
   </div>
 
   <script>
-    // 阻断全局默认滚动与缩放
+    // 阻断全局默认滚动与手势放大
     document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('gesturechange', (e) => e.preventDefault());
@@ -436,7 +378,7 @@
     let bets = { player: 0, banker: 0, tie: 0 };
     let history = []; 
     let isRoundRunning = false;
-    let isDrawingThirdStage = false; // 是否在补牌处理中
+    let isDrawingThirdStage = false;
 
     let activeHand = {
       pCards: [],
@@ -545,7 +487,7 @@
     const wait = ms => new Promise(r => setTimeout(r, ms));
 
     /* ===================================================
-       发牌主流程：发完牌全暗扣，等待玩家操作
+       发牌主流程
        =================================================== */
     async function startVipRound() {
       if (isRoundRunning) return;
@@ -564,7 +506,7 @@
 
       const sideName = playerMainBetSide === 'player' ? '闲家' : '庄家';
       const oppName = playerMainBetSide === 'player' ? '庄家' : '闲家';
-      document.getElementById('game-status-hint').innerText = `发牌完毕：可搓【${sideName}】；可点击开【${oppName}】`;
+      document.getElementById('game-status-hint').innerText = `发牌完毕：可搓【${sideName}】；可直接点开【${oppName}】`;
 
       activeHand.pCards = [drawCard(), drawCard()];
       activeHand.bCards = [drawCard(), drawCard()];
@@ -578,7 +520,6 @@
       document.getElementById('player-score').innerText = '-';
       document.getElementById('banker-score').innerText = '-';
 
-      // 发出两庄两闲（全部扣置）
       playCardSlideSound();
       pTray.innerHTML += renderTableCardMarkup('player', 0, activeHand.pCards[0]);
       await wait(140);
@@ -598,13 +539,11 @@
       highlightNextCard();
     }
 
-    // 更新高光指导
     function highlightNextCard() {
       document.querySelectorAll('.table-card').forEach(el => {
         el.classList.remove('ring-2', 'ring-champagne-400', 'shadow-active-card', 'animate-pulse');
       });
 
-      // 优先高光自己未开的手牌
       const myRevealed = playerMainBetSide === 'player' ? activeHand.pRevealed : activeHand.bRevealed;
       const myIndex = myRevealed.findIndex(r => !r);
       if (myIndex !== -1) {
@@ -613,7 +552,6 @@
       }
     }
 
-    // 点击卡牌核心分流：自己牌搓，对手牌普通点击翻开
     function handleTableCardClick(side, index) {
       if (!isRoundRunning) return;
 
@@ -621,16 +559,13 @@
       if (isRevealed) return;
 
       if (side === playerMainBetSide) {
-        // 自己的牌：进入沉浸式 3D 手动搓牌
         const card = (side === 'player') ? activeHand.pCards[index] : activeHand.bCards[index];
-        openSqueezeModal(side, index, card);
+        openThreeJsSqueeze(side, index, card);
       } else {
-        // 对手的牌：普通点击立即亮牌（不准搓）
         revealOpponentCardDirect(side, index);
       }
     }
 
-    // 翻开对手单张牌
     function revealOpponentCardDirect(side, index) {
       playTone(450, 0.08);
       const inner = document.getElementById(`inner-${side}-${index}`);
@@ -641,7 +576,6 @@
       checkRoundProgression();
     }
 
-    // 全开对手牌
     function revealAllOpponentCards() {
       if (!isRoundRunning) return;
       const oppSide = playerMainBetSide === 'player' ? 'banker' : 'player';
@@ -656,99 +590,246 @@
     }
 
     /* ===================================================
-       全屏 3D 物理手搓牌模态引擎
+       Three.js + 高精网格顶点着色器物理折角形变引擎
        =================================================== */
+    let squeezeScene, squeezeCamera, squeezeRenderer;
+    let cardMesh = null;
+    let squeezeUniforms = null;
     let currentSqueezeTarget = null;
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isTouchingCard = false;
+    let squeezeCurl = 0.0; // 0.0 ~ 1.0 弯曲进度
+    let dragStartPos = { x: 0, y: 0 };
+    let isPeeling = false;
 
-    const sqOverlay = document.getElementById('squeeze-overlay');
-    const sqBack = document.getElementById('squeeze-back');
-    const sqBox = document.getElementById('squeeze-box');
+    // 动态生成正面与反面贴图
+    function generateCardTextures(card) {
+      // 1. 正面贴图 (底牌)
+      const canvasFront = document.createElement('canvas');
+      canvasFront.width = 512;
+      canvasFront.height = 720;
+      const ctxF = canvasFront.getContext('2d');
+      ctxF.fillStyle = '#ffffff';
+      ctxF.roundRect ? ctxF.roundRect(0, 0, 512, 720, 24) : ctxF.rect(0, 0, 512, 720);
+      ctxF.fill();
+      ctxF.lineWidth = 12;
+      ctxF.strokeStyle = '#e2e8f0';
+      ctxF.stroke();
 
-    function openSqueezeModal(side, index, card) {
-      currentSqueezeTarget = { side, index, card };
-      document.getElementById('squeeze-title').innerText = `${side === 'player' ? 'PLAYER (闲)' : 'BANKER (庄)'} · CARD ${index + 1}`;
+      ctxF.fillStyle = card.isRed ? '#f43f5e' : '#090b10';
+      ctxF.font = 'bold 72px "SF Pro Display", sans-serif';
+      ctxF.fillText(card.rank, 36, 92);
+      ctxF.font = '54px "SF Pro Display", sans-serif';
+      ctxF.fillText(card.suit, 40, 156);
 
-      const front = document.getElementById('squeeze-front');
-      front.className = `squeeze-card-face squeeze-card-front p-4 flex flex-col justify-between ${card.isRed ? 'text-neonRed' : 'text-slate-950'}`;
-      document.getElementById('sq-rank-top').innerText = card.rank;
-      document.getElementById('sq-rank-bot').innerText = card.rank;
-      document.getElementById('sq-suit-top').innerText = card.suit;
-      document.getElementById('sq-suit-bot').innerText = card.suit;
-      document.getElementById('sq-suit-center').innerText = card.suit;
+      ctxF.font = '160px "SF Pro Display", sans-serif';
+      ctxF.textAlign = 'center';
+      ctxF.textBaseline = 'middle';
+      ctxF.fillText(card.suit, 256, 360);
 
-      resetSqueezeBack();
-      sqOverlay.classList.remove('hidden');
-      sqOverlay.classList.add('flex');
+      ctxF.save();
+      ctxF.translate(512, 720);
+      ctxF.rotate(Math.PI);
+      ctxF.textAlign = 'start';
+      ctxF.font = 'bold 72px "SF Pro Display", sans-serif';
+      ctxF.fillText(card.rank, 36, 92);
+      ctxF.font = '54px "SF Pro Display", sans-serif';
+      ctxF.fillText(card.suit, 40, 156);
+      ctxF.restore();
+
+      // 2. 背面贴图 (折角盖牌)
+      const canvasBack = document.createElement('canvas');
+      canvasBack.width = 512;
+      canvasBack.height = 720;
+      const ctxB = canvasBack.getContext('2d');
+      const grad = ctxB.createLinearGradient(0, 0, 512, 720);
+      grad.addColorStop(0, '#1c2237');
+      grad.addColorStop(1, '#080a12');
+      ctxB.fillStyle = grad;
+      ctxB.roundRect ? ctxB.roundRect(0, 0, 512, 720, 24) : ctxB.rect(0, 0, 512, 720);
+      ctxB.fill();
+      ctxB.lineWidth = 16;
+      ctxB.strokeStyle = '#d4af37';
+      ctxB.stroke();
+
+      ctxB.font = '110px serif';
+      ctxB.fillStyle = 'rgba(212, 175, 55, 0.75)';
+      ctxB.textAlign = 'center';
+      ctxB.textBaseline = 'middle';
+      ctxB.fillText('⚜', 256, 360);
+
+      const texFront = new THREE.CanvasTexture(canvasFront);
+      const texBack = new THREE.CanvasTexture(canvasBack);
+      return { texFront, texBack };
     }
 
-    function resetSqueezeBack() {
-      isTouchingCard = false;
-      sqBack.style.transition = '';
-      sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
-      sqBack.style.opacity = '1';
-      sqBox.style.transform = 'rotateX(0deg) rotateY(0deg)';
-    }
+    function initThreeJsSqueezeStage() {
+      const canvas = document.getElementById('squeeze-webgl-canvas');
+      const width = canvas.clientWidth || 280;
+      const height = canvas.clientHeight || 390;
 
-    // 绑定物理拖拽触摸事件
-    sqBack.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      isTouchingCard = true;
-      touchStartY = e.clientY;
-      touchStartX = e.clientX;
-      sqBack.setPointerCapture(e.pointerId);
-    });
+      squeezeScene = new THREE.Scene();
+      squeezeCamera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      squeezeCamera.position.set(0, 0, 5.2);
 
-    sqBack.addEventListener('pointermove', (e) => {
-      if (!isTouchingCard) return;
-      e.preventDefault();
-      const deltaY = e.clientY - touchStartY;
-      const deltaX = e.clientX - touchStartX;
+      squeezeRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      squeezeRenderer.setSize(width, height, false);
+      squeezeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      if (deltaY < 0) {
-        const dist = Math.abs(deltaY);
-        const percent = Math.min(dist / 260, 1.0);
+      // 顶点着色器：真实的纸张对角线折曲与卷边，不突变、松手绝对锁位
+      const vertexShader = `
+        varying vec2 vUv;
+        varying vec3 vNormalVec;
+        uniform float uProgress; // 0.0 ~ 1.0 卷折进度
+        uniform vec2 uOrigin;    // 卷曲原点方向
 
-        // 真实 3D 卷起与位移形变
-        const deg = percent * 75;
-        const lift = percent * 40;
-        sqBack.style.transform = `translate3d(0, -${dist * 0.85}px, ${lift}px) rotateX(${deg}deg)`;
-        sqBox.style.transform = `rotateY(${deltaX * 0.08}deg)`;
+        const float PI = 3.14159265359;
 
-        // 超过 65% 幅度自动触发翻全牌
-        if (percent > 0.65) {
-          isTouchingCard = false;
-          completeSqueezeReveal();
+        void main() {
+          vUv = uv;
+          vec3 pos = position;
+
+          // 计算顶点距离受力折角原点的投射距离
+          float d = dot(pos.xy - uOrigin, normalize(vec2(0.5, 0.85)));
+          
+          if (uProgress > 0.0) {
+            float activeZone = uProgress * 3.8;
+            if (d < activeZone) {
+              float delta = activeZone - d;
+              float angle = min(delta * 1.8, PI * 0.96);
+              
+              // 模拟纸张刚体弧形弯曲与起翘高度
+              pos.z += sin(angle) * 0.55 * (1.0 + uProgress * 0.4);
+              pos.y += (1.0 - cos(angle)) * 0.28;
+              pos.x -= (1.0 - cos(angle)) * 0.14;
+            }
+          }
+
+          vNormalVec = normalMatrix * normal;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+      `;
+
+      // 片元着色器：结合正反贴图与物理暗影
+      const fragmentShader = `
+        varying vec2 vUv;
+        varying vec3 vNormalVec;
+        uniform sampler2D uTexFront;
+        uniform sampler2D uTexBack;
+        uniform float uProgress;
+
+        void main() {
+          vec4 backColor = texture2D(uTexBack, vUv);
+          // 在折角阴影层增加自然环境光阻挡渐变
+          float shadow = clamp(1.0 - (uProgress * 0.45 * (1.0 - vUv.y)), 0.55, 1.0);
+          gl_FragColor = vec4(backColor.rgb * shadow, backColor.a);
+        }
+      `;
+
+      squeezeUniforms = {
+        uProgress: { value: 0.0 },
+        uOrigin: { value: new THREE.Vector2(-1.0, -1.4) },
+        uTexFront: { value: null },
+        uTexBack: { value: null }
+      };
+
+      // 48 x 64 细分物理网格
+      const geom = new THREE.PlaneGeometry(2.1, 2.95, 48, 64);
+      const mat = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: squeezeUniforms,
+        side: THREE.DoubleSide,
+        transparent: true
+      });
+
+      cardMesh = new THREE.Mesh(geom, mat);
+      squeezeScene.add(cardMesh);
+
+      // 绑定物理触摸监听
+      bindSqueezePointerEvents(canvas);
+
+      function renderLoop() {
+        requestAnimationFrame(renderLoop);
+        if (cardMesh && squeezeOverlayOpen) {
+          squeezeRenderer.render(squeezeScene, squeezeCamera);
         }
       }
-    });
-
-    sqBack.addEventListener('pointerup', (e) => {
-      if (!isTouchingCard) return;
-      e.preventDefault();
-      isTouchingCard = false;
-      // 物理回弹恢复原状
-      sqBack.style.transition = 'all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-      sqBack.style.transform = 'translateY(0px) rotateX(0deg)';
-      setTimeout(() => sqBack.style.transition = '', 220);
-    });
-
-    function instantRevealSqueeze() {
-      completeSqueezeReveal();
+      renderLoop();
     }
 
-    function completeSqueezeReveal() {
-      playTone(560, 0.1, 'triangle');
-      sqBack.style.transition = 'all 0.22s ease-out';
-      sqBack.style.transform = 'translateY(-280px) rotateX(85deg)';
-      sqBack.style.opacity = '0';
+    let squeezeOverlayOpen = false;
 
-      setTimeout(() => {
-        sqOverlay.classList.add('hidden');
-        sqOverlay.classList.remove('flex');
-        
+    function openThreeJsSqueeze(side, index, card) {
+      if (!squeezeScene) initThreeJsSqueezeStage();
+
+      currentSqueezeTarget = { side, index, card };
+      squeezeCurl = 0.0;
+      squeezeUniforms.uProgress.value = 0.0;
+      document.getElementById('squeeze-progress-text').innerText = '弯曲度: 0%';
+      document.getElementById('squeeze-title').innerText = `${side === 'player' ? 'PLAYER (闲)' : 'BANKER (庄)'} · CARD ${index + 1}`;
+
+      const { texFront, texBack } = generateCardTextures(card);
+      squeezeUniforms.uTexFront.value = texFront;
+      squeezeUniforms.uTexBack.value = texBack;
+
+      document.getElementById('squeeze-overlay').classList.remove('hidden');
+      document.getElementById('squeeze-overlay').classList.add('flex');
+      squeezeOverlayOpen = true;
+    }
+
+    // 物理手搓拖拽：以 5% ~ 10% 步长递进，松手绝对保持位置
+    function bindSqueezePointerEvents(canvas) {
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        isPeeling = true;
+        dragStartPos = { x: e.clientX, y: e.clientY };
+        canvas.setPointerCapture(e.pointerId);
+      });
+
+      canvas.addEventListener('pointermove', (e) => {
+        if (!isPeeling) return;
+        e.preventDefault();
+
+        const deltaY = dragStartPos.y - e.clientY; // 向上滑
+        const deltaX = Math.abs(e.clientX - dragStartPos.x);
+        const rawDistance = Math.sqrt(deltaY * deltaY + deltaX * deltaX);
+
+        if (deltaY > 5) {
+          // 计算 5% ~ 10% 的增量
+          const stepPercent = 0.05 + Math.min(rawDistance / 600, 0.05);
+          squeezeCurl = Math.min(squeezeCurl + stepPercent * 0.18, 0.95);
+          
+          squeezeUniforms.uProgress.value = squeezeCurl;
+          document.getElementById('squeeze-progress-text').innerText = `弯曲度: ${Math.round(squeezeCurl * 100)}%`;
+
+          // 弯曲度到达 85% 时自动翻全牌
+          if (squeezeCurl >= 0.85) {
+            isPeeling = false;
+            instantRevealSqueeze();
+          }
+        }
+      });
+
+      canvas.addEventListener('pointerup', (e) => {
+        if (!isPeeling) return;
+        e.preventDefault();
+        isPeeling = false;
+        // 松手时绝对锁死在当前物理折角姿态，绝不弹回或穿透漏出
+        dragStartPos = { x: 0, y: 0 };
+        playTone(300, 0.04);
+      });
+
+      canvas.addEventListener('pointercancel', () => {
+        isPeeling = false;
+      });
+    }
+
+    function instantRevealSqueeze() {
+      playTone(560, 0.1, 'triangle');
+      squeezeOverlayOpen = false;
+      document.getElementById('squeeze-overlay').classList.add('hidden');
+      document.getElementById('squeeze-overlay').classList.remove('flex');
+
+      if (currentSqueezeTarget) {
         const { side, index } = currentSqueezeTarget;
         const inner = document.getElementById(`inner-${side}-${index}`);
         if (inner) inner.classList.add('is-flipped');
@@ -758,7 +839,7 @@
         updateBoardScores();
         highlightNextCard();
         checkRoundProgression();
-      }, 220);
+      }
     }
 
     function updateBoardScores() {
@@ -770,23 +851,20 @@
     }
 
     /* ===================================================
-       百家乐阶段研判：前两张开齐 -> 补牌阶段 -> 终局结算
+       百家乐阶段研判与补牌逻辑
        =================================================== */
     async function checkRoundProgression() {
       if (!isRoundRunning) return;
 
-      // 阶段一：检查前两张是否全开
       const baseFourRevealed = activeHand.pRevealed[0] && activeHand.pRevealed[1] &&
                                 activeHand.bRevealed[0] && activeHand.bRevealed[1];
 
       if (!baseFourRevealed) return;
 
-      // 如果尚未处理补牌，触发补牌判定
       if (!isDrawingThirdStage) {
         isDrawingThirdStage = true;
         await processThirdCardDrawing();
       } else {
-        // 补牌阶段：检查第三张是否均已开完
         const pThirdDone = (activeHand.pCards.length === 2) || (activeHand.pRevealed[2] === true);
         const bThirdDone = (activeHand.bCards.length === 2) || (activeHand.bRevealed[2] === true);
 
@@ -800,14 +878,12 @@
       let pScore = calcCardsValue([activeHand.pCards[0], activeHand.pCards[1]]);
       let bScore = calcCardsValue([activeHand.bCards[0], activeHand.bCards[1]]);
 
-      // 1. 例牌天牌 (8或9点)，直接结算
       if (pScore >= 8 || bScore >= 8) {
         finalizeRoundOutcome();
         return;
       }
 
       let p3 = null;
-      // 2. 闲家补牌判定 (0-5 补，6-7 停)
       if (pScore <= 5) {
         p3 = drawCard();
         activeHand.pCards.push(p3);
@@ -817,7 +893,6 @@
         await wait(180);
       }
 
-      // 3. 庄家补牌判定
       let bDraw = false;
       if (!p3) {
         if (bScore <= 5) bDraw = true;
@@ -839,7 +914,6 @@
         await wait(180);
       }
 
-      // 若双方均无补牌，直接结算
       if (!p3 && !bDraw) {
         finalizeRoundOutcome();
         return;
