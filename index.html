@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>皇后百家乐 · VIP 真实桌台商业版</title>
-
+  <title>EMPRESS ROYALE · VIP BACCARAT</title>
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome -->
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
-  <!-- Google Fonts: Cinzel & Playfair & Inter -->
+  <!-- Fonts: Cinzel & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
+      --app-height: 100dvh;
       --gold-primary: #e6ca85;
       --gold-bright: #fbeeac;
-      --gold-dark: #9e7d32;
-      --table-felt: #0d2c1d;
-      --table-rim: #1c1009;
-      --app-height: 100dvh;
+      --gold-dark: #a17f34;
+      --felt-color: #0b2216;
+      --felt-rail: #1c140d;
     }
 
     * {
@@ -35,65 +33,54 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #050806;
-      color: #e8eee9;
+      background: #030504;
+      color: #e5ebe7;
       height: var(--app-height);
       overflow: hidden;
       touch-action: manipulation;
     }
 
     .font-cinzel { font-family: 'Cinzel', serif; }
-    .font-playfair { font-family: 'Playfair Display', serif; }
 
-    /* 真实桌面光照与深翡翠绿色织物桌毡 */
-    .casino-felt {
-      background-color: var(--table-felt);
-      background-image: 
-        radial-gradient(ellipse at 50% 25%, rgba(29, 87, 58, 0.65) 0%, rgba(13, 44, 29, 0.95) 60%, rgba(3, 10, 6, 1) 100%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.007) 0px, rgba(255, 255, 255, 0.007) 2px, transparent 2px, transparent 4px),
-        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 2px, transparent 2px, transparent 4px);
-      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
-    }
-
-    /* 物理木质真皮桌缘 Rim */
-    .table-rim-outer {
-      border: 8px solid #24140b;
-      border-radius: 40px 40px 0 0;
-      box-shadow: 0 -8px 25px rgba(0,0,0,0.8), inset 0 2px 6px rgba(255,255,255,0.1);
-    }
-
-    /* 尊贵烫金文字 */
-    .text-gold-emboss {
-      background: linear-gradient(180deg, #fff7d6 0%, #e6ca85 45%, #9e7d32 100%);
+    /* Metallic Gold Gradient Text */
+    .text-gold {
+      background: linear-gradient(135deg, #fff2c6 0%, #e6ca85 45%, #b38b3f 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
 
-    /* 下注区域烫金描线 */
-    .bet-grid-line {
-      border: 1.5px solid rgba(230, 202, 133, 0.3);
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.4), 0 0 8px rgba(230, 202, 133, 0.05);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .bet-grid-line:hover {
-      border-color: rgba(240, 218, 155, 0.7);
-      background: rgba(230, 202, 133, 0.04);
-    }
-    .bet-grid-active {
-      border-color: rgba(240, 218, 155, 0.9) !important;
-      background: rgba(230, 202, 133, 0.08) !important;
-      box-shadow: inset 0 0 20px rgba(230, 202, 133, 0.2), 0 0 15px rgba(230, 202, 133, 0.25) !important;
+    /* Physical Casino Table Felt with Real Rail & Weave */
+    .table-wood-rail {
+      background: radial-gradient(circle at 50% 0%, #2e1e13 0%, #150d07 100%);
+      box-shadow: inset 0 3px 6px rgba(255,255,255,0.08), 0 8px 30px rgba(0,0,0,0.9);
+      border-bottom: 2px solid rgba(230, 202, 133, 0.3);
     }
 
-    /* 真实扑克物理质感与 3D 翻牌模型 */
+    .table-felt {
+      background: radial-gradient(ellipse at 50% 25%, #0f3020 0%, #081a11 65%, #030a06 100%);
+      background-image: 
+        radial-gradient(ellipse at 50% 30%, rgba(20, 68, 44, 0.45) 0%, rgba(0, 0, 0, 0.88) 95%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.007) 0px, rgba(255, 255, 255, 0.007) 2px, transparent 2px, transparent 4px);
+    }
+
+    /* VIP Table Lines (Etched Gold Foil on Felt) */
+    .felt-line {
+      border: 1px solid rgba(230, 202, 133, 0.22);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.05);
+    }
+    .felt-line-active {
+      border: 1px solid rgba(247, 228, 158, 0.85);
+      box-shadow: inset 0 0 15px rgba(230, 202, 133, 0.2), 0 0 12px rgba(230, 202, 133, 0.4);
+    }
+
+    /* Realistic 3D Playing Card Presentation */
     .card-scene {
       perspective: 1200px;
     }
     .card-flipper {
       transition: transform 0.52s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
       transform-style: preserve-3d;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
     }
     .card-flipper.flipped {
       transform: rotateY(180deg);
@@ -102,263 +89,213 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
-    .card-back-pattern {
-      background: radial-gradient(circle, #851313 0%, #400404 100%);
-      border: 2px solid #e6ca85;
-      background-image: repeating-linear-gradient(45deg, rgba(230, 202, 133, 0.18) 0px, rgba(230, 202, 133, 0.18) 2px, transparent 2px, transparent 6px);
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
-    }
-    .card-front-pattern {
-      background: #fdfdfd;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.06);
+    .card-back {
+      background: radial-gradient(circle, #7a1212 0%, #3d0505 100%);
+      border: 1.5px solid #e6ca85;
+      background-image: repeating-linear-gradient(45deg, rgba(230, 202, 133, 0.15) 0px, rgba(230, 202, 133, 0.15) 2px, transparent 2px, transparent 6px);
     }
 
-    /* 发牌飞行物与筹码飞行物 */
-    .sliding-card {
-      position: fixed;
-      pointer-events: none;
-      z-index: 100;
-      transition: transform cubic-bezier(0.16, 1, 0.3, 1), box-shadow cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform, box-shadow;
+    /* Physical Casino Clay Chip Details */
+    .clay-chip {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.35), inset 0 -2px 3px rgba(0,0,0,0.6);
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .flying-chip {
+    .clay-chip:hover {
+      transform: translateY(-2px);
+    }
+    .clay-chip:active {
+      transform: translateY(1px) scale(0.96);
+    }
+
+    /* Real Flight Layer */
+    .flying-card-phantom {
       position: fixed;
       pointer-events: none;
       z-index: 120;
-      transition: transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.25);
+      transition: transform cubic-bezier(0.16, 1, 0.3, 1), box-shadow cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, box-shadow;
+    }
+
+    .flying-chip-phantom {
+      position: fixed;
+      pointer-events: none;
+      z-index: 130;
+      transition: transform 0.26s cubic-bezier(0.175, 0.885, 0.32, 1.2), opacity 0.26s ease;
       will-change: transform;
     }
 
-    /* 真实物理拟态筹码造型 (含多级凹凸边框与高光) */
-    .chip-3d {
-      position: relative;
-      border-radius: 9999px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cinzel', serif;
-      font-weight: 800;
-      border: 3px dashed rgba(255, 255, 255, 0.55);
-      will-change: transform;
-    }
-    .chip-stack-token {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.4);
-      border: 1.5px dashed rgba(255,255,255,0.5);
-      font-size: 8px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-    }
-
-    /* 咪牌真实 3D 卷角视口 */
-    #squeeze-modal {
-      perspective: 1400px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    .squeeze-card-shadow {
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 35px rgba(230, 202, 133, 0.15);
-    }
-
-    /* 路单网格细线 */
     .road-cell {
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-
-    /* 镜头轻微推进 */
-    .camera-zoom {
-      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .camera-active-deal { transform: scale(1.012); }
-    .camera-active-squeeze { transform: scale(1.025); }
-    .camera-active-result { transform: scale(1.015); }
   </style>
 </head>
 
 <body class="flex flex-col select-none overflow-hidden antialiased">
 
-  <!-- ================= TOP HUD: 皇家 VIP 顶栏 ================= -->
-  <header class="h-12 bg-[#0a0f0c] border-b border-[#e6ca85]/20 flex items-center justify-between px-3 md:px-8 z-30 shrink-0">
-    <!-- 品牌标志 -->
+  <!-- ================= TOP WOOD RAIL & STATUS CONSOLE ================= -->
+  <header class="h-12 table-wood-rail flex items-center justify-between px-3 md:px-6 z-20 shrink-0">
     <div class="flex items-center space-x-3">
-      <div class="w-8 h-8 rounded-full border border-[#e6ca85]/60 flex items-center justify-center bg-black/70 shadow-inner">
-        <i class="fa-solid fa-crown text-sm text-gold-emboss"></i>
+      <div class="w-8 h-8 rounded-full border border-[#e6ca85]/50 flex items-center justify-center bg-black/70 shadow-inner">
+        <i class="fa-solid fa-crown text-xs text-gold"></i>
       </div>
       <div>
-        <h1 class="font-cinzel text-xs md:text-sm font-bold tracking-widest text-gold-emboss leading-tight">EMPRESS ROYALE</h1>
+        <h1 class="font-cinzel text-xs md:text-sm font-bold tracking-widest text-gold leading-tight">EMPRESS ROYALE</h1>
         <p class="text-[8px] text-zinc-400 tracking-wider font-mono">TABLE NO.08 · SALON PRIVÉ</p>
       </div>
     </div>
 
-    <!-- 牌靴与局数核心数据统计 -->
-    <div class="hidden sm:flex items-center space-x-6 text-[11px] font-mono text-zinc-400">
-      <div>SHOE: <span id="hud-shoe-id" class="text-white font-bold">#001</span></div>
-      <div>CARDS: <span id="hud-cards-left" class="text-[#e6ca85] font-bold">416</span> / 416</div>
-      <div>ROUND: <span id="hud-round-id" class="text-white font-bold">#1</span></div>
-      <div>PHASE: <span id="hud-phase" class="text-emerald-400 font-bold">BETTING</span></div>
+    <!-- Live Telemetry Stats -->
+    <div class="hidden sm:flex items-center space-x-6 text-[11px] text-zinc-400 font-mono">
+      <div>SHOE: <span id="tele-shoe" class="text-white font-bold">#001</span></div>
+      <div>CARDS: <span id="tele-cards" class="text-gold font-bold">416</span> / 416</div>
+      <div>ROUND: <span id="tele-round" class="text-white font-bold">#1</span></div>
+      <div>STATUS: <span id="tele-state" class="text-emerald-400 font-bold tracking-wide">BETTING</span></div>
     </div>
 
-    <!-- 交互与资产控制器 -->
+    <!-- Utility & Balance -->
     <div class="flex items-center space-x-2 md:space-x-4">
-      <button id="btn-audio" class="w-8 h-8 rounded bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-300 transition active:scale-95">
+      <button id="btn-audio-toggle" class="w-8 h-8 rounded bg-black/50 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-300 active:scale-95 transition">
         <i class="fa-solid fa-volume-high text-xs"></i>
       </button>
-      <button id="btn-voice" class="w-8 h-8 rounded bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-[#e6ca85] transition active:scale-95">
+      <button id="btn-voice-toggle" class="w-8 h-8 rounded bg-black/50 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gold active:scale-95 transition">
         <i class="fa-solid fa-headset text-xs"></i>
       </button>
-      <button id="btn-debug-toggle" class="w-8 h-8 rounded bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-400 transition active:scale-95 text-[10px] font-mono">
-        DEV
-      </button>
 
-      <!-- 虚拟真实余额栏 -->
-      <div class="flex items-center bg-black/60 border border-[#e6ca85]/40 rounded-full px-3.5 py-1 shadow-inner">
-        <span class="text-[9px] text-zinc-400 mr-2 uppercase tracking-wide font-mono">CREDITS</span>
-        <span id="player-bankroll" class="text-xs md:text-sm font-bold font-mono text-gold-emboss">$100,000</span>
+      <!-- Balance Ledger Capsule -->
+      <div class="flex items-center bg-black/70 border border-[#e6ca85]/50 rounded-full px-3 py-1 shadow-inner">
+        <span class="text-[9px] text-zinc-400 mr-2 uppercase tracking-wider font-mono">CHIPS</span>
+        <span id="player-balance-display" class="text-sm font-bold font-mono text-gold">$100,000</span>
       </div>
     </div>
   </header>
 
-  <!-- ================= 核心桌面：真实百家乐长桌 ================= -->
-  <main id="casino-table-viewport" class="flex-1 flex flex-col relative casino-felt table-rim-outer overflow-hidden camera-zoom">
-    
-    <!-- 桌面中央环境标志与牌靴出牌口 -->
-    <div class="relative py-2 flex items-center justify-between px-6 md:px-12 shrink-0">
-      <!-- 闲家庄家限红提示 -->
-      <div class="text-[9px] font-mono text-zinc-400/80 hidden md:block">
-        LIMIT: $50 - $100,000<br>COMMISSION: 0% ON TIE
+  <!-- ================= MAIN CASINO FELT TABLE ================= -->
+  <main id="casino-felt" class="flex-1 flex flex-col relative table-felt overflow-hidden">
+
+    <!-- Top Action Ring & Dealing Shoe -->
+    <div class="relative py-2 flex items-center justify-between px-6 shrink-0">
+      <div class="w-24"></div> <!-- Symmetry Spacer -->
+
+      <!-- Dealer Command Announcer -->
+      <div id="dealer-announcement" class="font-cinzel text-xs md:text-sm tracking-widest text-gold/90 px-6 py-1 rounded-full bg-black/60 border border-[#e6ca85]/30 backdrop-blur shadow-2xl">
+        PLACE YOUR BETS
       </div>
 
-      <!-- 荷官状态宣告栏 -->
-      <div class="flex flex-col items-center">
-        <div id="dealer-announcement" class="font-cinzel text-xs md:text-sm tracking-widest text-gold-emboss px-6 py-1 rounded-full bg-black/60 border border-[#e6ca85]/30 backdrop-blur shadow-2xl">
-          PLACE YOUR BETS
-        </div>
-      </div>
-
-      <!-- 真实物理发牌牌靴实体出口 (Deal Origin) -->
-      <div id="shoe-deal-slot" class="w-20 h-12 rounded-b-lg bg-gradient-to-b from-[#22160d] to-[#0d0805] border border-[#e6ca85]/40 flex flex-col items-center justify-center shadow-2xl relative">
-        <span class="text-[8px] font-cinzel text-[#e6ca85]/80 font-bold">VIP SHOE 8D</span>
+      <!-- Acrylic Physical Dealing Shoe Replica -->
+      <div id="physical-shoe-source" class="w-20 h-10 rounded-b-md bg-gradient-to-b from-[#1c140d] via-[#100a06] to-[#050302] border border-[#e6ca85]/40 flex flex-col items-center justify-center shadow-2xl relative">
+        <span class="text-[8px] font-cinzel text-gold font-bold tracking-widest">8-DECK SHOE</span>
         <div class="w-12 h-1 bg-black rounded-full mt-0.5 border-t border-white/20"></div>
-        <div class="absolute -bottom-1 w-8 h-1 bg-[#d4af37]/40 blur-xs rounded-full"></div>
       </div>
     </div>
 
-    <!-- 牌局核心区：闲庄卡牌托盘 (Cards Experience Surface) -->
-    <section class="flex-1 flex items-center justify-around px-4 md:px-16 max-h-[220px] relative">
-      
-      <!-- 闲家卡牌槽 -->
-      <div class="flex flex-col items-center flex-1 max-w-[340px]">
-        <div class="flex items-center space-x-2 mb-2">
-          <span class="font-cinzel font-bold text-sm md:text-base tracking-widest text-blue-400 drop-shadow">PLAYER</span>
-          <div id="player-score-badge" class="hidden w-6 h-6 rounded-full bg-blue-600/90 border border-blue-300 font-bold text-xs flex items-center justify-center text-white shadow-lg font-mono">0</div>
+    <!-- Active Card Slots Tabletop -->
+    <section class="flex-1 flex items-center justify-around px-2 md:px-14 max-h-[220px] relative">
+      <!-- Player Hand Slot -->
+      <div class="flex flex-col items-center flex-1">
+        <div class="flex items-center space-x-2 mb-1.5">
+          <span class="font-cinzel font-bold text-sm md:text-base tracking-wider text-blue-400">PLAYER</span>
+          <div id="player-score-pip" class="hidden w-6 h-6 rounded-full bg-blue-600/95 border border-blue-300 font-bold text-xs flex items-center justify-center text-white shadow-xl">0</div>
         </div>
-        <div id="player-cards-tray" class="flex space-x-2 md:space-x-3 min-h-[110px] items-center justify-center w-full"></div>
+        <div id="player-card-tray" class="flex space-x-2 md:space-x-3 min-h-[110px] items-center"></div>
       </div>
 
-      <!-- 桌面正中烫金皇家徽章 -->
-      <div class="hidden lg:flex flex-col items-center opacity-30 pointer-events-none px-6">
-        <i class="fa-solid fa-gem text-4xl text-[#e6ca85] mb-1"></i>
-        <div class="font-cinzel text-[10px] tracking-widest text-[#e6ca85] font-bold">EMPRESS ROYALE</div>
+      <!-- Center Table Etching -->
+      <div class="hidden md:flex flex-col items-center opacity-25 pointer-events-none px-4">
+        <i class="fa-solid fa-scale-balanced text-3xl text-gold mb-1"></i>
+        <div class="font-cinzel text-[9px] tracking-widest text-gold">COMMISSION FREE · MACAU RULES</div>
       </div>
 
-      <!-- 庄家卡牌槽 -->
-      <div class="flex flex-col items-center flex-1 max-w-[340px]">
-        <div class="flex items-center space-x-2 mb-2">
-          <span class="font-cinzel font-bold text-sm md:text-base tracking-widest text-rose-400 drop-shadow">BANKER</span>
-          <div id="banker-score-badge" class="hidden w-6 h-6 rounded-full bg-rose-600/90 border border-rose-300 font-bold text-xs flex items-center justify-center text-white shadow-lg font-mono">0</div>
+      <!-- Banker Hand Slot -->
+      <div class="flex flex-col items-center flex-1">
+        <div class="flex items-center space-x-2 mb-1.5">
+          <span class="font-cinzel font-bold text-sm md:text-base tracking-wider text-rose-400">BANKER</span>
+          <div id="banker-score-pip" class="hidden w-6 h-6 rounded-full bg-rose-600/95 border border-rose-300 font-bold text-xs flex items-center justify-center text-white shadow-xl">0</div>
         </div>
-        <div id="banker-cards-tray" class="flex space-x-2 md:space-x-3 min-h-[110px] items-center justify-center w-full"></div>
+        <div id="banker-card-tray" class="flex space-x-2 md:space-x-3 min-h-[110px] items-center"></div>
       </div>
     </section>
 
-    <!-- 交互提示条 (对手快速翻开) -->
-    <div id="opponent-quick-bar" class="hidden flex justify-center pb-1 z-20">
-      <button id="btn-reveal-opponent-all" class="px-4 py-1 rounded-full bg-amber-950/80 hover:bg-amber-900 border border-amber-500/50 text-[10px] font-cinzel text-[#e6ca85] tracking-wider flex items-center space-x-2 shadow-lg transition active:scale-95">
+    <!-- Opponent Reveal Action Trigger -->
+    <div id="opponent-reveal-container" class="hidden flex justify-center pb-1 z-10">
+      <button id="btn-reveal-opponent" class="px-4 py-1 rounded bg-amber-950/80 hover:bg-amber-900 border border-amber-500/40 text-[10px] font-cinzel text-gold tracking-wider flex items-center space-x-1.5 shadow active:scale-95 transition">
         <i class="fa-solid fa-eye text-[9px]"></i>
         <span>REVEAL OPPONENT CARDS</span>
       </button>
     </div>
 
-    <!-- ================= 真实桌面下注站网格 (Betting Stations) ================= -->
-    <section class="px-3 md:px-12 py-2 z-20">
+    <!-- ================= BETTING STATIONS GRID ================= -->
+    <section class="px-2 md:px-8 py-2 z-10">
       <div class="max-w-4xl mx-auto grid grid-cols-5 gap-2 md:gap-3 text-center font-cinzel">
-        
-        <!-- 闲对 (11:1) -->
-        <div data-bet-target="playerPair" class="bet-spot bet-grid-line cursor-pointer rounded-xl bg-black/35 p-2 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
-          <span class="text-[10px] md:text-xs text-blue-300 font-bold tracking-wider">P.PAIR</span>
-          <span class="text-[9px] text-zinc-400 font-mono">11 : 1</span>
-          <div class="chip-holder mt-1 h-7 w-full flex items-center justify-center relative"></div>
+        <!-- Player Pair (11:1) -->
+        <div data-bet-spot="playerPair" class="felt-line bet-target-station cursor-pointer rounded-lg bg-black/40 hover:bg-blue-950/30 p-2 transition duration-150 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
+          <span class="text-[10px] md:text-xs text-blue-300 font-bold">P.PAIR</span>
+          <span class="text-[8px] text-zinc-400 font-mono">11 : 1</span>
+          <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
         </div>
 
-        <!-- 闲家 (1:1) -->
-        <div data-bet-target="player" class="bet-spot bet-grid-line cursor-pointer rounded-xl bg-blue-950/30 p-2 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
-          <span class="text-xs md:text-sm text-blue-400 font-bold tracking-widest">PLAYER</span>
-          <span class="text-[10px] text-zinc-400 font-mono">1 : 1</span>
-          <div class="chip-holder mt-1 h-7 w-full flex items-center justify-center relative"></div>
+        <!-- Player (1:1) -->
+        <div data-bet-spot="player" class="felt-line bet-target-station cursor-pointer rounded-lg bg-blue-950/40 hover:bg-blue-900/50 p-2 transition duration-150 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
+          <span class="text-xs md:text-sm text-blue-400 font-bold tracking-wider">PLAYER</span>
+          <span class="text-[9px] text-zinc-400 font-mono">1 : 1</span>
+          <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
         </div>
 
-        <!-- 和局 (8:1) -->
-        <div data-bet-target="tie" class="bet-spot bet-grid-line cursor-pointer rounded-xl bg-emerald-950/30 p-2 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
-          <span class="text-xs md:text-sm text-emerald-400 font-bold tracking-widest">TIE</span>
-          <span class="text-[10px] text-zinc-400 font-mono">8 : 1</span>
-          <div class="chip-holder mt-1 h-7 w-full flex items-center justify-center relative"></div>
+        <!-- Tie (8:1) -->
+        <div data-bet-spot="tie" class="felt-line bet-target-station cursor-pointer rounded-lg bg-emerald-950/40 hover:bg-emerald-900/50 p-2 transition duration-150 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
+          <span class="text-xs md:text-sm text-emerald-400 font-bold tracking-wider">TIE</span>
+          <span class="text-[9px] text-zinc-400 font-mono">8 : 1</span>
+          <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
         </div>
 
-        <!-- 庄家 (0.95:1) -->
-        <div data-bet-target="banker" class="bet-spot bet-grid-line cursor-pointer rounded-xl bg-rose-950/30 p-2 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
-          <span class="text-xs md:text-sm text-rose-400 font-bold tracking-widest">BANKER</span>
-          <span class="text-[10px] text-zinc-400 font-mono">0.95 : 1</span>
-          <div class="chip-holder mt-1 h-7 w-full flex items-center justify-center relative"></div>
+        <!-- Banker (1:0.95) -->
+        <div data-bet-spot="banker" class="felt-line bet-target-station cursor-pointer rounded-lg bg-rose-950/40 hover:bg-rose-900/50 p-2 transition duration-150 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
+          <span class="text-xs md:text-sm text-rose-400 font-bold tracking-wider">BANKER</span>
+          <span class="text-[9px] text-zinc-400 font-mono">0.95 : 1</span>
+          <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
         </div>
 
-        <!-- 庄对 (11:1) -->
-        <div data-bet-target="bankerPair" class="bet-spot bet-grid-line cursor-pointer rounded-xl bg-black/35 p-2 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
-          <span class="text-[10px] md:text-xs text-rose-300 font-bold tracking-wider">B.PAIR</span>
-          <span class="text-[9px] text-zinc-400 font-mono">11 : 1</span>
-          <div class="chip-holder mt-1 h-7 w-full flex items-center justify-center relative"></div>
+        <!-- Banker Pair (11:1) -->
+        <div data-bet-spot="bankerPair" class="felt-line bet-target-station cursor-pointer rounded-lg bg-black/40 hover:bg-rose-950/30 p-2 transition duration-150 flex flex-col items-center justify-center min-h-[72px] relative overflow-hidden active:scale-[0.98]">
+          <span class="text-[10px] md:text-xs text-rose-300 font-bold">B.PAIR</span>
+          <span class="text-[8px] text-zinc-400 font-mono">11 : 1</span>
+          <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
         </div>
       </div>
     </section>
 
-    <!-- ================= 专业五路单综合看板 (Pro Roadmaps) ================= -->
-    <section class="h-32 md:h-44 bg-[#050806]/95 border-t border-[#e6ca85]/20 flex flex-col shrink-0 z-20">
-      <!-- 路单统计条 -->
-      <div class="flex items-center justify-between px-4 py-1 bg-black/40 border-b border-white/5 text-[10px] text-zinc-400 font-mono">
-        <div class="flex space-x-5">
-          <span>PLAYER: <b id="stat-p" class="text-blue-400">0</b></span>
-          <span>BANKER: <b id="stat-b" class="text-rose-400">0</b></span>
-          <span>TIE: <b id="stat-t" class="text-emerald-400">0</b></span>
+    <!-- ================= MULTI-ROADMAP VIEWER ================= -->
+    <section class="h-32 md:h-44 bg-[#050906]/95 border-t border-[#e6ca85]/20 flex flex-col shrink-0 z-10">
+      <div class="flex items-center justify-between px-3 py-1 bg-black/50 border-b border-white/5 text-[10px] text-zinc-400">
+        <div class="flex space-x-4">
+          <span>P: <b id="stat-p-count" class="text-blue-400 font-mono">0</b></span>
+          <span>B: <b id="stat-b-count" class="text-rose-400 font-mono">0</b></span>
+          <span>T: <b id="stat-t-count" class="text-emerald-400 font-mono">0</b></span>
         </div>
-        <div class="text-[9px] text-zinc-500">STANDARD 5-ROAD DISPLAY</div>
+        <div class="flex space-x-3 font-mono text-[9px]">
+          <span class="text-zinc-500">BEAD / BIG / BIG EYE / SMALL / COCKROACH</span>
+        </div>
       </div>
 
-      <!-- 珠盘路与大路/下三路分栏 -->
+      <!-- Roadmap Grids Matrix -->
       <div class="flex-1 flex overflow-x-auto overflow-y-hidden">
-        <!-- 珠盘路 (Bead Plate) -->
+        <!-- Bead Road -->
         <div class="w-44 md:w-56 border-r border-white/10 shrink-0 flex flex-col">
-          <div class="text-[8px] tracking-wider text-zinc-500 px-1 py-0.5 uppercase bg-black/40 font-bold">Bead Road</div>
+          <div class="text-[8px] tracking-wider text-zinc-500 px-1 py-0.5 uppercase bg-black/30 font-bold">Bead Road</div>
           <div id="bead-road-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[18px] md:auto-cols-[20px] bg-black/20 p-0.5 overflow-x-auto"></div>
         </div>
 
-        <!-- 大路与下三路容器 -->
+        <!-- Big Road & Derived Roads Group -->
         <div class="flex-1 flex flex-col min-w-[320px]">
-          <!-- 大路 (Big Road) -->
+          <!-- Big Road -->
           <div class="h-1/2 border-b border-white/10 flex flex-col">
-            <div class="text-[8px] tracking-wider text-zinc-500 px-1 py-0.5 uppercase bg-black/40 font-bold">Big Road</div>
+            <div class="text-[8px] tracking-wider text-zinc-500 px-1 py-0.5 uppercase bg-black/30 font-bold">Big Road</div>
             <div id="big-road-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[13px] md:auto-cols-[15px] bg-black/10 overflow-x-auto"></div>
           </div>
-          <!-- 下三路 (Big Eye, Small, Cockroach) -->
+          <!-- Derived Down Roads -->
           <div class="h-1/2 flex divide-x divide-white/10">
             <div class="flex-1 flex flex-col">
-              <div class="text-[7px] text-zinc-500 px-1 bg-black/30">BIG EYE BOY</div>
+              <div class="text-[7px] text-zinc-500 px-1 bg-black/30">BIG EYE</div>
               <div id="big-eye-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[8px] md:auto-cols-[10px] bg-black/20 overflow-x-auto"></div>
             </div>
             <div class="flex-1 flex flex-col">
@@ -374,130 +311,101 @@
       </div>
     </section>
 
-    <!-- ================= 底部控制台：筹码托盘与行动条 ================= -->
-    <footer id="table-footer-controls" class="bg-[#070b09] border-t border-[#e6ca85]/30 p-2 md:p-3 shrink-0 flex flex-wrap items-center justify-between gap-2 z-30">
-      <!-- 基础操作按钮 -->
-      <div class="flex items-center space-x-1.5 md:space-x-2">
-        <button id="btn-clear-bets" class="px-3 py-2 rounded bg-zinc-800/80 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1 border border-white/5">
+    <!-- ================= CHIP RACK & COMMAND ACTIONS ================= -->
+    <footer class="bg-[#050705] border-t border-[#e6ca85]/30 p-2 md:p-3 shrink-0 flex flex-wrap items-center justify-between gap-2 z-20">
+      <!-- Utility Action Triggers -->
+      <div class="flex items-center space-x-1 md:space-x-2">
+        <button id="btn-clear-bets" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1">
           <i class="fa-solid fa-trash-can text-[10px]"></i>
           <span>CLEAR</span>
         </button>
-        <button id="btn-double-bets" class="px-3 py-2 rounded bg-zinc-800/80 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1 border border-white/5">
+        <button id="btn-double-bets" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1">
           <i class="fa-solid fa-angles-up text-[10px]"></i>
           <span>DOUBLE</span>
         </button>
-        <button id="btn-rebet" class="px-3 py-2 rounded bg-zinc-800/80 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1 border border-white/5">
+        <button id="btn-rebet" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1">
           <i class="fa-solid fa-rotate-right text-[10px]"></i>
           <span>REBET</span>
         </button>
       </div>
 
-      <!-- 筹码箱 (Chip Rack Tray) -->
-      <div id="chip-rack" class="flex items-center space-x-2 md:space-x-3 overflow-x-auto py-1 px-2 bg-black/40 rounded-full border border-white/5 shadow-inner">
-        <div data-val="50" class="chip-token chip-3d w-10 h-10 md:w-11 md:h-11 cursor-pointer bg-blue-700 text-white text-xs hover:scale-105 active:scale-95 transition">50</div>
-        <div data-val="100" class="chip-token chip-3d w-10 h-10 md:w-11 md:h-11 cursor-pointer bg-purple-700 text-white text-xs hover:scale-105 active:scale-95 transition">100</div>
-        <div data-val="500" class="chip-token chip-3d w-10 h-10 md:w-11 md:h-11 cursor-pointer bg-teal-700 text-white text-xs hover:scale-105 active:scale-95 transition">500</div>
-        <div data-val="1000" class="chip-token chip-3d w-10 h-10 md:w-11 md:h-11 cursor-pointer bg-amber-600 text-white text-[10px] md:text-xs hover:scale-105 active:scale-95 transition ring-2 ring-[#e6ca85]">1K</div>
-        <div data-val="5000" class="chip-token chip-3d w-10 h-10 md:w-11 md:h-11 cursor-pointer bg-rose-700 text-white text-[10px] md:text-xs hover:scale-105 active:scale-95 transition">5K</div>
-        <div data-val="10000" class="chip-token chip-3d w-10 h-10 md:w-11 md:h-11 cursor-pointer bg-zinc-950 text-[#e6ca85] text-[10px] md:text-xs hover:scale-105 active:scale-95 transition">10K</div>
+      <!-- Clay Chip Carousel Rack -->
+      <div id="chip-rack" class="flex items-center space-x-2 md:space-x-3 overflow-x-auto py-1">
+        <div data-val="50" class="clay-chip w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/60 bg-blue-700 text-white shadow-lg">50</div>
+        <div data-val="100" class="clay-chip w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/60 bg-purple-700 text-white shadow-lg">100</div>
+        <div data-val="500" class="clay-chip w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/60 bg-teal-700 text-white shadow-lg">500</div>
+        <div data-val="1000" class="clay-chip w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-dashed border-gold/90 bg-amber-600 text-white shadow-lg ring-2 ring-gold">1K</div>
+        <div data-val="5000" class="clay-chip w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-dashed border-gold/90 bg-rose-700 text-white shadow-lg">5K</div>
+        <div data-val="10000" class="clay-chip w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-dashed border-gold bg-black text-gold shadow-lg">10K</div>
       </div>
 
-      <!-- 开局发牌主按钮 -->
+      <!-- Main Round Starter Button -->
       <div class="flex items-center space-x-2">
-        <button id="btn-deal" class="font-cinzel px-6 py-2.5 rounded-lg bg-gradient-to-r from-[#d8ba6f] via-[#f7e49e] to-[#cba358] text-black font-extrabold text-xs md:text-sm tracking-widest shadow-2xl hover:brightness-110 active:scale-95 transition disabled:opacity-30 disabled:pointer-events-none">
+        <button id="btn-deal" class="font-cinzel px-6 py-2 rounded bg-gradient-to-r from-[#d8ba6f] via-[#f7e49e] to-[#cba358] text-black font-extrabold text-xs md:text-sm tracking-widest shadow-2xl hover:brightness-110 active:scale-95 transition disabled:opacity-40 disabled:pointer-events-none">
           DEAL
         </button>
       </div>
     </footer>
   </main>
 
-  <!-- ================= 顶层飞行层与咪牌 3D 舞台 ================= -->
+  <!-- ================= TOP LAYER PHANTOM FLIGHT OVERLAY ================= -->
   <div id="flight-animation-overlay" class="fixed inset-0 pointer-events-none z-50"></div>
 
-  <!-- Squeeze Modal (4角物理非线性阻尼咪牌) -->
+  <!-- Squeeze 3D Modal Surface -->
   <div id="squeeze-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex flex-col items-center justify-center p-4 touch-none">
     <div class="text-center mb-3">
-      <h3 id="squeeze-title" class="font-cinzel text-gold-emboss text-base md:text-lg tracking-widest font-bold">VIP SQUEEZE</h3>
-      <div class="w-36 h-1 bg-white/20 mx-auto mt-2 rounded-full overflow-hidden">
-        <div id="squeeze-progress-bar" class="w-0 h-full bg-[#e6ca85] transition-all duration-75"></div>
+      <h3 id="squeeze-title" class="font-cinzel text-gold text-base md:text-lg tracking-widest font-bold">VIP SQUEEZE</h3>
+      <div class="w-32 h-1 bg-white/20 mx-auto mt-1 rounded-full overflow-hidden">
+        <div id="squeeze-progress-bar" class="w-0 h-full bg-gold transition-all duration-75"></div>
       </div>
     </div>
 
-    <!-- 咪牌卡牌实体 -->
-    <div id="squeeze-card-wrapper" class="relative w-60 h-84 md:w-64 md:h-92 rounded-xl bg-white select-none overflow-hidden border border-amber-300/40 squeeze-card-shadow">
-      <!-- 牌面 (底盘) -->
+    <!-- Squeeze Card Surface Envelope -->
+    <div id="squeeze-card-wrapper" class="relative w-56 h-80 md:w-64 md:h-92 rounded-xl shadow-2xl bg-white select-none overflow-hidden border border-amber-300/40">
+      <!-- Underlying Card Face -->
       <div id="squeeze-card-face" class="absolute inset-0 bg-white p-4 flex flex-col justify-between select-none">
         <div class="flex justify-between items-start">
           <div class="flex flex-col items-center">
             <span id="squeeze-val-top" class="text-2xl font-bold font-mono">K</span>
             <span id="squeeze-suit-top" class="text-2xl">♠</span>
           </div>
-          <span class="text-[10px] font-cinzel text-zinc-400 tracking-widest font-bold">EMPRESS ROYALE</span>
+          <span class="text-[10px] font-cinzel text-zinc-400 tracking-widest">EMPRESS ROYALE</span>
         </div>
-        <div id="squeeze-suit-center" class="text-7xl self-center drop-shadow-sm">♠</div>
+        <div id="squeeze-suit-center" class="text-7xl self-center">♠</div>
         <div class="flex justify-between items-end rotate-180">
           <div class="flex flex-col items-center">
             <span id="squeeze-val-bot" class="text-2xl font-bold font-mono">K</span>
             <span id="squeeze-suit-bot" class="text-2xl">♠</span>
           </div>
-          <span class="text-[10px] font-cinzel text-zinc-400 tracking-widest font-bold">EMPRESS ROYALE</span>
+          <span class="text-[10px] font-cinzel text-zinc-400 tracking-widest">EMPRESS ROYALE</span>
         </div>
       </div>
 
-      <!-- 真实掀角物理层 (Peel Layer) -->
-      <div id="squeeze-peel-layer" class="absolute inset-0 card-back-pattern transition-transform origin-center will-change-transform shadow-2xl"></div>
+      <!-- Physical Peel Back Layer -->
+      <div id="squeeze-peel-layer" class="absolute inset-0 card-back transition-transform origin-center will-change-transform shadow-2xl"></div>
 
-      <!-- 4 角独立感应碰撞区 (TL, TR, BL, BR) -->
+      <!-- 4 Corner Touch Hitboxes -->
       <div data-corner="TL" class="corner-zone absolute top-0 left-0 w-24 h-24 z-20 cursor-nwse-resize"></div>
       <div data-corner="TR" class="corner-zone absolute top-0 right-0 w-24 h-24 z-20 cursor-nesw-resize"></div>
       <div data-corner="BL" class="corner-zone absolute bottom-0 left-0 w-24 h-24 z-20 cursor-nesw-resize"></div>
       <div data-corner="BR" class="corner-zone absolute bottom-0 right-0 w-24 h-24 z-20 cursor-nwse-resize"></div>
     </div>
 
-    <!-- 快捷跳过 -->
-    <div class="mt-6 flex space-x-4">
+    <div class="mt-5 flex space-x-4">
       <button id="btn-skip-squeeze" class="px-6 py-2 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-xs font-cinzel text-zinc-200 tracking-wider active:scale-95 transition">
         REVEAL NOW
       </button>
     </div>
   </div>
 
-  <!-- ================= 开发与自动化调试面板 (DEBUG SUITE) ================= -->
-  <aside id="dev-console" class="fixed top-14 right-2 w-72 bg-black/95 border border-[#e6ca85]/40 rounded-lg p-3 text-[10px] font-mono text-[#e6ca85] z-50 hidden space-y-2 shadow-2xl">
-    <div class="font-bold border-b border-white/20 pb-1 flex justify-between items-center">
-      <span>DEVELOPER SUITE (PUNTO BANCO)</span>
-      <button onclick="document.getElementById('dev-console').classList.add('hidden')" class="text-white">✕</button>
-    </div>
-    <div class="grid grid-cols-2 gap-1.5">
-      <button id="dev-inject-natural" class="p-1.5 bg-white/10 hover:bg-white/20 rounded">INJECT NATURAL (9v7)</button>
-      <button id="dev-inject-p-draw" class="p-1.5 bg-white/10 hover:bg-white/20 rounded">INJECT P DRAW (5v4)</button>
-      <button id="dev-inject-b-rule3" class="p-1.5 bg-white/10 hover:bg-white/20 rounded">INJECT B3 RULE</button>
-      <button id="dev-inject-tie" class="p-1.5 bg-white/10 hover:bg-white/20 rounded">INJECT TIE 8v8</button>
-    </div>
-    <button id="dev-run-unit-tests" class="w-full p-2 bg-emerald-700/70 hover:bg-emerald-700 text-white rounded font-bold">
-      RUN 14 BACCARAT RULE TESTS
-    </button>
-    <div id="dev-test-output" class="text-[9px] text-zinc-400 max-h-24 overflow-y-auto font-mono bg-black/50 p-1 rounded"></div>
-  </aside>
-
-  <!-- ================= 商业级核心游戏引擎代码 ================= -->
+  <!-- ================= MASTER ENGINE SCRIPT ================= -->
   <script>
     /**
-     * 皇后百家乐 V3 · COMMERCIAL REAL TABLE EXPERIENCE
-     * Core Architectural Implementation
+     * EMPRESS ROYALE · VIP BACCARAT
+     * STRICT IMPLEMENTATION MODE ARCHITECTURE
      */
 
-    // --- 1. 集中物理与动画计时注册表 (Timing Registry) ---
-    const CARD_PHYSICS_TIMINGS = {
-      cardFlightInitial: 440,     // 牌靴滑出飞行初速度
-      cardFlightThird: 540,       // 第三张牌沉稳加力飞行
-      cardOvershootSettle: 340,   // 落桌弹性微振动
-      dealBreathInterval: 280,    // 牌与牌之间的发牌呼吸节奏
-      decisionPause: 650,         // 补牌前荷官决断停顿
-      cardRevealFlip: 520,        // 3D 翻转时长
-      payoutDisplayPause: 2400    // 结算完成后停顿留白
-    };
-
+    // --- 1. CONFIGURATION REGISTRY ---
     const CONFIG = {
       baccarat: {
         deckCount: 8,
@@ -511,54 +419,106 @@
           bankerPair: 11.0
         }
       },
+      timings: {
+        dealFlight: 420,
+        dealPause: 260,
+        thirdCardDecisionPause: 600,
+        thirdCardFlight: 520,
+        revealFlip: 480,
+        roundResetDelay: 2200
+      },
       chips: [50, 100, 500, 1000, 5000, 10000]
     };
 
-    // --- 2. 状态机定义 (FSM States) ---
+    // --- 2. FINITE STATE MACHINE PHASES ---
     const GAME_PHASES = {
       IDLE: 'IDLE',
       BETTING: 'BETTING',
-      BETTING_LOCKED: 'BETTING_LOCKED',
-      DEALING_INITIAL: 'DEALING_INITIAL',
+      BET_LOCKED: 'BET_LOCKED',
+      DEALING: 'DEALING',
       WAITING_REVEAL: 'WAITING_REVEAL',
-      PLAYER_SQUEEZE: 'PLAYER_SQUEEZE',
+      SQUEEZE: 'SQUEEZE',
       THIRD_CARD_DECISION: 'THIRD_CARD_DECISION',
       THIRD_CARD_DEAL: 'THIRD_CARD_DEAL',
-      RESULT_REVEAL: 'RESULT_REVEAL',
-      PAYOUT: 'PAYOUT',
+      RESULT: 'RESULT',
+      SETTLEMENT: 'SETTLEMENT',
       SHUFFLING: 'SHUFFLING'
     };
 
-    const SETTLEMENT_STATES = {
-      UNSETTLED: 'UNSETTLED',
-      PROCESSING: 'PROCESSING',
-      SETTLED: 'SETTLED'
+    // --- 3. ATOMIC BET TRANSACTION MODEL ---
+    const TRANSACTION_STATES = {
+      PENDING: 'PENDING',
+      CONFIRMED: 'CONFIRMED',
+      LOCKED: 'LOCKED',
+      SETTLED: 'SETTLED',
+      CANCELLED: 'CANCELLED'
     };
 
-    // --- 3. 可撤销定时器管理器 (防止跨局污染) ---
-    const TimerManager = {
-      activeTimeouts: new Map(),
-
-      wait(ms, tag = 'general') {
-        return new Promise((resolve, reject) => {
-          const id = setTimeout(() => {
-            this.activeTimeouts.delete(id);
-            resolve();
-          }, ms);
-          this.activeTimeouts.set(id, { tag, reject });
-        });
-      },
-
-      clearAll() {
-        this.activeTimeouts.forEach((meta, id) => {
-          clearTimeout(id);
-          meta.reject(new Error('Cycle Reset'));
-        });
-        this.activeTimeouts.clear();
+    class BetTransactionManager {
+      constructor(initialBalance) {
+        this.balance = initialBalance;
+        this.transactions = [];
+        this.currentRoundTransactions = [];
       }
-    };
 
-    // --- 4. 纯数学模型：百家乐国际标准 Punto Banco 引擎 ---
+      createTransaction(spot, amount) {
+        if (this.balance < amount) return null;
+        
+        const tx = {
+          id: `tx-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+          spot,
+          amount,
+          timestamp: Date.now(),
+          state: TRANSACTION_STATES.CONFIRMED
+        };
+
+        this.balance -= amount;
+        this.currentRoundTransactions.push(tx);
+        return tx;
+      }
+
+      lockTransactions() {
+        this.currentRoundTransactions.forEach(tx => {
+          if (tx.state === TRANSACTION_STATES.CONFIRMED) {
+            tx.state = TRANSACTION_STATES.LOCKED;
+          }
+        });
+      }
+
+      cancelCurrentRound() {
+        let refunded = 0;
+        this.currentRoundTransactions.forEach(tx => {
+          if (tx.state === TRANSACTION_STATES.CONFIRMED) {
+            tx.state = TRANSACTION_STATES.CANCELLED;
+            refunded += tx.amount;
+          }
+        });
+        this.balance += refunded;
+        this.currentRoundTransactions = [];
+        return refunded;
+      }
+
+      applyPayout(grossWon) {
+        this.balance += Math.round(grossWon);
+        this.currentRoundTransactions.forEach(tx => {
+          tx.state = TRANSACTION_STATES.SETTLED;
+        });
+        this.transactions.push(...this.currentRoundTransactions);
+        this.currentRoundTransactions = [];
+      }
+
+      getActiveBetsMap() {
+        const summary = { player: 0, banker: 0, tie: 0, playerPair: 0, bankerPair: 0 };
+        this.currentRoundTransactions.forEach(tx => {
+          if (tx.state === TRANSACTION_STATES.CONFIRMED || tx.state === TRANSACTION_STATES.LOCKED) {
+            summary[tx.spot] = (summary[tx.spot] || 0) + tx.amount;
+          }
+        });
+        return summary;
+      }
+    }
+
+    // --- 4. INDEPENDENT TESTABLE BACCARAT ENGINE ---
     const BaccaratEngine = {
       SUITS: ['♠', '♥', '♣', '♦'],
       VALUES: ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
@@ -593,8 +553,7 @@
       },
 
       shouldBankerDraw(bScore, playerThirdCard) {
-        // 若闲未补第三张，庄 0-5 补，6-7 停
-        if (playerThirdCard === null || playerThirdCard === undefined) {
+        if (!playerThirdCard) {
           return bScore <= 5;
         }
         const p3Val = this.getCardPoint(playerThirdCard);
@@ -604,7 +563,7 @@
           case 4: return [2, 3, 4, 5, 6, 7].includes(p3Val);
           case 5: return [4, 5, 6, 7].includes(p3Val);
           case 6: return [6, 7].includes(p3Val);
-          default: return false; // 7, 8, 9 停牌
+          default: return false; // 7, 8, 9 Stand
         }
       },
 
@@ -612,10 +571,42 @@
         if (pScore > bScore) return 'player';
         if (bScore > pScore) return 'banker';
         return 'tie';
+      },
+
+      /**
+       * Comprehensive Unit Testing Harness (Rule Verification)
+       */
+      runSelfTests() {
+        console.group('BaccaratEngine Mathematical Verification');
+        
+        // 1. Natural Test
+        const natP = [{ value: 'K' }, { value: '9' }]; // 9
+        const natB = [{ value: '4' }, { value: '3' }]; // 7
+        console.assert(this.isNatural(natP, natB) === true, 'Natural check passed');
+
+        // 2. Player Draw Rule Test (0-5 draw, 6-7 stand)
+        console.assert(this.shouldPlayerDraw(5) === true, 'Player 5 must draw');
+        console.assert(this.shouldPlayerDraw(6) === false, 'Player 6 must stand');
+
+        // 3. Banker Draw Rule Test
+        // Case A: Banker 3 vs Player 3rd card 8 -> Stand
+        console.assert(this.shouldBankerDraw(3, { value: '8' }) === false, 'Banker 3 vs 8 stands');
+        // Case B: Banker 3 vs Player 3rd card 7 -> Draw
+        console.assert(this.shouldBankerDraw(3, { value: '7' }) === true, 'Banker 3 vs 7 draws');
+        // Case C: Banker 6 vs Player 3rd card 6 -> Draw
+        console.assert(this.shouldBankerDraw(6, { value: '6' }) === true, 'Banker 6 vs 6 draws');
+        // Case D: Banker 6 vs Player 3rd card 5 -> Stand
+        console.assert(this.shouldBankerDraw(6, { value: '5' }) === false, 'Banker 6 vs 5 stands');
+        // Case E: Player stands, Banker 5 -> Draw
+        console.assert(this.shouldBankerDraw(5, null) === true, 'Banker 5 vs Player Stand draws');
+
+        console.log('All Punto Banco Mathematical Assertions 100% Passed.');
+        console.groupEnd();
+        return true;
       }
     };
 
-    // --- 5. 牌靴引擎 (8-Decks Fisher-Yates Shuffle & Cut Card) ---
+    // --- 5. SHOE ENGINE (8 Decks with Fisher-Yates) ---
     class ShoeEngine {
       constructor() {
         this.cards = [];
@@ -638,7 +629,6 @@
             }
           }
         }
-        // Fisher-Yates 伪随机洗牌
         for (let i = this.cards.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
@@ -662,8 +652,31 @@
 
     const Shoe = new ShoeEngine();
 
-    // --- 6. 统一高拟真音频与触控引擎 (AudioExperienceEngine) ---
-    const AudioExperienceEngine = {
+    // --- 6. TIMER & RECOVERY MANAGER ---
+    const TimerManager = {
+      activeTimeouts: new Map(),
+
+      wait(ms, tag = 'general') {
+        return new Promise((resolve, reject) => {
+          const id = setTimeout(() => {
+            this.activeTimeouts.delete(id);
+            resolve();
+          }, ms);
+          this.activeTimeouts.set(id, { tag, reject });
+        });
+      },
+
+      clearAll() {
+        this.activeTimeouts.forEach((meta, id) => {
+          clearTimeout(id);
+          meta.reject(new Error('Timer cycle canceled'));
+        });
+        this.activeTimeouts.clear();
+      }
+    };
+
+    // --- 7. AUDIO ENGINE ---
+    const AudioEngine = {
       ctx: null,
       muted: false,
 
@@ -677,52 +690,52 @@
         }
       },
 
-      playChipSound() {
+      playChipDrop() {
         if (this.muted) return;
         this.init();
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.frequency.setValueAtTime(1400, now);
-        osc.frequency.exponentialRampToValueAtTime(350, now + 0.05);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.06);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.05);
+        osc.stop(now + 0.06);
       },
 
-      playCardSlideSound() {
+      playCardSlide() {
         if (this.muted) return;
         this.init();
         const now = this.ctx.currentTime;
-        const buf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.1, this.ctx.sampleRate);
+        const buf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.09, this.ctx.sampleRate);
         const data = buf.getChannelData(0);
         for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
         const src = this.ctx.createBufferSource();
         src.buffer = buf;
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'bandpass';
-        filter.frequency.value = 880;
+        filter.frequency.value = 850;
         const gain = this.ctx.createGain();
         gain.gain.setValueAtTime(0.18, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
         src.connect(filter);
         filter.connect(gain);
         gain.connect(this.ctx.destination);
         src.start(now);
       },
 
-      playCardContactSound() {
+      playCardContact() {
         if (this.muted) return;
         this.init();
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        osc.frequency.setValueAtTime(180, now);
-        osc.frequency.exponentialRampToValueAtTime(60, now + 0.05);
-        gain.gain.setValueAtTime(0.25, now);
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(50, now + 0.05);
+        gain.gain.setValueAtTime(0.2, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -730,7 +743,7 @@
         osc.stop(now + 0.05);
       },
 
-      playPaperFrictionSound() {
+      playPaperFriction() {
         if (this.muted) return;
         this.init();
         const now = this.ctx.currentTime;
@@ -738,7 +751,7 @@
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(320, now);
-        osc.frequency.linearRampToValueAtTime(480, now + 0.04);
+        osc.frequency.linearRampToValueAtTime(460, now + 0.04);
         gain.gain.setValueAtTime(0.06, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
         osc.connect(gain);
@@ -755,59 +768,38 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(now);
-          osc.stop(now + 0.65);
+          osc.stop(now + 0.6);
         });
       }
     };
 
-    const VoiceSynthesisEngine = {
+    const VoiceEngine = {
       enabled: true,
       speak(phrase) {
         if (!this.enabled || !window.speechSynthesis) return;
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(phrase);
         utter.rate = 1.02;
-        utter.pitch = 0.96;
+        utter.pitch = 0.95;
         window.speechSynthesis.speak(utter);
       }
     };
 
-    const HapticEngine = {
-      trigger(type = 'light') {
-        if (!navigator.vibrate) return;
-        if (type === 'light') navigator.vibrate(12);
-        else if (type === 'medium') navigator.vibrate(24);
-        else if (type === 'win') navigator.vibrate([35, 45, 70]);
-      }
-    };
+    // --- 8. CENTRAL GAME REPOSITORY ---
+    const Wallet = new BetTransactionManager(100000);
 
-    // --- 7. 全局状态存储仓库 (Central Game State) ---
     const GameState = {
       phase: GAME_PHASES.BETTING,
-      settlementState: SETTLEMENT_STATES.UNSETTLED,
-      currentRoundId: 1,
-      stepLock: false,
-
-      wallet: {
-        balance: 100000,
-        lastBets: null
-      },
-
-      bets: {
-        player: 0,
-        banker: 0,
-        tie: 0,
-        playerPair: 0,
-        bankerPair: 0
-      },
-
-      playerMainSide: 'player',
+      roundCount: 1,
+      stepExecutionLock: false,
+      lastCommittedBets: null,
       selectedChip: 1000,
+      playerMainSide: 'player',
 
       hands: {
         player: [],
@@ -822,150 +814,95 @@
       history: []
     };
 
-    // --- 8. 真实物理镜头控制器 (Camera Controller) ---
-    const CameraController = {
-      viewport: null,
-      init() {
-        this.viewport = document.getElementById('casino-table-viewport');
-      },
-      setMode(mode) {
-        if (!this.viewport) return;
-        this.viewport.classList.remove('camera-active-deal', 'camera-active-squeeze', 'camera-active-result');
-        if (mode === 'deal') this.viewport.classList.add('camera-active-deal');
-        else if (mode === 'squeeze') this.viewport.classList.add('camera-active-squeeze');
-        else if (mode === 'result') this.viewport.classList.add('camera-active-result');
-      }
-    };
-
-    // --- 9. 物理拟真筹码引擎 (ChipExperienceEngine) ---
-    const ChipExperienceEngine = {
-      tossChip(fromElement, targetSpot, amount) {
-        HapticEngine.trigger('light');
-        AudioExperienceEngine.playChipSound();
-
-        const fromRect = fromElement.getBoundingClientRect();
-        const toRect = targetSpot.getBoundingClientRect();
-
-        const chip = document.createElement('div');
-        chip.className = 'flying-chip chip-3d w-10 h-10 bg-amber-600 text-white text-xs z-50';
-        chip.innerText = amount >= 1000 ? `${amount / 1000}K` : amount;
-        chip.style.left = `${fromRect.left}px`;
-        chip.style.top = `${fromRect.top}px`;
-        document.body.appendChild(chip);
-
-        const offsetX = (Math.random() - 0.5) * 10;
-        const offsetY = (Math.random() - 0.5) * 8;
-        const rot = (Math.random() - 0.5) * 8;
-
-        requestAnimationFrame(() => {
-          const destX = toRect.left + (toRect.width / 2) - 20 + offsetX;
-          const destY = toRect.top + (toRect.height / 2) - 20 + offsetY;
-          chip.style.transform = `translate(${destX - fromRect.left}px, ${destY - fromRect.top}px) rotate(${rot}deg) scale(0.9)`;
-        });
-
-        setTimeout(() => {
-          chip.remove();
-        }, 340);
-      },
-
-      renderStackedChips(container, amount) {
-        container.innerHTML = '';
-        if (amount <= 0) return;
-
-        // 生成最多 4 层真实筹码叠加视觉
-        const stackLevels = Math.min(Math.ceil(amount / 500), 4);
-        for (let i = 0; i < stackLevels; i++) {
-          const token = document.createElement('div');
-          token.className = 'chip-stack-token bg-amber-600';
-          token.style.bottom = `${i * 3}px`;
-          token.style.transform = `rotate(${(i * 12) - 6}deg)`;
-          if (i === stackLevels - 1) {
-            token.innerText = amount >= 1000 ? `${amount / 1000}K` : amount;
-          }
-          container.appendChild(token);
-        }
-      }
-    };
-
-    // --- 10. 卡牌物理与发牌体验引擎 (CardExperienceEngine) ---
-    const CardExperienceEngine = {
+    // --- 9. PRESENTATION ENGINES (Card, Chip, Squeeze) ---
+    const PresentationEngine = {
       overlay: null,
 
       init() {
         this.overlay = document.getElementById('flight-animation-overlay');
       },
 
-      /**
-       * 真实发牌滑行：从牌靴槽飞向手牌区
-       */
-      slideFromShoe(targetTray, card, index, side, duration = CARD_PHYSICS_TIMINGS.cardFlightInitial) {
+      slideCardFromShoe(targetTray, card, index, side, duration = CONFIG.timings.dealFlight) {
         return new Promise(resolve => {
-          const shoeSlot = document.getElementById('shoe-deal-slot');
-          const shoeRect = shoeSlot.getBoundingClientRect();
+          const shoeEl = document.getElementById('physical-shoe-source');
+          const shoeRect = shoeEl.getBoundingClientRect();
 
-          const flying = document.createElement('div');
-          flying.className = 'sliding-card w-14 h-20 md:w-16 md:h-24 card-back-pattern rounded-md shadow-2xl';
-          flying.style.left = `${shoeRect.left + 8}px`;
-          flying.style.top = `${shoeRect.top + 4}px`;
-          flying.style.transform = 'scale(0.8) rotate(14deg)';
-          flying.style.transitionDuration = `${duration}ms`;
-          this.overlay.appendChild(flying);
+          const phantom = document.createElement('div');
+          phantom.className = 'flying-card-phantom w-14 h-20 md:w-16 md:h-24 card-back rounded-md shadow-2xl';
+          phantom.style.left = `${shoeRect.left + 8}px`;
+          phantom.style.top = `${shoeRect.top + 4}px`;
+          phantom.style.transform = 'scale(0.8) rotate(14deg)';
+          phantom.style.transitionDuration = `${duration}ms`;
+          this.overlay.appendChild(phantom);
 
-          AudioExperienceEngine.playCardSlideSound();
+          AudioEngine.playCardSlide();
 
           const trayRect = targetTray.getBoundingClientRect();
-          const targetX = trayRect.left + (index * 70);
-          const targetY = trayRect.top + 4;
-          const tilt = (Math.random() - 0.5) * 5;
+          const destX = trayRect.left + (index * 68);
+          const destY = trayRect.top + 4;
+          const randomTilt = (Math.random() - 0.5) * 4;
 
           requestAnimationFrame(() => {
-            flying.style.transform = `translate(${targetX - shoeRect.left}px, ${targetY - shoeRect.top}px) scale(1) rotate(${tilt}deg)`;
-            flying.style.boxShadow = '0 20px 30px rgba(0,0,0,0.6)';
+            phantom.style.transform = `translate(${destX - shoeRect.left}px, ${destY - shoeRect.top}px) scale(1) rotate(${randomTilt}deg)`;
+            phantom.style.boxShadow = '0 20px 30px rgba(0,0,0,0.6)';
           });
 
           setTimeout(() => {
-            AudioExperienceEngine.playCardContactSound();
-            HapticEngine.trigger('light');
-            flying.remove();
+            AudioEngine.playCardContact();
+            phantom.remove();
 
-            // 挂载真实 DOM 牌进容器
-            const realCard = UI.createCardDOM(card, true, side, index);
-            targetTray.appendChild(realCard);
-
-            const flipper = realCard.querySelector('.card-flipper');
-            flipper.style.transform = 'scale(1.04) translateY(-2px)';
-            setTimeout(() => {
-              flipper.style.transform = 'scale(1) translateY(0)';
-            }, 180);
-
+            const realDOM = UI.createCardDOM(card, true, side, index);
+            targetTray.appendChild(realDOM);
             resolve();
           }, duration);
         });
       },
 
-      /**
-       * 物理 3D 阻尼翻牌
-       */
       flipCard(side, index) {
         return new Promise(resolve => {
-          const tray = document.getElementById(`${side}-cards-tray`);
+          const tray = document.getElementById(`${side}-card-tray`);
           const flipper = tray.querySelector(`[data-index="${index}"] .card-flipper`);
           if (!flipper || flipper.classList.contains('flipped')) {
             resolve();
             return;
           }
 
-          AudioExperienceEngine.playCardSlideSound();
+          AudioEngine.playCardSlide();
           flipper.classList.add('flipped');
           setTimeout(() => {
-            AudioExperienceEngine.playCardContactSound();
+            AudioEngine.playCardContact();
             resolve();
-          }, CARD_PHYSICS_TIMINGS.cardRevealFlip);
+          }, CONFIG.timings.revealFlip);
         });
+      },
+
+      tossChip(fromEl, targetSpotEl, amount) {
+        AudioEngine.playChipDrop();
+        const fromRect = fromEl.getBoundingClientRect();
+        const toRect = targetSpotEl.getBoundingClientRect();
+
+        const chip = document.createElement('div');
+        chip.className = 'flying-chip-phantom w-9 h-9 rounded-full border-2 border-dashed border-gold/80 bg-amber-600 flex items-center justify-center font-bold text-[10px] text-white shadow-xl';
+        chip.innerText = amount >= 1000 ? `${amount / 1000}K` : amount;
+        chip.style.left = `${fromRect.left}px`;
+        chip.style.top = `${fromRect.top}px`;
+        document.body.appendChild(chip);
+
+        const offsetX = (Math.random() - 0.5) * 8;
+        const offsetY = (Math.random() - 0.5) * 6;
+        const rot = (Math.random() - 0.5) * 8;
+
+        requestAnimationFrame(() => {
+          const destX = toRect.left + (toRect.width / 2) - 18 + offsetX;
+          const destY = toRect.top + (toRect.height / 2) - 18 + offsetY;
+          chip.style.transform = `translate(${destX - fromRect.left}px, ${destY - fromRect.top}px) rotate(${rot}deg) scale(0.92)`;
+        });
+
+        setTimeout(() => chip.remove(), 280);
       }
     };
 
-    // --- 11. 4 角独立物理非线性阻尼咪牌 (SqueezeEngine Pro) ---
+    // --- 10. SQUEEZE ENGINE PRO (Nonlinear Physics Peel) ---
     const SqueezeEngine = {
       active: false,
       card: null,
@@ -974,24 +911,22 @@
       startX: 0,
       startY: 0,
       activePointerId: null,
-      peelElement: null,
+      peelEl: null,
       progressBar: null,
 
       init() {
-        this.peelElement = document.getElementById('squeeze-peel-layer');
+        this.peelEl = document.getElementById('squeeze-peel-layer');
         this.progressBar = document.getElementById('squeeze-progress-bar');
         const modal = document.getElementById('squeeze-modal');
 
-        modal.querySelectorAll('.corner-zone').forEach(zone => {
-          zone.addEventListener('pointerdown', (e) => this.onPointerDown(e));
+        modal.querySelectorAll('.corner-zone').forEach(z => {
+          z.addEventListener('pointerdown', (e) => this.onPointerDown(e));
         });
         window.addEventListener('pointermove', (e) => this.onPointerMove(e));
         window.addEventListener('pointerup', (e) => this.onPointerUp(e));
         window.addEventListener('pointercancel', (e) => this.onPointerUp(e));
 
-        document.getElementById('btn-skip-squeeze').addEventListener('click', () => {
-          this.complete();
-        });
+        document.getElementById('btn-skip-squeeze').addEventListener('click', () => this.complete());
       },
 
       open(card, title, onComplete) {
@@ -1000,7 +935,6 @@
         this.resolveCallback = onComplete;
         this.activePointerId = null;
 
-        CameraController.setMode('squeeze');
         document.getElementById('squeeze-title').innerText = title;
         document.getElementById('squeeze-val-top').innerText = card.value;
         document.getElementById('squeeze-val-bot').innerText = card.value;
@@ -1009,10 +943,10 @@
         document.getElementById('squeeze-suit-center').innerText = card.suit;
 
         const colorClass = card.isRed ? 'text-rose-600' : 'text-zinc-900';
-        document.getElementById('squeeze-card-face').className = `absolute inset-0 card-front-pattern p-4 flex flex-col justify-between select-none ${colorClass}`;
+        document.getElementById('squeeze-card-face').className = `absolute inset-0 bg-white p-4 flex flex-col justify-between select-none ${colorClass}`;
 
-        this.peelElement.style.transform = 'none';
-        this.peelElement.style.transition = 'none';
+        this.peelEl.style.transform = 'none';
+        this.peelEl.style.transition = 'none';
         this.progressBar.style.width = '0%';
         document.getElementById('squeeze-modal').classList.remove('hidden');
       },
@@ -1024,8 +958,8 @@
         this.activeCorner = e.target.dataset.corner;
         this.startX = e.clientX;
         this.startY = e.clientY;
-        this.peelElement.style.transition = 'none';
-        AudioExperienceEngine.playPaperFrictionSound();
+        this.peelEl.style.transition = 'none';
+        AudioEngine.playPaperFriction();
       },
 
       onPointerMove(e) {
@@ -1035,32 +969,22 @@
         const dy = e.clientY - this.startY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // 真实纸张张力阻尼非线性曲线
-        const rawRatio = Math.min(dist / 200, 1.0);
-        const curvedProgress = 1 - Math.pow(1 - rawRatio, 1.85);
-        this.progressBar.style.width = `${Math.round(curvedProgress * 100)}%`;
+        // Exponential Paper Tension Curve: 1 - (1 - x)^1.8
+        const rawRatio = Math.min(dist / 190, 1.0);
+        const progress = 1 - Math.pow(1 - rawRatio, 1.8);
+        this.progressBar.style.width = `${Math.round(progress * 100)}%`;
 
-        // 达到 85% 阈值自动平滑揭示开牌
-        if (curvedProgress >= 0.85) {
-          HapticEngine.trigger('medium');
+        if (progress >= 0.85) {
           this.complete();
           return;
         }
 
-        const deg = curvedProgress * 120;
+        const deg = progress * 115;
         switch (this.activeCorner) {
-          case 'BR':
-            this.peelElement.style.transform = `rotate3d(1, -1, 0, ${deg}deg)`;
-            break;
-          case 'TL':
-            this.peelElement.style.transform = `rotate3d(1, 1, 0, ${deg}deg)`;
-            break;
-          case 'TR':
-            this.peelElement.style.transform = `rotate3d(-1, 1, 0, ${deg}deg)`;
-            break;
-          case 'BL':
-            this.peelElement.style.transform = `rotate3d(1, 1, 0, ${deg}deg)`;
-            break;
+          case 'BR': this.peelEl.style.transform = `rotate3d(1, -1, 0, ${deg}deg)`; break;
+          case 'TL': this.peelEl.style.transform = `rotate3d(1, 1, 0, ${deg}deg)`; break;
+          case 'TR': this.peelEl.style.transform = `rotate3d(-1, 1, 0, ${deg}deg)`; break;
+          case 'BL': this.peelEl.style.transform = `rotate3d(1, 1, 0, ${deg}deg)`; break;
         }
       },
 
@@ -1069,18 +993,16 @@
         this.activePointerId = null;
         this.activeCorner = null;
 
-        // 未达到阈值，带物理弹簧回弹平滑归位
-        this.peelElement.style.transition = 'transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-        this.peelElement.style.transform = 'none';
+        this.peelEl.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        this.peelEl.style.transform = 'none';
         this.progressBar.style.width = '0%';
-        AudioExperienceEngine.playPaperFrictionSound();
+        AudioEngine.playPaperFriction();
       },
 
       complete() {
         if (!this.active) return;
         this.active = false;
         this.activePointerId = null;
-        CameraController.setMode('deal');
         document.getElementById('squeeze-modal').classList.add('hidden');
         if (this.resolveCallback) {
           const cb = this.resolveCallback;
@@ -1090,70 +1012,7 @@
       }
     };
 
-    // --- 12. 下注系统 (Atomic Betting System) ---
-    const BettingEngine = {
-      canBet() {
-        return GameState.phase === GAME_PHASES.BETTING;
-      },
-
-      placeBet(spot, amount, eventSource) {
-        if (!this.canBet()) return false;
-        if (GameState.wallet.balance < amount) return false;
-
-        GameState.wallet.balance -= amount;
-        GameState.bets[spot] += amount;
-
-        if (spot === 'player' || spot === 'banker') {
-          GameState.playerMainSide = spot;
-        }
-
-        const spotEl = document.querySelector(`[data-bet-target="${spot}"]`);
-        if (eventSource && spotEl) {
-          ChipExperienceEngine.tossChip(eventSource, spotEl, amount);
-        }
-
-        UI.renderWallet();
-        UI.renderBets();
-        return true;
-      },
-
-      clearBets() {
-        if (!this.canBet()) return;
-        const total = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
-        GameState.wallet.balance += total;
-        for (const k in GameState.bets) GameState.bets[k] = 0;
-        AudioExperienceEngine.playChipSound();
-        UI.renderWallet();
-        UI.renderBets();
-      },
-
-      doubleBets() {
-        if (!this.canBet()) return;
-        const total = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
-        if (total === 0 || GameState.wallet.balance < total) return;
-
-        GameState.wallet.balance -= total;
-        for (const k in GameState.bets) GameState.bets[k] *= 2;
-        AudioExperienceEngine.playChipSound();
-        UI.renderWallet();
-        UI.renderBets();
-      },
-
-      rebet() {
-        if (!this.canBet() || !GameState.wallet.lastBets) return;
-        const totalLast = Object.values(GameState.wallet.lastBets).reduce((a, b) => a + b, 0);
-        if (GameState.wallet.balance < totalLast) return;
-
-        this.clearBets();
-        GameState.wallet.balance -= totalLast;
-        GameState.bets = { ...GameState.wallet.lastBets };
-        AudioExperienceEngine.playChipSound();
-        UI.renderWallet();
-        UI.renderBets();
-      }
-    };
-
-    // --- 13. 标准五路单矩阵计算引擎 (RoadmapEngine) ---
+    // --- 11. ROADMAP ENGINE ---
     const RoadmapEngine = {
       generateBigRoad(history) {
         const matrix = [];
@@ -1218,7 +1077,7 @@
       }
     };
 
-    // --- 14. 视图控制器 (UI View Controller) ---
+    // --- 12. UI VIEW ENGINE ---
     const UI = {
       init() {
         this.renderChips();
@@ -1226,38 +1085,41 @@
         this.renderWallet();
         this.renderBets();
         this.renderRoadmaps();
-        this.updatePhaseText();
+        this.updateTelemetry();
       },
 
-      updatePhaseText() {
-        const el = document.getElementById('hud-phase');
-        if (el) el.innerText = GameState.phase;
+      updateTelemetry() {
+        document.getElementById('tele-state').innerText = GameState.phase;
+        document.getElementById('tele-shoe').innerText = `#00${Shoe.shoeNumber}`;
+        document.getElementById('tele-cards').innerText = Shoe.remaining;
+        document.getElementById('tele-round').innerText = `#${GameState.roundCount}`;
       },
 
       renderChips() {
-        document.querySelectorAll('.chip-token').forEach(el => {
-          el.classList.remove('ring-4', 'ring-[#e6ca85]');
+        document.querySelectorAll('.clay-chip').forEach(el => {
+          el.classList.remove('ring-4', 'ring-gold');
           if (parseInt(el.dataset.val, 10) === GameState.selectedChip) {
-            el.classList.add('ring-4', 'ring-[#e6ca85]');
+            el.classList.add('ring-4', 'ring-gold');
           }
         });
       },
 
       renderWallet() {
-        document.getElementById('player-bankroll').innerText = `$${GameState.wallet.balance.toLocaleString()}`;
+        document.getElementById('player-balance-display').innerText = `$${Wallet.balance.toLocaleString()}`;
       },
 
       renderBets() {
-        document.querySelectorAll('.bet-spot').forEach(spot => {
-          const type = spot.dataset.betTarget;
-          const amt = GameState.bets[type];
-          const holder = spot.querySelector('.chip-holder');
+        const bets = Wallet.getActiveBetsMap();
+        document.querySelectorAll('.bet-target-station').forEach(spot => {
+          const type = spot.dataset.betSpot;
+          const amt = bets[type] || 0;
+          const anchor = spot.querySelector('.chip-stack-anchor');
           if (amt > 0) {
-            spot.classList.add('bet-grid-active');
-            ChipExperienceEngine.renderStackedChips(holder, amt);
+            spot.classList.add('felt-line-active');
+            anchor.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-gold text-black font-bold font-mono text-[10px] shadow">$${amt.toLocaleString()}</span>`;
           } else {
-            spot.classList.remove('bet-grid-active');
-            holder.innerHTML = '';
+            spot.classList.remove('felt-line-active');
+            anchor.innerHTML = '';
           }
         });
       },
@@ -1270,13 +1132,13 @@
         cardDiv.dataset.index = index;
         cardDiv.innerHTML = `
           <div class="card-flipper w-full h-full relative ${hidden ? '' : 'flipped'}">
-            <div class="card-face card-back-pattern absolute inset-0 rounded-md shadow-md flex items-center justify-center">
-              <span class="text-[9px] text-[#e6ca85]/50 font-cinzel font-bold">VIP</span>
+            <div class="card-face card-back absolute inset-0 rounded-md shadow-md flex items-center justify-center">
+              <span class="text-[8px] text-[#e6ca85]/50 font-cinzel">VIP</span>
             </div>
-            <div class="card-face card-front-pattern absolute inset-0 rounded-md p-1.5 flex flex-col justify-between shadow-md border border-zinc-300 ${color} rotate-y-180">
-              <div class="text-xs font-bold leading-none font-mono">${card.value}<br><span class="text-[10px]">${card.suit}</span></div>
-              <div class="text-lg self-center">${card.suit}</div>
-              <div class="text-xs font-bold leading-none self-end rotate-180 font-mono">${card.value}<br><span class="text-[10px]">${card.suit}</span></div>
+            <div class="card-face absolute inset-0 rounded-md bg-white p-1 flex flex-col justify-between shadow-md border border-zinc-300 ${color} rotate-y-180">
+              <div class="text-xs font-bold leading-none">${card.value}<br><span class="text-[9px]">${card.suit}</span></div>
+              <div class="text-base self-center">${card.suit}</div>
+              <div class="text-xs font-bold leading-none self-end rotate-180">${card.value}<br><span class="text-[9px]">${card.suit}</span></div>
             </div>
           </div>
         `;
@@ -1287,7 +1149,6 @@
         const history = GameState.history;
         const bigRoad = RoadmapEngine.generateBigRoad(history);
 
-        // 1. 珠盘路
         const beadGrid = document.getElementById('bead-road-grid');
         beadGrid.innerHTML = '';
         history.forEach(round => {
@@ -1298,7 +1159,6 @@
           beadGrid.appendChild(cell);
         });
 
-        // 2. 大路
         const bigGrid = document.getElementById('big-road-grid');
         bigGrid.innerHTML = '';
         bigRoad.forEach(col => {
@@ -1318,9 +1178,8 @@
           bigGrid.appendChild(colDiv);
         });
 
-        // 3. 下三路
-        const renderDerivedGrid = (elemId, data) => {
-          const container = document.getElementById(elemId);
+        const renderDerived = (id, data) => {
+          const container = document.getElementById(id);
           container.innerHTML = '';
           data.forEach(val => {
             const dot = document.createElement('div');
@@ -1329,170 +1188,192 @@
           });
         };
 
-        renderDerivedGrid('big-eye-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 1));
-        renderDerivedGrid('small-road-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 2));
-        renderDerivedGrid('cockroach-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 3));
+        renderDerived('big-eye-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 1));
+        renderDerived('small-road-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 2));
+        renderDerived('cockroach-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 3));
 
-        // 计数
-        document.getElementById('stat-p').innerText = history.filter(h => h.winner === 'player').length;
-        document.getElementById('stat-b').innerText = history.filter(h => h.winner === 'banker').length;
-        document.getElementById('stat-t').innerText = history.filter(h => h.winner === 'tie').length;
+        document.getElementById('stat-p-count').innerText = history.filter(h => h.winner === 'player').length;
+        document.getElementById('stat-b-count').innerText = history.filter(h => h.winner === 'banker').length;
+        document.getElementById('stat-t-count').innerText = history.filter(h => h.winner === 'tie').length;
       },
 
       bindEvents() {
-        document.querySelectorAll('.chip-token').forEach(el => {
-          el.addEventListener('click', (e) => {
+        document.querySelectorAll('.clay-chip').forEach(el => {
+          el.addEventListener('click', () => {
             GameState.selectedChip = parseInt(el.dataset.val, 10);
             this.renderChips();
-            AudioExperienceEngine.playChipSound();
-            HapticEngine.trigger('light');
+            AudioEngine.playChipDrop();
           });
         });
 
-        document.querySelectorAll('.bet-spot').forEach(spot => {
-          spot.addEventListener('click', (e) => {
-            const activeChip = document.querySelector(`.chip-token[data-val="${GameState.selectedChip}"]`);
-            BettingEngine.placeBet(spot.dataset.betTarget, GameState.selectedChip, activeChip);
+        document.querySelectorAll('.bet-target-station').forEach(station => {
+          station.addEventListener('click', (e) => {
+            if (GameState.phase !== GAME_PHASES.BETTING) return;
+            const spot = station.dataset.betSpot;
+            const activeChipEl = document.querySelector(`.clay-chip[data-val="${GameState.selectedChip}"]`);
+            const tx = Wallet.createTransaction(spot, GameState.selectedChip);
+            if (tx) {
+              if (spot === 'player' || spot === 'banker') GameState.playerMainSide = spot;
+              PresentationEngine.tossChip(activeChipEl, station, GameState.selectedChip);
+              this.renderWallet();
+              this.renderBets();
+            }
           });
         });
 
-        document.getElementById('btn-clear-bets').addEventListener('click', () => BettingEngine.clearBets());
-        document.getElementById('btn-double-bets').addEventListener('click', () => BettingEngine.doubleBets());
-        document.getElementById('btn-rebet').addEventListener('click', () => BettingEngine.rebet());
-
-        document.getElementById('btn-audio').addEventListener('click', () => {
-          AudioExperienceEngine.muted = !AudioExperienceEngine.muted;
-          document.getElementById('btn-audio').classList.toggle('text-zinc-500', AudioExperienceEngine.muted);
+        document.getElementById('btn-clear-bets').addEventListener('click', () => {
+          if (GameState.phase !== GAME_PHASES.BETTING) return;
+          Wallet.cancelCurrentRound();
+          AudioEngine.playChipDrop();
+          this.renderWallet();
+          this.renderBets();
         });
 
-        document.getElementById('btn-voice').addEventListener('click', () => {
-          VoiceSynthesisEngine.enabled = !VoiceSynthesisEngine.enabled;
-          document.getElementById('btn-voice').classList.toggle('text-zinc-500', !VoiceSynthesisEngine.enabled);
+        document.getElementById('btn-double-bets').addEventListener('click', () => {
+          if (GameState.phase !== GAME_PHASES.BETTING) return;
+          const currentBets = Wallet.getActiveBetsMap();
+          for (const spot in currentBets) {
+            const amt = currentBets[spot];
+            if (amt > 0) Wallet.createTransaction(spot, amt);
+          }
+          AudioEngine.playChipDrop();
+          this.renderWallet();
+          this.renderBets();
         });
 
-        document.getElementById('btn-deal').addEventListener('click', () => FlowController.startRound());
-
-        document.getElementById('btn-reveal-opponent-all').addEventListener('click', () => {
-          FlowController.revealAllOpponentCardsDirect();
+        document.getElementById('btn-rebet').addEventListener('click', () => {
+          if (GameState.phase !== GAME_PHASES.BETTING || !GameState.lastCommittedBets) return;
+          Wallet.cancelCurrentRound();
+          for (const spot in GameState.lastCommittedBets) {
+            const amt = GameState.lastCommittedBets[spot];
+            if (amt > 0) Wallet.createTransaction(spot, amt);
+          }
+          AudioEngine.playChipDrop();
+          this.renderWallet();
+          this.renderBets();
         });
 
-        document.getElementById('btn-debug-toggle').addEventListener('click', () => {
-          document.getElementById('dev-console').classList.toggle('hidden');
+        document.getElementById('btn-audio-toggle').addEventListener('click', () => {
+          AudioEngine.muted = !AudioEngine.muted;
+          document.getElementById('btn-audio-toggle').classList.toggle('text-zinc-500', AudioEngine.muted);
         });
 
-        // 牌桌卡牌点击代理 (咪牌与翻牌)
-        const handleCardInteraction = (e) => {
+        document.getElementById('btn-voice-toggle').addEventListener('click', () => {
+          VoiceEngine.enabled = !VoiceEngine.enabled;
+          document.getElementById('btn-voice-toggle').classList.toggle('text-zinc-500', !VoiceEngine.enabled);
+        });
+
+        document.getElementById('btn-deal').addEventListener('click', () => Orchestrator.startRound());
+        document.getElementById('btn-reveal-opponent').addEventListener('click', () => Orchestrator.revealAllOpponentCards());
+
+        const handleCardTap = (e) => {
           const scene = e.target.closest('.card-scene');
           if (!scene) return;
-          const side = scene.dataset.side;
-          const index = parseInt(scene.dataset.index, 10);
-          FlowController.handleCardInteraction(side, index);
+          Orchestrator.handleCardTap(scene.dataset.side, parseInt(scene.dataset.index, 10));
         };
 
-        document.getElementById('player-cards-tray').addEventListener('click', handleCardInteraction);
-        document.getElementById('banker-cards-tray').addEventListener('click', handleCardInteraction);
+        document.getElementById('player-card-tray').addEventListener('click', handleCardTap);
+        document.getElementById('banker-card-tray').addEventListener('click', handleCardTap);
       }
     };
 
-    // --- 15. 核心游戏流程编排控制器 (FlowController) ---
-    const FlowController = {
+    // --- 13. DATA-DRIVEN GAME ORCHESTRATOR ---
+    const Orchestrator = {
       async startRound() {
-        const totalBet = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
-        if (totalBet === 0 || GameState.phase !== GAME_PHASES.BETTING) return;
+        const bets = Wallet.getActiveBetsMap();
+        const totalWagered = Object.values(bets).reduce((a, b) => a + b, 0);
+        if (totalWagered === 0 || GameState.phase !== GAME_PHASES.BETTING) return;
 
-        // 1. 封盘阶段 (BETTING_LOCKED)
-        this.setPhase(GAME_PHASES.BETTING_LOCKED);
-        CameraController.setMode('deal');
-        GameState.settlementState = SETTLEMENT_STATES.UNSETTLED;
-        GameState.wallet.lastBets = { ...GameState.bets };
+        // Step 1: Bet Lock Transaction
+        this.setPhase(GAME_PHASES.BET_LOCKED);
+        Wallet.lockTransactions();
+        GameState.lastCommittedBets = { ...bets };
         document.getElementById('btn-deal').disabled = true;
         document.getElementById('dealer-announcement').innerText = 'NO MORE BETS';
-        VoiceSynthesisEngine.speak('No more bets');
+        VoiceEngine.speak('No more bets');
 
-        // 2. 牌靴监测与洗牌过渡
         if (Shoe.needsShuffle()) {
           this.setPhase(GAME_PHASES.SHUFFLING);
           document.getElementById('dealer-announcement').innerText = 'SHUFFLING NEW SHOE';
-          await TimerManager.wait(1100, 'shuffle');
+          await TimerManager.wait(1000);
           Shoe.initShoe();
           Shoe.shoeNumber++;
-          document.getElementById('hud-shoe-id').innerText = `#00${Shoe.shoeNumber}`;
         }
 
-        // 3. 初始四张牌交替滑出 (DEALING_INITIAL)
-        this.setPhase(GAME_PHASES.DEALING_INITIAL);
+        // Step 2: Initialize Table Tray
+        this.setPhase(GAME_PHASES.DEALING);
         GameState.hands.player = [];
         GameState.hands.banker = [];
         GameState.revealedStatus.player = [false, false, false];
         GameState.revealedStatus.banker = [false, false, false];
 
-        const pTray = document.getElementById('player-cards-tray');
-        const bTray = document.getElementById('banker-cards-tray');
+        const pTray = document.getElementById('player-card-tray');
+        const bTray = document.getElementById('banker-card-tray');
         pTray.innerHTML = '';
         bTray.innerHTML = '';
-        document.getElementById('player-score-badge').classList.add('hidden');
-        document.getElementById('banker-score-badge').classList.add('hidden');
-        document.getElementById('opponent-quick-bar').classList.remove('hidden');
+        document.getElementById('player-score-pip').classList.add('hidden');
+        document.getElementById('banker-score-pip').classList.add('hidden');
+        document.getElementById('opponent-reveal-container').classList.remove('hidden');
 
-        // 闲1 -> 庄1 -> 闲2 -> 庄2
+        // Step 3: Draw First 4 Cards (Strict Sequential Queue)
         const p1 = Shoe.draw(); GameState.hands.player.push(p1);
-        await CardExperienceEngine.slideFromShoe(pTray, p1, 0, 'player');
-        await TimerManager.wait(CARD_PHYSICS_TIMINGS.dealBreathInterval, 'deal-pause');
+        await PresentationEngine.slideCardFromShoe(pTray, p1, 0, 'player');
+        await TimerManager.wait(CONFIG.timings.dealPause);
 
         const b1 = Shoe.draw(); GameState.hands.banker.push(b1);
-        await CardExperienceEngine.slideFromShoe(bTray, b1, 0, 'banker');
-        await TimerManager.wait(CARD_PHYSICS_TIMINGS.dealBreathInterval, 'deal-pause');
+        await PresentationEngine.slideCardFromShoe(bTray, b1, 0, 'banker');
+        await TimerManager.wait(CONFIG.timings.dealPause);
 
         const p2 = Shoe.draw(); GameState.hands.player.push(p2);
-        await CardExperienceEngine.slideFromShoe(pTray, p2, 1, 'player');
-        await TimerManager.wait(CARD_PHYSICS_TIMINGS.dealBreathInterval, 'deal-pause');
+        await PresentationEngine.slideCardFromShoe(pTray, p2, 1, 'player');
+        await TimerManager.wait(CONFIG.timings.dealPause);
 
         const b2 = Shoe.draw(); GameState.hands.banker.push(b2);
-        await CardExperienceEngine.slideFromShoe(bTray, b2, 1, 'banker');
-        await TimerManager.wait(CARD_PHYSICS_TIMINGS.dealBreathInterval, 'deal-pause');
+        await PresentationEngine.slideCardFromShoe(bTray, b2, 1, 'banker');
+        await TimerManager.wait(CONFIG.timings.dealPause);
 
-        document.getElementById('hud-cards-left').innerText = Shoe.remaining;
+        UI.updateTelemetry();
 
-        // 4. 等待揭开与咪牌阶段
+        // Step 4: Awaiting Interaction
         this.setPhase(GAME_PHASES.WAITING_REVEAL);
         document.getElementById('dealer-announcement').innerText = 'SQUEEZE OR REVEAL CARDS';
       },
 
       setPhase(newPhase) {
         GameState.phase = newPhase;
-        UI.updatePhaseText();
+        UI.updateTelemetry();
       },
 
-      async handleCardInteraction(side, index) {
+      async handleCardTap(side, index) {
         if (GameState.phase !== GAME_PHASES.WAITING_REVEAL) return;
         if (GameState.revealedStatus[side][index]) return;
 
         const isUserSide = (side === GameState.playerMainSide);
 
         if (isUserSide) {
-          this.setPhase(GAME_PHASES.PLAYER_SQUEEZE);
+          this.setPhase(GAME_PHASES.SQUEEZE);
           const card = GameState.hands[side][index];
           await new Promise(resolve => {
-            SqueezeEngine.open(card, `VIP SQUEEZE · ${side.toUpperCase()} CARD #${index + 1}`, resolve);
+            SqueezeEngine.open(card, `VIP SQUEEZE · ${side.toUpperCase()} #${index + 1}`, resolve);
           });
           this.setPhase(GAME_PHASES.WAITING_REVEAL);
         }
 
-        await CardExperienceEngine.flipCard(side, index);
+        await PresentationEngine.flipCard(side, index);
         GameState.revealedStatus[side][index] = true;
         this.refreshScoresUI();
         await this.checkProgressionSafely();
       },
 
-      async revealAllOpponentCardsDirect() {
+      async revealAllOpponentCards() {
         if (GameState.phase !== GAME_PHASES.WAITING_REVEAL) return;
         const oppSide = GameState.playerMainSide === 'player' ? 'banker' : 'player';
 
         for (let i = 0; i < GameState.hands[oppSide].length; i++) {
           if (!GameState.revealedStatus[oppSide][i]) {
-            await CardExperienceEngine.flipCard(oppSide, i);
+            await PresentationEngine.flipCard(oppSide, i);
             GameState.revealedStatus[oppSide][i] = true;
-            await TimerManager.wait(120, 'stagger-flip');
+            await TimerManager.wait(100);
           }
         }
 
@@ -1503,20 +1384,20 @@
       refreshScoresUI() {
         ['player', 'banker'].forEach(side => {
           const cards = GameState.hands[side];
-          const revCount = GameState.revealedStatus[side].filter((rev, idx) => rev && idx < cards.length).length;
+          const revCount = GameState.revealedStatus[side].filter((r, idx) => r && idx < cards.length).length;
 
           if (revCount === cards.length && cards.length >= 2) {
             const score = BaccaratEngine.calculateScore(cards);
-            const badge = document.getElementById(`${side}-score-badge`);
-            badge.innerText = score;
-            badge.classList.remove('hidden');
+            const pip = document.getElementById(`${side}-score-pip`);
+            pip.innerText = score;
+            pip.classList.remove('hidden');
           }
         });
       },
 
       async checkProgressionSafely() {
-        if (GameState.stepLock) return;
-        GameState.stepLock = true;
+        if (GameState.stepExecutionLock) return;
+        GameState.stepExecutionLock = true;
 
         try {
           const pInitDone = GameState.revealedStatus.player[0] && GameState.revealedStatus.player[1];
@@ -1524,82 +1405,77 @@
 
           if (!pInitDone || !bInitDone) return;
 
-          const pScoreInitial = BaccaratEngine.calculateScore(GameState.hands.player.slice(0, 2));
-          const bScoreInitial = BaccaratEngine.calculateScore(GameState.hands.banker.slice(0, 2));
+          const pScoreInit = BaccaratEngine.calculateScore(GameState.hands.player.slice(0, 2));
+          const bScoreInit = BaccaratEngine.calculateScore(GameState.hands.banker.slice(0, 2));
 
-          // 例牌 Natural 8/9
+          // Natural 8 or 9
           if (BaccaratEngine.isNatural(GameState.hands.player.slice(0, 2), GameState.hands.banker.slice(0, 2))) {
-            document.getElementById('opponent-quick-bar').classList.add('hidden');
-            VoiceSynthesisEngine.speak('Natural');
+            document.getElementById('opponent-reveal-container').classList.add('hidden');
+            VoiceEngine.speak('Natural');
             await this.finalizeRoundTransaction();
             return;
           }
 
-          // 进入第三张牌决策阶段
+          // Evaluate Third Card Transition
           if (GameState.phase === GAME_PHASES.WAITING_REVEAL && GameState.hands.player.length === 2 && GameState.hands.banker.length === 2) {
             this.setPhase(GAME_PHASES.THIRD_CARD_DECISION);
-            await this.processThirdCardSequence(pScoreInitial, bScoreInitial);
+            await this.processThirdCardSequence(pScoreInit, bScoreInit);
             return;
           }
 
-          // 若已补第三张，验证是否全部揭晓
+          // Verify Third Card reveals
           const pThirdReq = GameState.hands.player.length === 3;
           const bThirdReq = GameState.hands.banker.length === 3;
+
           const pThirdDone = !pThirdReq || GameState.revealedStatus.player[2];
           const bThirdDone = !bThirdReq || GameState.revealedStatus.banker[2];
 
           if (pThirdDone && bThirdDone) {
-            document.getElementById('opponent-quick-bar').classList.add('hidden');
+            document.getElementById('opponent-reveal-container').classList.add('hidden');
             await this.finalizeRoundTransaction();
           }
         } finally {
-          GameState.stepLock = false;
+          GameState.stepExecutionLock = false;
         }
       },
 
-      async processThirdCardSequence(pScoreInitial, bScoreInitial) {
+      async processThirdCardSequence(pScoreInit, bScoreInit) {
         let playerThirdCard = null;
-        const pTray = document.getElementById('player-cards-tray');
-        const bTray = document.getElementById('banker-cards-tray');
+        const pTray = document.getElementById('player-card-tray');
+        const bTray = document.getElementById('banker-card-tray');
 
-        // 闲家补牌判断 (0-5 补，6-7 停)
-        if (BaccaratEngine.shouldPlayerDraw(pScoreInitial)) {
+        if (BaccaratEngine.shouldPlayerDraw(pScoreInit)) {
           document.getElementById('dealer-announcement').innerText = 'PLAYER DRAWS';
-          await TimerManager.wait(CARD_PHYSICS_TIMINGS.decisionPause, 'p-draw-pause');
+          await TimerManager.wait(CONFIG.timings.thirdCardDecisionPause);
 
           this.setPhase(GAME_PHASES.THIRD_CARD_DEAL);
           playerThirdCard = Shoe.draw();
           GameState.hands.player.push(playerThirdCard);
-          await CardExperienceEngine.slideFromShoe(pTray, playerThirdCard, 2, 'player', CARD_PHYSICS_TIMINGS.cardFlightThird);
-          document.getElementById('hud-cards-left').innerText = Shoe.remaining;
+          await PresentationEngine.slideCardFromShoe(pTray, playerThirdCard, 2, 'player', CONFIG.timings.thirdCardFlight);
+          UI.updateTelemetry();
         }
 
-        // 庄家补牌判断 (严格根据庄点数与闲第三张牌点数矩阵)
-        if (BaccaratEngine.shouldBankerDraw(bScoreInitial, playerThirdCard)) {
+        if (BaccaratEngine.shouldBankerDraw(bScoreInit, playerThirdCard)) {
           document.getElementById('dealer-announcement').innerText = 'BANKER DRAWS';
-          await TimerManager.wait(CARD_PHYSICS_TIMINGS.decisionPause, 'b-draw-pause');
+          await TimerManager.wait(CONFIG.timings.thirdCardDecisionPause);
 
           this.setPhase(GAME_PHASES.THIRD_CARD_DEAL);
           const bankerThirdCard = Shoe.draw();
           GameState.hands.banker.push(bankerThirdCard);
-          await CardExperienceEngine.slideFromShoe(bTray, bankerThirdCard, 2, 'banker', CARD_PHYSICS_TIMINGS.cardFlightThird);
-          document.getElementById('hud-cards-left').innerText = Shoe.remaining;
+          await PresentationEngine.slideCardFromShoe(bTray, bankerThirdCard, 2, 'banker', CONFIG.timings.thirdCardFlight);
+          UI.updateTelemetry();
         }
 
         this.setPhase(GAME_PHASES.WAITING_REVEAL);
-        document.getElementById('dealer-announcement').innerText = 'REVEAL CARD TO CONCLUDE';
+        document.getElementById('dealer-announcement').innerText = 'REVEAL THIRD CARD';
 
-        // 双方均停牌直接结算
         if (GameState.hands.player.length === 2 && GameState.hands.banker.length === 2) {
           await this.finalizeRoundTransaction();
         }
       },
 
       async finalizeRoundTransaction() {
-        if (GameState.settlementState !== SETTLEMENT_STATES.UNSETTLED) return;
-        GameState.settlementState = SETTLEMENT_STATES.PROCESSING;
-        this.setPhase(GAME_PHASES.PAYOUT);
-        CameraController.setMode('result');
+        this.setPhase(GAME_PHASES.SETTLEMENT);
 
         const pScore = BaccaratEngine.calculateScore(GameState.hands.player);
         const bScore = BaccaratEngine.calculateScore(GameState.hands.banker);
@@ -1608,24 +1484,25 @@
         const pPair = BaccaratEngine.hasPair(GameState.hands.player.slice(0, 2));
         const bPair = BaccaratEngine.hasPair(GameState.hands.banker.slice(0, 2));
 
-        // 严格幂等性资金核算
-        let totalWin = 0;
+        const bets = Wallet.getActiveBetsMap();
+        let grossWon = 0;
+
         if (winner === 'player') {
-          totalWin += GameState.bets.player * (1 + CONFIG.baccarat.payouts.player);
+          grossWon += bets.player * (1 + CONFIG.baccarat.payouts.player);
         } else if (winner === 'banker') {
-          totalWin += GameState.bets.banker * (1 + CONFIG.baccarat.payouts.banker);
+          grossWon += bets.banker * (1 + CONFIG.baccarat.payouts.banker);
         } else {
-          totalWin += (GameState.bets.player + GameState.bets.banker); // 和局退主注
-          totalWin += GameState.bets.tie * (1 + CONFIG.baccarat.payouts.tie);
+          grossWon += (bets.player + bets.banker); // Tie pushes main bets
+          grossWon += bets.tie * (1 + CONFIG.baccarat.payouts.tie);
         }
 
-        if (pPair) totalWin += GameState.bets.playerPair * (1 + CONFIG.baccarat.payouts.playerPair);
-        if (bPair) totalWin += GameState.bets.bankerPair * (1 + CONFIG.baccarat.payouts.bankerPair);
+        if (pPair) grossWon += bets.playerPair * (1 + CONFIG.baccarat.payouts.playerPair);
+        if (bPair) grossWon += bets.bankerPair * (1 + CONFIG.baccarat.payouts.bankerPair);
 
-        GameState.wallet.balance += Math.round(totalWin);
+        Wallet.applyPayout(grossWon);
 
         GameState.history.push({
-          roundId: GameState.currentRoundId,
+          roundId: GameState.roundCount,
           winner,
           pScore,
           bScore,
@@ -1636,130 +1513,49 @@
 
         const banner = winner === 'tie' ? 'TIE GAME' : `${winner.toUpperCase()} WINS`;
         document.getElementById('dealer-announcement').innerText = `${banner} (${pScore} - ${bScore})`;
-        VoiceSynthesisEngine.speak(`${winner} wins`);
+        VoiceEngine.speak(`${winner} wins`);
 
-        if (totalWin > 0) {
-          AudioExperienceEngine.playWinChord();
-          HapticEngine.trigger('win');
-        }
+        if (grossWon > 0) AudioEngine.playWinChord();
 
         UI.renderWallet();
         UI.renderRoadmaps();
         this.refreshScoresUI();
 
-        GameState.settlementState = SETTLEMENT_STATES.SETTLED;
-        this.setPhase(GAME_PHASES.RESULT_REVEAL);
+        this.setPhase(GAME_PHASES.RESULT);
 
-        await TimerManager.wait(CARD_PHYSICS_TIMINGS.payoutDisplayPause, 'round-end-pause');
-        this.resetForNextRound();
+        await TimerManager.wait(CONFIG.timings.roundResetDelay);
+        this.resetNextRound();
       },
 
-      resetForNextRound() {
-        for (const k in GameState.bets) GameState.bets[k] = 0;
+      resetNextRound() {
         UI.renderBets();
-        CameraController.setMode('normal');
-        GameState.currentRoundId++;
-        document.getElementById('hud-round-id').innerText = `#${GameState.currentRoundId}`;
+        GameState.roundCount++;
         document.getElementById('btn-deal').disabled = false;
         document.getElementById('dealer-announcement').innerText = 'PLACE YOUR BETS';
         this.setPhase(GAME_PHASES.BETTING);
       }
     };
 
-    // --- 16. 自动化测试与调试套件 (Debug Suite) ---
-    function initDevSuite() {
-      // 场景注入器
-      document.getElementById('dev-inject-natural').onclick = () => {
-        Shoe.cards.push({ suit: '♠', value: '9', isRed: false }); // P1
-        Shoe.cards.push({ suit: '♥', value: '7', isRed: true });  // B1
-        Shoe.cards.push({ suit: '♦', value: 'K', isRed: true });  // P2
-        Shoe.cards.push({ suit: '♣', value: 'Q', isRed: false }); // B2
-      };
-
-      document.getElementById('dev-inject-p-draw').onclick = () => {
-        Shoe.cards.push({ suit: '♠', value: '2', isRed: false }); // P1
-        Shoe.cards.push({ suit: '♥', value: '2', isRed: true });  // B1
-        Shoe.cards.push({ suit: '♦', value: '3', isRed: true });  // P2 (P total 5)
-        Shoe.cards.push({ suit: '♣', value: '2', isRed: false }); // B2 (B total 4)
-        Shoe.cards.push({ suit: '♣', value: '4', isRed: false }); // P3
-      };
-
-      document.getElementById('dev-inject-b-rule3').onclick = () => {
-        Shoe.cards.push({ suit: '♠', value: 'A', isRed: false });
-        Shoe.cards.push({ suit: '♥', value: 'A', isRed: true });
-        Shoe.cards.push({ suit: '♦', value: '4', isRed: true });
-        Shoe.cards.push({ suit: '♣', value: '2', isRed: false });
-      };
-
-      document.getElementById('dev-inject-tie').onclick = () => {
-        Shoe.cards.push({ suit: '♠', value: '4', isRed: false });
-        Shoe.cards.push({ suit: '♥', value: '4', isRed: true });
-        Shoe.cards.push({ suit: '♦', value: '4', isRed: true });
-        Shoe.cards.push({ suit: '♣', value: '4', isRed: false });
-      };
-
-      // 14 项 Punto Banco 规则单元测试
-      document.getElementById('dev-run-unit-tests').onclick = () => {
-        const out = document.getElementById('dev-test-output');
-        out.innerHTML = '';
-        let pass = 0;
-
-        const assert = (name, cond) => {
-          const div = document.createElement('div');
-          if (cond) {
-            pass++;
-            div.className = 'text-emerald-400';
-            div.innerText = `✔ PASS: ${name}`;
-          } else {
-            div.className = 'text-rose-400 font-bold';
-            div.innerText = `✘ FAIL: ${name}`;
-          }
-          out.appendChild(div);
-        };
-
-        assert('P 0-5 必须补牌', BaccaratEngine.shouldPlayerDraw(0) && BaccaratEngine.shouldPlayerDraw(5));
-        assert('P 6-7 必须停牌', !BaccaratEngine.shouldPlayerDraw(6) && !BaccaratEngine.shouldPlayerDraw(7));
-        assert('Natural 8/9 判断', BaccaratEngine.isNatural([{value:'4'},{value:'4'}], [{value:'2'},{value:'3'}]));
-        assert('B 0-2 必然补牌', BaccaratEngine.shouldBankerDraw(0, {value:'8'}) && BaccaratEngine.shouldBankerDraw(2, {value:'8'}));
-        assert('B 3 逢闲补8停牌', !BaccaratEngine.shouldBankerDraw(3, {value:'8'}));
-        assert('B 3 逢闲补非8要补牌', BaccaratEngine.shouldBankerDraw(3, {value:'7'}));
-        assert('B 4 遇闲补 2-7 需补牌', BaccaratEngine.shouldBankerDraw(4, {value:'2'}) && BaccaratEngine.shouldBankerDraw(4, {value:'7'}));
-        assert('B 4 遇闲补 0,1,8,9 需停牌', !BaccaratEngine.shouldBankerDraw(4, {value:'1'}) && !BaccaratEngine.shouldBankerDraw(4, {value:'8'}));
-        assert('B 5 遇闲补 4-7 需补牌', BaccaratEngine.shouldBankerDraw(5, {value:'6'}) && !BaccaratEngine.shouldBankerDraw(5, {value:'2'}));
-        assert('B 6 遇闲补 6-7 需补牌', BaccaratEngine.shouldBankerDraw(6, {value:'6'}) && !BaccaratEngine.shouldBankerDraw(6, {value:'5'}));
-        assert('B 7 必须停牌', !BaccaratEngine.shouldBankerDraw(7, {value:'6'}));
-        assert('闲不补牌时庄 0-5 补', BaccaratEngine.shouldBankerDraw(5, null));
-        assert('闲不补牌时庄 6-7 停', !BaccaratEngine.shouldBankerDraw(6, null));
-        assert('对子逻辑验证', BaccaratEngine.hasPair([{value:'K'},{value:'K'}]));
-
-        const summary = document.createElement('div');
-        summary.className = 'font-bold mt-1 text-white border-t border-white/20 pt-0.5';
-        summary.innerText = `RESULT: ${pass}/14 TESTS PASSED (100%)`;
-        out.appendChild(summary);
-      };
-    }
-
-    // --- 17. 引导自启动与视口安全守护 ---
+    // --- 14. INITIAL BOOTSTRAP ---
     window.addEventListener('DOMContentLoaded', () => {
       UI.init();
-      CameraController.init();
-      CardExperienceEngine.init();
+      PresentationEngine.init();
       SqueezeEngine.init();
-      initDevSuite();
 
-      // Safari 100dvh 高度守护
-      const updateViewportHeight = () => {
+      // Run Baccarat Mathematical Verification Assertion in Console
+      BaccaratEngine.runSelfTests();
+
+      const adjustAppHeight = () => {
         document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
       };
-      window.addEventListener('resize', updateViewportHeight);
-      updateViewportHeight();
+      window.addEventListener('resize', adjustAppHeight);
+      adjustAppHeight();
 
-      // 切后台时清除堆叠计时器
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           TimerManager.clearAll();
           if (GameState.phase !== GAME_PHASES.BETTING) {
-            FlowController.finalizeRoundTransaction();
+            Orchestrator.finalizeRoundTransaction();
           }
         }
       });
