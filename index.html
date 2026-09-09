@@ -5,13 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>EMPRESS ROYALE · VIP BACCARAT</title>
   
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
-  <!-- Google Fonts: Cinzel & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -43,14 +38,12 @@
 
     .font-cinzel { font-family: 'Cinzel', serif; }
 
-    /* Luxury Metallic Gold Gradient Text */
     .text-gold {
       background: linear-gradient(135deg, #fff2c6 0%, #e6ca85 45%, #b38b3f 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* VIP Felt Table Background with Subtle Weave */
     .baccarat-felt {
       background: var(--felt-bg);
       background-image: 
@@ -58,7 +51,6 @@
         repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.008) 0px, rgba(255, 255, 255, 0.008) 2px, transparent 2px, transparent 4px);
     }
 
-    /* Gold Border Luxury Accents */
     .vip-border {
       border: 1px solid rgba(230, 202, 133, 0.25);
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(230, 202, 133, 0.05);
@@ -68,17 +60,12 @@
       box-shadow: 0 0 20px rgba(230, 202, 133, 0.3), inset 0 0 15px rgba(230, 202, 133, 0.15);
     }
 
-    /* 3D Playing Card Perspective */
-    .card-scene {
-      perspective: 1000px;
-    }
+    .card-scene { perspective: 1000px; }
     .card-flipper {
-      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
       transform-style: preserve-3d;
     }
-    .card-flipper.flipped {
-      transform: rotateY(180deg);
-    }
+    .card-flipper.flipped { transform: rotateY(180deg); }
     .card-face {
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
@@ -89,26 +76,16 @@
       background-image: repeating-linear-gradient(45deg, rgba(230, 202, 133, 0.15) 0px, rgba(230, 202, 133, 0.15) 2px, transparent 2px, transparent 6px);
     }
 
-    /* Roadmaps Grid Borders */
     .road-cell {
       border-right: 1px solid rgba(255, 255, 255, 0.07);
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
-    /* Squeeze Modal Perspective Container */
     #squeeze-modal {
       perspective: 1200px;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-
-    /* Derived Road Marks */
-    .circle-red { border: 1.5px solid #f43f5e; border-radius: 50%; }
-    .circle-blue { border: 1.5px solid #3b82f6; border-radius: 50%; }
-    .dot-red { background-color: #f43f5e; border-radius: 50%; }
-    .dot-blue { background-color: #3b82f6; border-radius: 50%; }
-    .slash-red { background: linear-gradient(135deg, transparent 40%, #f43f5e 40%, #f43f5e 60%, transparent 60%); }
-    .slash-blue { background: linear-gradient(135deg, transparent 40%, #3b82f6 40%, #3b82f6 60%, transparent 60%); }
   </style>
 </head>
 
@@ -131,6 +108,7 @@
       <div>SHOE: <span id="shoe-num" class="text-white font-bold">#001</span></div>
       <div>CARDS: <span id="cards-remaining" class="text-gold font-bold">416</span> / 416</div>
       <div>ROUND: <span id="round-counter" class="text-white font-bold">#1</span></div>
+      <div>STATE: <span id="state-indicator" class="text-emerald-400 font-bold font-mono">BETTING</span></div>
     </div>
 
     <!-- Audio / Voice / Wallet Controls -->
@@ -188,6 +166,14 @@
       </div>
     </section>
 
+    <!-- Quick Opponent Reveal Controller -->
+    <div id="opponent-quick-bar" class="hidden flex justify-center pb-1">
+      <button id="btn-reveal-opponent-all" class="px-3 py-1 rounded bg-amber-950/80 hover:bg-amber-900 border border-amber-500/40 text-[10px] font-cinzel text-gold tracking-wider flex items-center space-x-1.5 shadow">
+        <i class="fa-solid fa-eye text-[9px]"></i>
+        <span>REVEAL OPPONENT CARDS</span>
+      </button>
+    </div>
+
     <!-- ================= BETTING STATIONS GRID ================= -->
     <section class="px-2 md:px-8 py-2 z-10">
       <div class="max-w-4xl mx-auto grid grid-cols-5 gap-2 md:gap-3 text-center font-cinzel">
@@ -238,28 +224,22 @@
           <span>T: <b id="stat-t" class="text-emerald-400 font-mono">0</b></span>
         </div>
         <div class="flex space-x-3 font-mono text-[9px]">
-          <span class="text-zinc-500">BEAD / BIG / BIG EYE / SMALL / COCKROACH</span>
+          <span class="text-zinc-500">BEAD / BIG / DERIVED ROADS</span>
         </div>
       </div>
 
       <!-- Roadmap Grids Container -->
       <div class="flex-1 flex overflow-x-auto overflow-y-hidden">
-        
-        <!-- Bead Road (6 Rows) -->
         <div class="w-44 md:w-56 border-r border-white/10 shrink-0 flex flex-col">
           <div class="text-[8px] tracking-wider text-zinc-500 px-1 py-0.5 uppercase bg-black/30 font-bold">Bead Road</div>
           <div id="bead-road-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[18px] md:auto-cols-[20px] bg-black/20 p-0.5 overflow-x-auto"></div>
         </div>
 
-        <!-- Big Road & Derived Roads (Hierarchical) -->
         <div class="flex-1 flex flex-col min-w-[320px]">
-          <!-- Big Road (Top Half) -->
           <div class="h-1/2 border-b border-white/10 flex flex-col">
             <div class="text-[8px] tracking-wider text-zinc-500 px-1 py-0.5 uppercase bg-black/30 font-bold">Big Road</div>
             <div id="big-road-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[13px] md:auto-cols-[15px] bg-black/10 overflow-x-auto"></div>
           </div>
-
-          <!-- Derived Down Roads (Bottom Half: Big Eye, Small, Cockroach) -->
           <div class="h-1/2 flex divide-x divide-white/10">
             <div class="flex-1 flex flex-col">
               <div class="text-[7px] text-zinc-500 px-1 bg-black/30">BIG EYE</div>
@@ -280,8 +260,6 @@
 
     <!-- ================= BOTTOM CHIPS & ACTIONS CONSOLE ================= -->
     <footer class="bg-[#050806] border-t border-[#e6ca85]/30 p-2 md:p-3 shrink-0 flex flex-wrap items-center justify-between gap-2 z-20">
-      
-      <!-- Utility Buttons -->
       <div class="flex items-center space-x-1 md:space-x-2">
         <button id="btn-clear-bets" class="px-2.5 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-300 transition flex items-center space-x-1">
           <i class="fa-solid fa-trash-can text-[10px]"></i>
@@ -297,7 +275,6 @@
         </button>
       </div>
 
-      <!-- Chip Selector Carousel -->
       <div id="chip-selector" class="flex items-center space-x-2 md:space-x-3 overflow-x-auto py-1">
         <div data-val="50" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/60 bg-blue-700 shadow-lg transform hover:scale-105 active:scale-95 transition">50</div>
         <div data-val="100" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/60 bg-purple-700 shadow-lg transform hover:scale-105 active:scale-95 transition">100</div>
@@ -307,7 +284,6 @@
         <div data-val="10000" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-dashed border-gold bg-black shadow-lg transform hover:scale-105 active:scale-95 transition text-gold">10K</div>
       </div>
 
-      <!-- Main Action Deal Button -->
       <div class="flex items-center space-x-2">
         <button id="btn-deal" class="font-cinzel px-5 py-2 rounded bg-gradient-to-r from-[#d8ba6f] via-[#f7e49e] to-[#cba358] text-black font-extrabold text-xs md:text-sm tracking-widest shadow-xl hover:brightness-110 active:scale-95 transition disabled:opacity-40 disabled:pointer-events-none">
           DEAL
@@ -316,17 +292,14 @@
     </footer>
   </main>
 
-  <!-- ================= 3D INTERACTIVE SQUEEZE MODAL (4 CORNERS) ================= -->
+  <!-- ================= 3D INTERACTIVE SQUEEZE MODAL ================= -->
   <div id="squeeze-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex flex-col items-center justify-center p-4">
     <div class="text-center mb-3">
       <h3 id="squeeze-title" class="font-cinzel text-gold text-base md:text-lg tracking-widest font-bold">VIP SQUEEZE</h3>
-      <p class="text-[11px] text-zinc-400">Drag any corner to bend the card</p>
+      <p class="text-[11px] text-zinc-400">Drag any corner past 80% to reveal automatically</p>
     </div>
 
-    <!-- Squeeze Card Container -->
     <div id="squeeze-card-wrapper" class="relative w-56 h-80 md:w-64 md:h-92 rounded-xl shadow-2xl bg-white select-none touch-none overflow-hidden border border-amber-300/40">
-      
-      <!-- Card Face Behind -->
       <div id="squeeze-card-face" class="absolute inset-0 bg-white p-4 flex flex-col justify-between select-none">
         <div class="flex justify-between items-start">
           <div class="flex flex-col items-center">
@@ -345,17 +318,14 @@
         </div>
       </div>
 
-      <!-- Peelable 3D Overlay (Back) -->
       <div id="squeeze-peel-layer" class="absolute inset-0 card-back transition-transform origin-center"></div>
 
-      <!-- Touch / Click Zones for 4 Corners -->
       <div data-corner="TL" class="corner-zone absolute top-0 left-0 w-20 h-20 z-20 cursor-nwse-resize"></div>
       <div data-corner="TR" class="corner-zone absolute top-0 right-0 w-20 h-20 z-20 cursor-nesw-resize"></div>
       <div data-corner="BL" class="corner-zone absolute bottom-0 left-0 w-20 h-20 z-20 cursor-nesw-resize"></div>
       <div data-corner="BR" class="corner-zone absolute bottom-0 right-0 w-20 h-20 z-20 cursor-nwse-resize"></div>
     </div>
 
-    <!-- Squeeze Quick Skip -->
     <div class="mt-5 flex space-x-4">
       <button id="btn-skip-squeeze" class="px-6 py-2 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-xs font-cinzel text-zinc-200 tracking-wider">
         REVEAL NOW
@@ -363,29 +333,14 @@
     </div>
   </div>
 
-  <!-- ================= DEVELOPER CONSOLE (URL: ?dev=1) ================= -->
-  <aside id="dev-console" class="fixed top-14 right-2 w-64 bg-black/90 border border-[#e6ca85]/40 rounded p-3 text-[10px] font-mono text-gold z-40 hidden space-y-2">
-    <div class="font-bold border-b border-white/20 pb-1 flex justify-between">
-      <span>DEV TEST SUITE</span>
-      <button onclick="document.getElementById('dev-console').classList.add('hidden')" class="text-white">✕</button>
-    </div>
-    <div class="grid grid-cols-2 gap-1">
-      <button id="dev-force-p" class="p-1 bg-white/10 hover:bg-white/20 rounded">FORCE P WIN</button>
-      <button id="dev-force-b" class="p-1 bg-white/10 hover:bg-white/20 rounded">FORCE B WIN</button>
-      <button id="dev-force-t" class="p-1 bg-white/10 hover:bg-white/20 rounded">FORCE TIE</button>
-      <button id="dev-force-nat" class="p-1 bg-white/10 hover:bg-white/20 rounded">FORCE NATURAL</button>
-    </div>
-    <button id="dev-sim-100" class="w-full p-1 bg-amber-600/60 hover:bg-amber-600 text-white rounded">SIMULATE 100 ROUNDS</button>
-  </aside>
-
-  <!-- ================= APPLICATION SCRIPT ================= -->
+  <!-- ================= MASTER ENGINE SCRIPT ================= -->
   <script>
     /**
      * EMPRESS ROYALE · VIP BACCARAT
-     * Architectural Implementation
+     * PHASE 2 — Core Stability Rebuild Implementation
      */
 
-    // --- 1. CONFIGURATION REGISTRY ---
+    // --- 1. GLOBAL CONFIGURATION ---
     const CONFIG = {
       baccarat: {
         deckCount: 8,
@@ -401,57 +356,60 @@
       },
       timings: {
         dealFlight: 380,
-        dealPause: 320,
-        revealFlip: 500,
-        settleDelay: 600
+        dealPause: 260,
+        revealFlip: 450,
+        settleDelay: 600,
+        autoNextRoundDelay: 2400
       },
       chips: [50, 100, 500, 1000, 5000, 10000]
     };
 
-    // --- 2. GLOBAL FINITE STATE MACHINE DEFINITION ---
-    const PHASES = {
+    // --- 2. FINITE STATE MACHINE PHASES ---
+    const GAME_PHASES = {
       IDLE: 'IDLE',
       BETTING: 'BETTING',
       BETTING_LOCKED: 'BETTING_LOCKED',
-      DEALING: 'DEALING',
-      SQUEEZING: 'SQUEEZING',
-      REVEALING: 'REVEALING',
-      RESULT: 'RESULT',
-      PAYOUT: 'PAYOUT',
+      DEALING_INITIAL: 'DEALING_INITIAL',
+      PLAYER_SQUEEZE: 'PLAYER_SQUEEZE',
+      WAITING_REVEAL: 'WAITING_REVEAL',
+      THIRD_CARD_EVALUATION: 'THIRD_CARD_EVALUATION',
+      THIRD_CARD_DEAL: 'THIRD_CARD_DEAL',
+      RESULT_REVEAL: 'RESULT_REVEAL',
+      PAYOUT_TRANSACTION: 'PAYOUT_TRANSACTION',
       SHUFFLING: 'SHUFFLING'
     };
 
-    // --- 3. STATE MODEL (Single Source of Truth) ---
-    const GameState = {
-      phase: PHASES.BETTING,
-      roundCount: 1,
-      shoeNumber: 1,
-      settlementId: null,
-      
-      wallet: {
-        balance: 100000,
-        lastBets: null
-      },
-
-      bets: {
-        player: 0,
-        banker: 0,
-        tie: 0,
-        playerPair: 0,
-        bankerPair: 0
-      },
-
-      selectedChip: 1000,
-      
-      hands: {
-        player: [],
-        banker: []
-      },
-
-      history: []
+    // --- 3. SETTLEMENT TRANSACTION STATE (Idempotency Guard) ---
+    const SETTLEMENT_STATES = {
+      UNSETTLED: 'UNSETTLED',
+      PROCESSING: 'PROCESSING',
+      SETTLED: 'SETTLED'
     };
 
-    // --- 4. BACCARAT ENGINE (Pure Punto Banco Math) ---
+    // --- 4. CANCELABLE TIMER MANAGER ---
+    const TimerManager = {
+      activeTimeouts: new Map(),
+
+      wait(ms, tag = 'anonymous') {
+        return new Promise((resolve, reject) => {
+          const id = setTimeout(() => {
+            this.activeTimeouts.delete(id);
+            resolve();
+          }, ms);
+          this.activeTimeouts.set(id, { tag, reject });
+        });
+      },
+
+      clearAll() {
+        this.activeTimeouts.forEach((meta, id) => {
+          clearTimeout(id);
+          meta.reject(new Error('Timer cancelled by Game Cycle'));
+        });
+        this.activeTimeouts.clear();
+      }
+    };
+
+    // --- 5. ROBUST BACCARAT ENGINE (Pure Mathematics) ---
     const BaccaratEngine = {
       SUITS: ['♠', '♥', '♣', '♦'],
       VALUES: ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
@@ -464,18 +422,20 @@
       },
 
       calculateScore(cards) {
+        if (!cards || !Array.isArray(cards)) return 0;
         const total = cards.reduce((sum, c) => sum + this.getCardPoint(c), 0);
         return total % 10;
       },
 
       isNatural(playerCards, bankerCards) {
-        const pScore = this.calculateScore(playerCards);
-        const bScore = this.calculateScore(bankerCards);
-        return (playerCards.length === 2 && bankerCards.length === 2) && (pScore >= 8 || bScore >= 8);
+        if (playerCards.length !== 2 || bankerCards.length !== 2) return false;
+        const p = this.calculateScore(playerCards);
+        const b = this.calculateScore(bankerCards);
+        return p >= 8 || b >= 8;
       },
 
       hasPair(cards) {
-        if (cards.length < 2) return false;
+        if (!cards || cards.length < 2) return false;
         return cards[0].value === cards[1].value;
       },
 
@@ -484,40 +444,59 @@
       },
 
       shouldBankerDraw(bScore, playerThirdCard) {
-        if (playerThirdCard === null) {
+        if (playerThirdCard === null || playerThirdCard === undefined) {
           return bScore <= 5;
         }
-        const p3Point = this.getCardPoint(playerThirdCard);
-
+        const p3Val = this.getCardPoint(playerThirdCard);
         switch (bScore) {
-          case 0: case 1: case 2: return true;
-          case 3: return p3Point !== 8;
-          case 4: return [2, 3, 4, 5, 6, 7].includes(p3Point);
-          case 5: return [4, 5, 6, 7].includes(p3Point);
-          case 6: return [6, 7].includes(p3Point);
-          default: return false; // 7, 8, 9 Stand
+          case 0:
+          case 1:
+          case 2:
+            return true;
+          case 3:
+            return p3Val !== 8;
+          case 4:
+            return [2, 3, 4, 5, 6, 7].includes(p3Val);
+          case 5:
+            return [4, 5, 6, 7].includes(p3Val);
+          case 6:
+            return [6, 7].includes(p3Val);
+          default:
+            return false; // 7, 8, 9 stand
         }
+      },
+
+      determineWinner(pScore, bScore) {
+        if (pScore > bScore) return 'player';
+        if (bScore > pScore) return 'banker';
+        return 'tie';
       }
     };
 
-    // --- 5. SHOE ENGINE (Fisher-Yates 8-Decks) ---
+    // --- 6. SHOE ENGINE (Fisher-Yates Shuffle & Cut Card) ---
     class ShoeEngine {
       constructor() {
         this.cards = [];
         this.cutPosition = 0;
+        this.shoeNumber = 1;
         this.initShoe();
       }
 
       initShoe() {
         this.cards = [];
         for (let d = 0; d < CONFIG.baccarat.deckCount; d++) {
-          for (let s of BaccaratEngine.SUITS) {
-            for (let v of BaccaratEngine.VALUES) {
-              this.cards.push({ suit: s, value: v, isRed: (s === '♥' || s === '♦') });
+          for (const s of BaccaratEngine.SUITS) {
+            for (const v of BaccaratEngine.VALUES) {
+              this.cards.push({
+                suit: s,
+                value: v,
+                isRed: (s === '♥' || s === '♦'),
+                id: `${d}-${s}-${v}-${Math.random()}`
+              });
             }
           }
         }
-        // Fisher-Yates Shuffle
+        // True Fisher-Yates
         for (let i = this.cards.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
@@ -530,6 +509,9 @@
       }
 
       draw() {
+        if (this.cards.length === 0) {
+          this.initShoe();
+        }
         return this.cards.pop();
       }
 
@@ -539,26 +521,6 @@
     }
 
     const Shoe = new ShoeEngine();
-
-    // --- 6. ANIMATION & TIMER LIFECYCLE MANAGER ---
-    const AnimationManager = {
-      activeTimeouts: new Set(),
-
-      delay(ms) {
-        return new Promise(resolve => {
-          const id = setTimeout(() => {
-            this.activeTimeouts.delete(id);
-            resolve();
-          }, ms);
-          this.activeTimeouts.add(id);
-        });
-      },
-
-      cancelAll() {
-        this.activeTimeouts.forEach(id => clearTimeout(id));
-        this.activeTimeouts.clear();
-      }
-    };
 
     // --- 7. AUDIO ENGINE (Web Audio API Synthesizer) ---
     const AudioEngine = {
@@ -643,15 +605,59 @@
       }
     };
 
-    // --- 9. ATOMIC BETTING ENGINE ---
+    // --- 9. CENTRAL GAME STATE REPOSITORY ---
+    const GameState = {
+      phase: GAME_PHASES.BETTING,
+      settlementState: SETTLEMENT_STATES.UNSETTLED,
+      currentRoundId: 1,
+      stepExecutionLock: false, // Prevents race condition during card reveals
+      
+      wallet: {
+        balance: 100000,
+        lastBets: null
+      },
+
+      bets: {
+        player: 0,
+        banker: 0,
+        tie: 0,
+        playerPair: 0,
+        bankerPair: 0
+      },
+
+      playerMainSide: 'player',
+      selectedChip: 1000,
+
+      hands: {
+        player: [],
+        banker: []
+      },
+
+      revealedStatus: {
+        player: [false, false, false],
+        banker: [false, false, false]
+      },
+
+      history: []
+    };
+
+    // --- 10. ATOMIC BETTING ENGINE ---
     const BettingEngine = {
+      canBet() {
+        return GameState.phase === GAME_PHASES.BETTING;
+      },
+
       placeBet(spot, amount) {
-        if (GameState.phase !== PHASES.BETTING) return false;
+        if (!this.canBet()) return false;
         if (GameState.wallet.balance < amount) return false;
 
         GameState.wallet.balance -= amount;
         GameState.bets[spot] += amount;
-        
+
+        if (spot === 'player' || spot === 'banker') {
+          GameState.playerMainSide = spot;
+        }
+
         AudioEngine.playChipDrop();
         UI.renderWallet();
         UI.renderBets();
@@ -659,29 +665,29 @@
       },
 
       clearBets() {
-        if (GameState.phase !== PHASES.BETTING) return;
+        if (!this.canBet()) return;
         const total = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
         GameState.wallet.balance += total;
-        for (let k in GameState.bets) GameState.bets[k] = 0;
+        for (const k in GameState.bets) GameState.bets[k] = 0;
         AudioEngine.playChipDrop();
         UI.renderWallet();
         UI.renderBets();
       },
 
       doubleBets() {
-        if (GameState.phase !== PHASES.BETTING) return;
+        if (!this.canBet()) return;
         const total = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
         if (total === 0 || GameState.wallet.balance < total) return;
-        
+
         GameState.wallet.balance -= total;
-        for (let k in GameState.bets) GameState.bets[k] *= 2;
+        for (const k in GameState.bets) GameState.bets[k] *= 2;
         AudioEngine.playChipDrop();
         UI.renderWallet();
         UI.renderBets();
       },
 
       rebet() {
-        if (GameState.phase !== PHASES.BETTING || !GameState.wallet.lastBets) return;
+        if (!this.canBet() || !GameState.wallet.lastBets) return;
         const totalLast = Object.values(GameState.wallet.lastBets).reduce((a, b) => a + b, 0);
         if (GameState.wallet.balance < totalLast) return;
 
@@ -694,14 +700,14 @@
       }
     };
 
-    // --- 10. COMPREHENSIVE ROADMAP ENGINE (5 Classic Roads) ---
+    // --- 11. ROADMAP ENGINE ---
     const RoadmapEngine = {
       generateBigRoad(history) {
         const matrix = [];
         let col = 0, row = 0;
         let lastWinner = null;
 
-        for (let round of history) {
+        for (const round of history) {
           if (round.winner === 'tie') {
             if (col < matrix.length && matrix[col] && matrix[col][row]) {
               matrix[col][row].tieCount = (matrix[col][row].tieCount || 0) + 1;
@@ -750,7 +756,7 @@
               isRed = (prevColLen === targetColLen);
             } else {
               const targetCol = bigRoadMatrix[c - k];
-              isRed = targetCol && (targetCol.length > r);
+              isRed = Boolean(targetCol && (targetCol.length > r));
             }
             results.push(isRed ? 'red' : 'blue');
           }
@@ -759,7 +765,7 @@
       }
     };
 
-    // --- 11. PHYSICAL SQUEEZE ENGINE PRO (4-Corner 3D Peel) ---
+    // --- 12. PHYSICAL SQUEEZE ENGINE PRO ---
     const SqueezeEngine = {
       active: false,
       card: null,
@@ -800,8 +806,6 @@
         document.getElementById('squeeze-card-face').className = `absolute inset-0 bg-white p-4 flex flex-col justify-between select-none ${colorClass}`;
 
         this.peelElement.style.transform = 'none';
-        this.peelElement.style.clipPath = 'none';
-
         document.getElementById('squeeze-modal').classList.remove('hidden');
       },
 
@@ -818,8 +822,8 @@
         const dy = e.clientY - this.startY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        let percent = Math.min(dist / 170, 1);
-        if (percent > 0.85) {
+        const percent = Math.min(dist / 170, 1);
+        if (percent > 0.82) {
           this.complete();
           return;
         }
@@ -852,11 +856,15 @@
         if (!this.active) return;
         this.active = false;
         document.getElementById('squeeze-modal').classList.add('hidden');
-        if (this.resolveCallback) this.resolveCallback();
+        if (this.resolveCallback) {
+          const cb = this.resolveCallback;
+          this.resolveCallback = null;
+          cb();
+        }
       }
     };
 
-    // --- 12. UI VIEW ENGINE ---
+    // --- 13. UI CONTROLLER ---
     const UI = {
       init() {
         this.renderChips();
@@ -864,6 +872,12 @@
         this.renderWallet();
         this.renderBets();
         this.renderRoadmaps();
+        this.updateStateIndicator();
+      },
+
+      updateStateIndicator() {
+        const el = document.getElementById('state-indicator');
+        if (el) el.innerText = GameState.phase;
       },
 
       renderChips() {
@@ -894,13 +908,17 @@
         });
       },
 
-      createCardDOM(card, hidden = false) {
+      createCardDOM(card, hidden = true, side = 'player', index = 0) {
         const color = card.isRed ? 'text-rose-600' : 'text-zinc-900';
         const cardDiv = document.createElement('div');
-        cardDiv.className = 'card-scene w-14 h-20 md:w-16 md:h-24';
+        cardDiv.className = 'card-scene w-14 h-20 md:w-16 md:h-24 cursor-pointer';
+        cardDiv.dataset.side = side;
+        cardDiv.dataset.index = index;
         cardDiv.innerHTML = `
           <div class="card-flipper w-full h-full relative ${hidden ? '' : 'flipped'}">
-            <div class="card-face card-back absolute inset-0 rounded-md shadow-md"></div>
+            <div class="card-face card-back absolute inset-0 rounded-md shadow-md flex items-center justify-center">
+              <span class="text-[9px] text-[#e6ca85]/50 font-cinzel">VIP</span>
+            </div>
             <div class="card-face absolute inset-0 rounded-md bg-white p-1 flex flex-col justify-between shadow-md border border-zinc-300 ${color} rotate-y-180">
               <div class="text-xs font-bold leading-none">${card.value}<br><span class="text-[10px]">${card.suit}</span></div>
               <div class="text-lg self-center">${card.suit}</div>
@@ -914,8 +932,7 @@
       renderRoadmaps() {
         const history = GameState.history;
         const bigRoad = RoadmapEngine.generateBigRoad(history);
-        
-        // 1. Bead Road
+
         const beadGrid = document.getElementById('bead-road-grid');
         beadGrid.innerHTML = '';
         history.forEach(round => {
@@ -926,7 +943,6 @@
           beadGrid.appendChild(cell);
         });
 
-        // 2. Big Road
         const bigGrid = document.getElementById('big-road-grid');
         bigGrid.innerHTML = '';
         bigRoad.forEach(col => {
@@ -938,7 +954,7 @@
             cell.className = 'w-[13px] h-[13px] md:w-[15px] md:h-[15px] road-cell flex items-center justify-center relative';
             if (cellData) {
               const border = cellData.winner === 'player' ? 'border-blue-500' : 'border-rose-500';
-              let tieMarker = cellData.tieCount > 0 ? `<div class="absolute w-full h-[2px] bg-emerald-400 rotate-45"></div>` : '';
+              const tieMarker = cellData.tieCount > 0 ? `<div class="absolute w-full h-[2px] bg-emerald-400 rotate-45"></div>` : '';
               cell.innerHTML = `<div class="w-2.5 h-2.5 rounded-full border-2 ${border} relative flex items-center justify-center">${tieMarker}</div>`;
             }
             colDiv.appendChild(cell);
@@ -946,13 +962,12 @@
           bigGrid.appendChild(colDiv);
         });
 
-        // 3. Derived Roads Helper
         const renderDerivedGrid = (elemId, data, typeClass) => {
           const container = document.getElementById(elemId);
           container.innerHTML = '';
           data.forEach(val => {
             const dot = document.createElement('div');
-            dot.className = `w-2 h-2 ${typeClass}-${val} m-0.5 shrink-0`;
+            dot.className = `w-2 h-2 rounded-full ${val === 'red' ? 'bg-rose-500' : 'bg-blue-500'} m-0.5 shrink-0`;
             container.appendChild(dot);
           });
         };
@@ -961,7 +976,6 @@
         renderDerivedGrid('small-road-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 2), 'dot');
         renderDerivedGrid('cockroach-grid', RoadmapEngine.generateDerivedRoad(bigRoad, 3), 'slash');
 
-        // Counters
         document.getElementById('stat-p').innerText = history.filter(h => h.winner === 'player').length;
         document.getElementById('stat-b').innerText = history.filter(h => h.winner === 'banker').length;
         document.getElementById('stat-t').innerText = history.filter(h => h.winner === 'tie').length;
@@ -996,151 +1010,256 @@
           document.getElementById('btn-voice').classList.toggle('text-zinc-500', !VoiceEngine.enabled);
         });
 
-        document.getElementById('btn-deal').addEventListener('click', () => FlowController.startDeal());
+        document.getElementById('btn-deal').addEventListener('click', () => FlowController.startRound());
+
+        document.getElementById('btn-reveal-opponent-all').addEventListener('click', () => {
+          FlowController.revealAllOpponentCardsDirect();
+        });
+
+        // Event delegation for table cards click (Squeeze or Direct Reveal)
+        const handleCardClick = (e) => {
+          const scene = e.target.closest('.card-scene');
+          if (!scene) return;
+          const side = scene.dataset.side;
+          const index = parseInt(scene.dataset.index, 10);
+          FlowController.handleCardInteraction(side, index);
+        };
+
+        document.getElementById('player-cards-tray').addEventListener('click', handleCardClick);
+        document.getElementById('banker-cards-tray').addEventListener('click', handleCardClick);
       }
     };
 
-    // --- 13. FLOW CONTROLLER & ATOMIC SETTLEMENT ---
+    // --- 14. FLOW CONTROLLER & STATE MACHINE ENGINE ---
     const FlowController = {
-      async startDeal() {
+      async startRound() {
         const totalBet = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
-        if (totalBet === 0 || GameState.phase !== PHASES.BETTING) return;
+        if (totalBet === 0 || GameState.phase !== GAME_PHASES.BETTING) return;
 
-        GameState.phase = PHASES.BETTING_LOCKED;
+        // Transition: BETTING -> BETTING_LOCKED
+        this.setPhase(GAME_PHASES.BETTING_LOCKED);
+        GameState.settlementState = SETTLEMENT_STATES.UNSETTLED;
         GameState.wallet.lastBets = { ...GameState.bets };
         document.getElementById('btn-deal').disabled = true;
         document.getElementById('dealer-announcement').innerText = 'NO MORE BETS';
         VoiceEngine.speak('No more bets');
 
         if (Shoe.needsShuffle()) {
-          GameState.phase = PHASES.SHUFFLING;
+          this.setPhase(GAME_PHASES.SHUFFLING);
           document.getElementById('dealer-announcement').innerText = 'SHUFFLING NEW SHOE';
-          await AnimationManager.delay(1000);
+          await TimerManager.wait(1000, 'shuffle');
           Shoe.initShoe();
-          GameState.shoeNumber++;
-          document.getElementById('shoe-num').innerText = `#00${GameState.shoeNumber}`;
+          Shoe.shoeNumber++;
+          document.getElementById('shoe-num').innerText = `#00${Shoe.shoeNumber}`;
         }
 
-        GameState.phase = PHASES.DEALING;
+        // Transition: DEALING_INITIAL
+        this.setPhase(GAME_PHASES.DEALING_INITIAL);
         GameState.hands.player = [];
         GameState.hands.banker = [];
+        GameState.revealedStatus.player = [false, false, false];
+        GameState.revealedStatus.banker = [false, false, false];
+
         document.getElementById('player-cards-tray').innerHTML = '';
         document.getElementById('banker-cards-tray').innerHTML = '';
         document.getElementById('player-score-badge').classList.add('hidden');
         document.getElementById('banker-score-badge').classList.add('hidden');
+        document.getElementById('opponent-quick-bar').classList.remove('hidden');
 
-        // Draw initial 4 cards
+        // Alternate dealing 4 cards
         const p1 = Shoe.draw(); GameState.hands.player.push(p1);
-        this.renderDealCard('player', p1);
-        await AnimationManager.delay(CONFIG.timings.dealPause);
+        this.renderCardDOM('player', p1, 0);
+        await TimerManager.wait(CONFIG.timings.dealPause, 'deal');
 
         const b1 = Shoe.draw(); GameState.hands.banker.push(b1);
-        this.renderDealCard('banker', b1);
-        await AnimationManager.delay(CONFIG.timings.dealPause);
+        this.renderCardDOM('banker', b1, 0);
+        await TimerManager.wait(CONFIG.timings.dealPause, 'deal');
 
         const p2 = Shoe.draw(); GameState.hands.player.push(p2);
-        this.renderDealCard('player', p2);
-        await AnimationManager.delay(CONFIG.timings.dealPause);
+        this.renderCardDOM('player', p2, 1);
+        await TimerManager.wait(CONFIG.timings.dealPause, 'deal');
 
         const b2 = Shoe.draw(); GameState.hands.banker.push(b2);
-        this.renderDealCard('banker', b2);
-        await AnimationManager.delay(CONFIG.timings.dealPause);
+        this.renderCardDOM('banker', b2, 1);
+        await TimerManager.wait(CONFIG.timings.dealPause, 'deal');
 
         document.getElementById('cards-remaining').innerText = Shoe.remaining;
 
-        await this.flipHandCards('player');
-        await this.flipHandCards('banker');
-
-        let pScore = BaccaratEngine.calculateScore(GameState.hands.player);
-        let bScore = BaccaratEngine.calculateScore(GameState.hands.banker);
-        this.updateBadges(pScore, bScore);
-
-        // Check Naturals
-        if (BaccaratEngine.isNatural(GameState.hands.player, GameState.hands.banker)) {
-          VoiceEngine.speak('Natural');
-          await AnimationManager.delay(CONFIG.timings.settleDelay);
-          return this.finalizeRound();
-        }
-
-        // Player Third Card Rule
-        let playerThirdCard = null;
-        if (BaccaratEngine.shouldPlayerDraw(pScore)) {
-          playerThirdCard = Shoe.draw();
-          GameState.hands.player.push(playerThirdCard);
-          await this.triggerSqueezeSequence(playerThirdCard, 'VIP SQUEEZE · PLAYER 3RD CARD');
-          this.renderDealCard('player', playerThirdCard);
-          await this.flipHandCards('player');
-          pScore = BaccaratEngine.calculateScore(GameState.hands.player);
-          this.updateBadges(pScore, bScore);
-        }
-
-        // Banker Third Card Rule
-        if (BaccaratEngine.shouldBankerDraw(bScore, playerThirdCard)) {
-          const bankerThirdCard = Shoe.draw();
-          GameState.hands.banker.push(bankerThirdCard);
-          await this.triggerSqueezeSequence(bankerThirdCard, 'VIP SQUEEZE · BANKER 3RD CARD');
-          this.renderDealCard('banker', bankerThirdCard);
-          await this.flipHandCards('banker');
-          bScore = BaccaratEngine.calculateScore(GameState.hands.banker);
-          this.updateBadges(pScore, bScore);
-        }
-
-        await AnimationManager.delay(CONFIG.timings.settleDelay);
-        this.finalizeRound();
+        // Transition: SQUEEZING / REVEALING
+        this.setPhase(GAME_PHASES.WAITING_REVEAL);
+        document.getElementById('dealer-announcement').innerText = 'SQUEEZE OR REVEAL CARDS';
       },
 
-      renderDealCard(side, card) {
+      setPhase(newPhase) {
+        GameState.phase = newPhase;
+        UI.updateStateIndicator();
+      },
+
+      renderCardDOM(side, card, index) {
         AudioEngine.playCardSlide();
         const tray = document.getElementById(`${side}-cards-tray`);
-        tray.appendChild(UI.createCardDOM(card, true));
+        const dom = UI.createCardDOM(card, true, side, index);
+        tray.appendChild(dom);
       },
 
-      async flipHandCards(side) {
+      async handleCardInteraction(side, index) {
+        if (GameState.phase !== GAME_PHASES.WAITING_REVEAL) return;
+        if (GameState.revealedStatus[side][index]) return;
+
+        const isUserSide = (side === GameState.playerMainSide);
+
+        if (isUserSide) {
+          // Open interactive squeeze
+          this.setPhase(GAME_PHASES.PLAYER_SQUEEZE);
+          const card = GameState.hands[side][index];
+          await new Promise(resolve => {
+            SqueezeEngine.open(card, `VIP SQUEEZE · ${side.toUpperCase()} CARD #${index + 1}`, resolve);
+          });
+          this.setPhase(GAME_PHASES.WAITING_REVEAL);
+        }
+
+        // Flip Card
+        this.flipCardUI(side, index);
+        await this.checkProgressionSafely();
+      },
+
+      flipCardUI(side, index) {
+        if (GameState.revealedStatus[side][index]) return;
+        GameState.revealedStatus[side][index] = true;
         const tray = document.getElementById(`${side}-cards-tray`);
-        const flippers = tray.querySelectorAll('.card-flipper:not(.flipped)');
-        flippers.forEach(f => f.classList.add('flipped'));
-        await AnimationManager.delay(CONFIG.timings.revealFlip);
+        const cardElem = tray.querySelector(`[data-index="${index}"] .card-flipper`);
+        if (cardElem) cardElem.classList.add('flipped');
+        this.refreshScoresUI();
       },
 
-      triggerSqueezeSequence(card, title) {
-        return new Promise(resolve => {
-          GameState.phase = PHASES.SQUEEZING;
-          SqueezeEngine.open(card, title, resolve);
+      // FIX HIGH-007: Atomic single progression request for batch operations
+      async revealAllOpponentCardsDirect() {
+        if (GameState.phase !== GAME_PHASES.WAITING_REVEAL) return;
+        const opponentSide = GameState.playerMainSide === 'player' ? 'banker' : 'player';
+        
+        GameState.hands[opponentSide].forEach((card, idx) => {
+          this.flipCardUI(opponentSide, idx);
+        });
+
+        await this.checkProgressionSafely();
+      },
+
+      refreshScoresUI() {
+        ['player', 'banker'].forEach(side => {
+          const cards = GameState.hands[side];
+          const revealedCount = GameState.revealedStatus[side].filter((rev, idx) => rev && idx < cards.length).length;
+          
+          if (revealedCount === cards.length && cards.length >= 2) {
+            const score = BaccaratEngine.calculateScore(cards);
+            const badge = document.getElementById(`${side}-score-badge`);
+            badge.innerText = score;
+            badge.classList.remove('hidden');
+          }
         });
       },
 
-      updateBadges(pScore, bScore) {
-        const pBadge = document.getElementById('player-score-badge');
-        const bBadge = document.getElementById('banker-score-badge');
-        pBadge.innerText = pScore;
-        pBadge.classList.remove('hidden');
-        bBadge.innerText = bScore;
-        bBadge.classList.remove('hidden');
+      // FIX CRITICAL-001: Race-condition-free progression checking
+      async checkProgressionSafely() {
+        if (GameState.stepExecutionLock) return;
+        GameState.stepExecutionLock = true;
+
+        try {
+          // Verify if initial 4 cards are revealed
+          const pInitDone = GameState.revealedStatus.player[0] && GameState.revealedStatus.player[1];
+          const bInitDone = GameState.revealedStatus.banker[0] && GameState.revealedStatus.banker[1];
+
+          if (!pInitDone || !bInitDone) {
+            return; // Still waiting for initial reveals
+          }
+
+          const pScoreInitial = BaccaratEngine.calculateScore(GameState.hands.player.slice(0, 2));
+          const bScoreInitial = BaccaratEngine.calculateScore(GameState.hands.banker.slice(0, 2));
+
+          // Natural 8 or 9: End immediately
+          if (BaccaratEngine.isNatural(GameState.hands.player.slice(0, 2), GameState.hands.banker.slice(0, 2))) {
+            document.getElementById('opponent-quick-bar').classList.add('hidden');
+            await this.finalizeRoundTransaction();
+            return;
+          }
+
+          // Evaluate Third Card Phase
+          if (GameState.phase === GAME_PHASES.WAITING_REVEAL && GameState.hands.player.length === 2 && GameState.hands.banker.length === 2) {
+            this.setPhase(GAME_PHASES.THIRD_CARD_EVALUATION);
+            await this.processThirdCardSequence(pScoreInitial, bScoreInitial);
+            return;
+          }
+
+          // If third cards already drawn, verify their reveal status
+          const pThirdRequired = GameState.hands.player.length === 3;
+          const bThirdRequired = GameState.hands.banker.length === 3;
+
+          const pThirdDone = !pThirdRequired || GameState.revealedStatus.player[2];
+          const bThirdDone = !bThirdRequired || GameState.revealedStatus.banker[2];
+
+          if (pThirdDone && bThirdDone) {
+            document.getElementById('opponent-quick-bar').classList.add('hidden');
+            await this.finalizeRoundTransaction();
+          }
+        } finally {
+          GameState.stepExecutionLock = false;
+        }
       },
 
-      finalizeRound() {
-        GameState.phase = PHASES.RESULT;
+      // FIX HIGH-006: Discrete explicit third card deal cycle
+      async processThirdCardSequence(pScoreInitial, bScoreInitial) {
+        this.setPhase(GAME_PHASES.THIRD_CARD_DEAL);
+        let playerThirdCard = null;
+
+        if (BaccaratEngine.shouldPlayerDraw(pScoreInitial)) {
+          document.getElementById('dealer-announcement').innerText = 'PLAYER DRAWS THIRD CARD';
+          await TimerManager.wait(CONFIG.timings.dealPause, 'third-deal');
+          playerThirdCard = Shoe.draw();
+          GameState.hands.player.push(playerThirdCard);
+          this.renderCardDOM('player', playerThirdCard, 2);
+          document.getElementById('cards-remaining').innerText = Shoe.remaining;
+        }
+
+        if (BaccaratEngine.shouldBankerDraw(bScoreInitial, playerThirdCard)) {
+          document.getElementById('dealer-announcement').innerText = 'BANKER DRAWS THIRD CARD';
+          await TimerManager.wait(CONFIG.timings.dealPause, 'third-deal');
+          const bankerThirdCard = Shoe.draw();
+          GameState.hands.banker.push(bankerThirdCard);
+          this.renderCardDOM('banker', bankerThirdCard, 2);
+          document.getElementById('cards-remaining').innerText = Shoe.remaining;
+        }
+
+        this.setPhase(GAME_PHASES.WAITING_REVEAL);
+        document.getElementById('dealer-announcement').innerText = 'REVEAL THIRD CARD TO CONCLUDE';
+
+        // Re-check progression in case no third cards were required
+        if (GameState.hands.player.length === 2 && GameState.hands.banker.length === 2) {
+          await this.finalizeRoundTransaction();
+        }
+      },
+
+      // FIX CRITICAL-002: Fully Idempotent Settlement Transaction
+      async finalizeRoundTransaction() {
+        if (GameState.settlementState !== SETTLEMENT_STATES.UNSETTLED) {
+          return; // Strictly reject duplicate settlement calls
+        }
+        GameState.settlementState = SETTLEMENT_STATES.PROCESSING;
+        this.setPhase(GAME_PHASES.PAYOUT_TRANSACTION);
+
         const pScore = BaccaratEngine.calculateScore(GameState.hands.player);
         const bScore = BaccaratEngine.calculateScore(GameState.hands.banker);
+        const winner = BaccaratEngine.determineWinner(pScore, bScore);
 
-        let winner = 'tie';
-        if (pScore > bScore) winner = 'player';
-        if (bScore > pScore) winner = 'banker';
+        const pPair = BaccaratEngine.hasPair(GameState.hands.player.slice(0, 2));
+        const bPair = BaccaratEngine.hasPair(GameState.hands.banker.slice(0, 2));
 
-        const pPair = BaccaratEngine.hasPair(GameState.hands.player);
-        const bPair = BaccaratEngine.hasPair(GameState.hands.banker);
-
-        // Atomic Payout & Unique Guard
+        // Atomic Payout Computation
         let totalWin = 0;
-        const currentSettlementId = Symbol('settlement');
-        GameState.settlementId = currentSettlementId;
-
         if (winner === 'player') {
           totalWin += GameState.bets.player * (1 + CONFIG.baccarat.payouts.player);
         } else if (winner === 'banker') {
           totalWin += GameState.bets.banker * (1 + CONFIG.baccarat.payouts.banker);
         } else {
-          totalWin += GameState.bets.player + GameState.bets.banker; // Push
+          totalWin += (GameState.bets.player + GameState.bets.banker); // Push
           totalWin += GameState.bets.tie * (1 + CONFIG.baccarat.payouts.tie);
         }
 
@@ -1149,82 +1268,67 @@
 
         GameState.wallet.balance += Math.round(totalWin);
 
+        // Record history snapshot
         GameState.history.push({
-          roundId: GameState.roundCount++,
+          roundId: GameState.currentRoundId,
           winner,
           pScore,
           bScore,
           pPair,
-          bPair
+          bPair,
+          timestamp: Date.now()
         });
 
-        const winTitle = winner === 'tie' ? 'TIE GAME' : `${winner.toUpperCase()} WINS`;
-        document.getElementById('dealer-announcement').innerText = `${winTitle} (${pScore} vs ${bScore})`;
+        // UI Presentation
+        const banner = winner === 'tie' ? 'TIE GAME' : `${winner.toUpperCase()} WINS`;
+        document.getElementById('dealer-announcement').innerText = `${banner} (${pScore} - ${bScore})`;
         VoiceEngine.speak(`${winner} wins`);
 
         if (totalWin > 0) AudioEngine.playWinChord();
 
         UI.renderWallet();
         UI.renderRoadmaps();
-        document.getElementById('round-counter').innerText = `#${GameState.roundCount}`;
+        this.refreshScoresUI();
 
-        // Reset Table for Next Round
-        setTimeout(() => {
-          for (let k in GameState.bets) GameState.bets[k] = 0;
-          UI.renderBets();
-          GameState.phase = PHASES.BETTING;
-          document.getElementById('btn-deal').disabled = false;
-          document.getElementById('dealer-announcement').innerText = 'PLACE YOUR BETS';
-        }, 2200);
+        GameState.settlementState = SETTLEMENT_STATES.SETTLED;
+        this.setPhase(GAME_PHASES.RESULT_REVEAL);
+
+        // Schedule Next Round Transition safely
+        await TimerManager.wait(CONFIG.timings.autoNextRoundDelay, 'next-round');
+        this.resetForNextRound();
+      },
+
+      resetForNextRound() {
+        for (const k in GameState.bets) GameState.bets[k] = 0;
+        UI.renderBets();
+        GameState.currentRoundId++;
+        document.getElementById('round-counter').innerText = `#${GameState.currentRoundId}`;
+        document.getElementById('btn-deal').disabled = false;
+        document.getElementById('dealer-announcement').innerText = 'PLACE YOUR BETS';
+        this.setPhase(GAME_PHASES.BETTING);
       }
     };
 
-    // --- 14. DEV CONSOLE HOOKS (?dev=1) ---
-    function initDevMode() {
-      if (window.location.search.includes('dev=1')) {
-        const consoleEl = document.getElementById('dev-console');
-        consoleEl.classList.remove('hidden');
-
-        document.getElementById('dev-force-p').onclick = () => {
-          Shoe.cards.push({ suit: '♠', value: '9', isRed: false });
-          Shoe.cards.push({ suit: '♥', value: '4', isRed: true });
-          Shoe.cards.push({ suit: '♦', value: 'K', isRed: true });
-          Shoe.cards.push({ suit: '♣', value: '2', isRed: false });
-        };
-
-        document.getElementById('dev-sim-100').onclick = () => {
-          for (let i = 0; i < 100; i++) {
-            const winners = ['player', 'banker', 'tie'];
-            GameState.history.push({
-              roundId: GameState.roundCount++,
-              winner: winners[Math.floor(Math.random() * 3)],
-              pScore: Math.floor(Math.random() * 10),
-              bScore: Math.floor(Math.random() * 10)
-            });
-          }
-          UI.renderRoadmaps();
-        };
-      }
-    }
-
-    // --- 15. BOOTSTRAP ENTRY POINT ---
+    // --- 15. BOOTSTRAP ENTRY POINT & LIFECYCLE GUARDS ---
     window.addEventListener('DOMContentLoaded', () => {
       UI.init();
       SqueezeEngine.init();
-      initDevMode();
 
-      // Safari 100dvh safe adjustment
-      const setAppHeight = () => {
+      // Mobile 100dvh safe height adjustment
+      const updateViewportHeight = () => {
         document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
       };
-      window.addEventListener('resize', setAppHeight);
-      setAppHeight();
+      window.addEventListener('resize', updateViewportHeight);
+      updateViewportHeight();
 
-      // Background recovery & self-healing
+      // Lifecycle visibility change recovery (Prevents timer accumulation in background)
       document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && GameState.phase === PHASES.DEALING) {
-          AnimationManager.cancelAll();
-          FlowController.finalizeRound();
+        if (document.hidden) {
+          TimerManager.clearAll();
+          if (GameState.phase !== GAME_PHASES.BETTING) {
+            // Recover immediately to settlement if interrupted mid-flight
+            FlowController.finalizeRoundTransaction();
+          }
         }
       });
     });
