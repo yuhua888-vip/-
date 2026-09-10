@@ -1,0 +1,106 @@
+export class AudioManager {
+    context = null;
+    master = null;
+    ambient = null;
+    music = null;
+    effects = null;
+    noise = null;
+    lastPeek = 0;
+    duck = false;
+    settings = { master: .45, ambience: .2, music: .08, effects: .7, muted: false };
+    async unlock() {
+        try {
+            if (!this.context) {
+                this.context = new AudioContext();
+                const c = this.context;
+                this.master = c.createGain();
+                this.master.connect(c.destination);
+                this.effects = c.createGain();
+                this.effects.connect(this.master);
+                this.ambient = c.createGain();
+                this.ambient.connect(this.master);
+                this.music = c.createGain();
+                this.music.connect(this.master);
+                this.noise = c.createBuffer(1, c.sampleRate, c.sampleRate);
+                const data = this.noise.getChannelData(0);
+                for (let i = 0; i < data.length; i++)
+                    data[i] = Math.random() * 2 - 1;
+                const room = c.createBufferSource();
+                room.buffer = this.noise;
+                room.loop = true;
+                const filter = c.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 180;
+                room.connect(filter);
+                filter.connect(this.ambient);
+                room.start();
+                for (const frequency of [130.81, 196, 261.63]) {
+                    const tone = c.createOscillator();
+                    tone.type = 'sine';
+                    tone.frequency.value = frequency;
+                    const gain = c.createGain();
+                    gain.gain.value = .018;
+                    tone.connect(gain);
+                    gain.connect(this.music);
+                    tone.start();
+                }
+                this.update();
+            }
+            if (this.context.state === 'suspended')
+                await this.context.resume();
+        }
+        catch { /* Audio is optional; denied audio must never block a hand. */ }
+    }
+    update() {
+        if (!this.context || !this.master || !this.effects || !this.ambient || !this.music)
+            return;
+        const now = this.context.currentTime;
+        this.master.gain.setTargetAtTime(this.settings.muted ? 0 : this.settings.master, now, .04);
+        this.effects.gain.setTargetAtTime(this.settings.effects, now, .04);
+        this.ambient.gain.setTargetAtTime(this.settings.ambience * .045 * (this.duck ? .3 : 1), now, .08);
+        this.music.gain.setTargetAtTime(this.settings.music * (this.duck ? .15 : 1), now, .08);
+    }
+    focusPeek(active) { this.duck = active; this.update(); }
+    suspend() { void this.context?.suspend().catch(() => { }); }
+    play(sound) {
+        const c = this.context, output = this.effects;
+        if (!c || !output || c.state !== 'running' || this.settings.muted)
+            return;
+        if (sound === 'peek') {
+            if (c.currentTime - this.lastPeek < .065)
+                return;
+            this.lastPeek = c.currentTime;
+        }
+        const noiseSound = ['card', 'flip', 'peek'].includes(sound);
+        const duration = noiseSound ? .16 : sound === 'win' ? .65 : .13;
+        const gain = c.createGain();
+        gain.connect(output);
+        const now = c.currentTime;
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(noiseSound ? .038 : .07, now + .005);
+        gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+        if (noiseSound && this.noise) {
+            const node = c.createBufferSource();
+            node.buffer = this.noise;
+            const filter = c.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = sound === 'peek' ? 950 : 1800;
+            node.connect(filter);
+            filter.connect(gain);
+            node.start();
+            node.stop(now + duration);
+            node.onended = () => { node.disconnect(); filter.disconnect(); gain.disconnect(); };
+        }
+        else {
+            const frequencies = { select: 900, chip: 1750, stack: 2100, button: 480, tick: 640, win: 660, loss: 220, settle: 440 };
+            const tone = c.createOscillator();
+            tone.type = 'sine';
+            tone.frequency.setValueAtTime(frequencies[sound] ?? 600, now);
+            tone.frequency.exponentialRampToValueAtTime(sound === 'win' ? 880 : (frequencies[sound] ?? 600) * .65, now + duration);
+            tone.connect(gain);
+            tone.start();
+            tone.stop(now + duration);
+            tone.onended = () => { tone.disconnect(); gain.disconnect(); };
+        }
+    }
+}

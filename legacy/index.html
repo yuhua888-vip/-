@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>EMPRESS ROYALE · VIP BACCARAT</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --app-height: 100dvh;
+      --felt-green: #071f14;
+      --felt-deep: #030d08;
+      --gold-foil: #c8a762;
+      --gold-foil-dim: #7a6336;
+      --gold-foil-bright: #ebd69b;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #020503;
+      color: #e5ece8;
+      height: var(--app-height);
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+
+    /* 真实木质包边 */
+    .table-container {
+      background: radial-gradient(circle at 50% 15%, #2a180e 0%, #150a05 70%, #080301 100%);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.95), 0 20px 50px rgba(0, 0, 0, 0.8);
+      border-radius: 0 0 180px 180px;
+      padding: 10px 14px 20px 14px;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .table-container {
+        padding: 14px 24px 28px 24px;
+        border-radius: 0 0 320px 320px;
+      }
+    }
+
+    /* 真实台布质感与光影 */
+    .real-table-felt {
+      background-color: var(--felt-green);
+      background-image: 
+        radial-gradient(circle at 50% 18%, rgba(26, 77, 51, 0.85) 0%, rgba(10, 36, 24, 0.95) 50%, rgba(3, 13, 8, 1) 95%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0px, rgba(255, 255, 255, 0.012) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 0px, rgba(0, 0, 0, 0.08) 1px, transparent 1px, transparent 3px);
+      box-shadow: 
+        inset 0 0 100px rgba(0, 0, 0, 0.85),
+        inset 0 4px 18px rgba(0, 0, 0, 0.9),
+        0 1px 0 rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(200, 167, 98, 0.18);
+      border-radius: 0 0 160px 160px;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .real-table-felt {
+        border-radius: 0 0 300px 300px;
+      }
+    }
+
+    .felt-line-gold {
+      border: 1px solid rgba(200, 167, 98, 0.28);
+      box-shadow: 0 1px 1px rgba(0,0,0,0.5), inset 0 1px 1px rgba(0,0,0,0.5);
+    }
+
+    .felt-print-text {
+      color: rgba(212, 184, 122, 0.82);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 -1px 0 rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.18em;
+    }
+    .felt-print-red {
+      color: rgba(224, 86, 96, 0.88);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+    }
+    .felt-print-blue {
+      color: rgba(92, 142, 230, 0.88);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+    }
+
+    .bet-cell {
+      position: relative;
+      transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+      background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.015) 0%, rgba(0, 0, 0, 0.25) 100%);
+    }
+    .bet-cell:hover {
+      background: radial-gradient(circle at 50% 40%, rgba(200, 167, 98, 0.06) 0%, rgba(0, 0, 0, 0.15) 100%);
+      border-color: rgba(200, 167, 98, 0.45);
+    }
+    .bet-cell-active {
+      border-color: rgba(235, 214, 155, 0.75) !important;
+      box-shadow: inset 0 0 25px rgba(200, 167, 98, 0.15), 0 0 15px rgba(200, 167, 98, 0.12);
+    }
+
+    .dealer-shoe-box {
+      background: linear-gradient(135deg, #1f1f21 0%, #111113 45%, #080809 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-right: 2px solid rgba(200, 167, 98, 0.4);
+      box-shadow: -8px 12px 24px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-radius: 4px 6px 16px 4px;
+      position: relative;
+    }
+    .dealer-shoe-chute {
+      background: #050506;
+      border-left: 1px solid rgba(200, 167, 98, 0.3);
+      border-bottom: 2px solid rgba(200, 167, 98, 0.5);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);
+    }
+
+    .discard-rack {
+      background: radial-gradient(circle, #18181a 0%, #0a0a0b 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.9), 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .card-drop-recess {
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px dashed rgba(200, 167, 98, 0.22);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.65);
+      border-radius: 6px;
+    }
+
+    .chip-rail {
+      background: linear-gradient(180deg, #0d0704 0%, #1a0f08 40%, #0d0704 100%);
+      box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.9), 0 -1px 0 rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(0, 0, 0, 0.9);
+      border-bottom: 1px solid rgba(200, 167, 98, 0.15);
+    }
+
+    .road-grid-cell {
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* 3D 拟真纸牌模型 */
+    .card-3d {
+      perspective: 1000px;
+      width: 100%;
+      height: 100%;
+    }
+    .card-3d-flipper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      border-radius: 4px;
+    }
+    .card-3d-flipper.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-side {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 4px;
+    }
+    .card-back {
+      background: radial-gradient(circle, #851313 0%, #400404 100%);
+      border: 1.5px solid #e6ca85;
+      background-image: repeating-linear-gradient(45deg, rgba(230, 202, 133, 0.15) 0px, rgba(230, 202, 133, 0.15) 2px, transparent 2px, transparent 5px);
+    }
+    .card-front {
+      background: #faf8f5;
+      transform: rotateY(180deg);
+      border: 1px solid #d4d4d8;
+    }
+
+    /* 飞行卡牌实体 */
+    .flight-card-node {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      transition: transform cubic-bezier(0.16, 1, 0.3, 1), box-shadow cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, box-shadow;
+    }
+
+    @keyframes dropImpact {
+      0% { transform: scale(1.05) translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.6); }
+      70% { transform: scale(0.99) translateY(1px); }
+      100% { transform: scale(1) translateY(0); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    }
+    .card-impact {
+      animation: dropImpact 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  </style>
+</head>
+
+<body class="flex flex-col select-none overflow-hidden antialiased">
+
+  <!-- TOP STATUS BAR -->
+  <header class="h-10 border-b border-black bg-[#060a08] flex items-center justify-between px-4 md:px-8 z-30 shrink-0">
+    <div class="flex items-center space-x-3">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+      <span class="font-cinzel text-xs md:text-sm font-bold tracking-[0.25em] text-[#d4b87a]">EMPRESS ROYALE</span>
+      <span class="text-[9px] text-zinc-500 font-mono tracking-wider hidden sm:inline">PUNTO BANCO ENGINE</span>
+    </div>
+
+    <div class="flex items-center space-x-5 text-[10px] font-mono text-zinc-400">
+      <div class="hidden sm:flex items-center space-x-3">
+        <span>TABLE <b class="text-zinc-200">#08</b></span>
+        <span class="text-zinc-600">|</span>
+        <span>SHOE <b id="shoe-num" class="text-zinc-200">#001</b></span>
+        <span class="text-zinc-600">|</span>
+        <span>REMAINING <b id="cards-remaining" class="text-[#c8a762]">416</b></span>
+        <span class="text-zinc-600">|</span>
+        <span>ROUND <b id="round-num" class="text-white">#1</b></span>
+      </div>
+
+      <div class="flex items-center space-x-2 bg-black/60 px-3 py-1 rounded border border-[#c8a762]/20">
+        <span class="text-[9px] text-zinc-500 uppercase font-sans">Bankroll</span>
+        <span id="player-balance" class="text-xs md:text-sm font-bold font-mono text-[#ecd89d]">$100,000</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABLE FELT CONTAINER -->
+  <main class="flex-1 flex flex-col table-container overflow-hidden justify-between">
+    
+    <div id="table-felt" class="flex-1 real-table-felt flex flex-col justify-between p-2 md:p-5 relative overflow-hidden">
+      
+      <!-- APPARATUS SECTOR -->
+      <div class="flex items-start justify-between relative z-10">
+        <!-- Discard Vault -->
+        <div class="w-16 md:w-20 flex flex-col items-center">
+          <div class="discard-rack w-12 h-16 md:w-16 md:h-20 rounded border border-white/5 flex flex-col items-center justify-center p-1">
+            <div class="w-full h-1 bg-white/10 rounded mb-1"></div>
+            <span class="text-[7px] md:text-[8px] font-cinzel text-zinc-500 font-bold tracking-widest text-center uppercase leading-tight">DISCARD<br>VAULT</span>
+          </div>
+        </div>
+
+        <!-- Center Notification -->
+        <div class="flex flex-col items-center max-w-xs md:max-w-md text-center">
+          <div class="flex items-center space-x-2 opacity-60 mb-0.5">
+            <span class="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#c8a762]"></span>
+            <span class="font-cinzel text-[8px] md:text-[9px] tracking-[0.3em] text-[#c8a762] uppercase">Live VIP Punto Banco</span>
+            <span class="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#c8a762]"></span>
+          </div>
+          
+          <div id="dealer-announcement" class="px-5 py-0.5 md:py-1 rounded bg-[#040d08]/90 border border-[#c8a762]/30 shadow-2xl transition-all">
+            <span id="announcement-text" class="font-cinzel text-[11px] md:text-xs font-bold tracking-[0.2em] text-[#edd59b]">PLACE YOUR BETS</span>
+          </div>
+
+          <div class="text-[8px] text-[#c8a762]/40 font-cormorant italic tracking-wider mt-1 hidden sm:block">
+            Banker Wins 6 Pays 1:2 · Natural 8/9 Stands · Tie Pays 8:1
+          </div>
+        </div>
+
+        <!-- Shoe Chute Exit Origin -->
+        <div class="w-20 md:w-28 flex flex-col items-end">
+          <div id="shoe-chute-origin" class="dealer-shoe-box w-16 h-20 md:w-24 md:h-24 p-1.5 flex flex-col justify-between">
+            <div class="flex justify-between items-center text-[7px] font-mono text-zinc-400">
+              <span>8 DECK</span>
+              <span class="text-[#c8a762]">LIVE</span>
+            </div>
+            <div class="dealer-shoe-chute w-full h-8 md:h-10 rounded flex items-center justify-center relative overflow-hidden">
+              <div class="w-full h-1 bg-black absolute bottom-0"></div>
+              <span class="text-[8px] font-cinzel text-[#c8a762]/60 tracking-widest uppercase">DEAL SLOT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARDS COMBAT SLOTS ARENA -->
+      <div class="flex-1 flex items-center justify-around px-2 md:px-12 my-1 md:my-2 relative z-10">
+        
+        <!-- Player Hand Zone -->
+        <div class="flex flex-col items-center flex-1 max-w-[280px] md:max-w-[340px]">
+          <div class="flex items-center space-x-3 mb-1.5">
+            <span class="font-cinzel font-bold text-xs md:text-sm tracking-[0.2em] felt-print-blue">PLAYER</span>
+            <div id="player-score-badge" class="hidden w-5 h-5 md:w-6 md:h-6 rounded-full bg-blue-900/90 border border-blue-400 text-[10px] md:text-xs font-bold text-white flex items-center justify-center shadow-lg">0</div>
+          </div>
+
+          <div class="flex space-x-1.5 md:space-x-2.5 p-2 rounded-lg card-drop-recess w-full justify-center min-h-[96px] md:min-h-[128px]">
+            <div id="player-slot-0" class="w-12 h-18 md:w-16 md:h-24 rounded border border-white/5 flex items-center justify-center"></div>
+            <div id="player-slot-1" class="w-12 h-18 md:w-16 md:h-24 rounded border border-white/5 flex items-center justify-center"></div>
+            <div id="player-slot-2" class="w-12 h-18 md:w-16 md:h-24 rounded border border-white/5 flex items-center justify-center"></div>
+          </div>
+        </div>
+
+        <!-- Crest Divider -->
+        <div class="hidden lg:flex flex-col items-center opacity-25 px-2">
+          <div class="w-[1px] h-8 bg-gradient-to-b from-transparent via-[#c8a762] to-transparent mb-1"></div>
+          <i class="fa-solid fa-crown text-xl text-[#c8a762]"></i>
+          <div class="w-[1px] h-8 bg-gradient-to-b from-transparent via-[#c8a762] to-transparent mt-1"></div>
+        </div>
+
+        <!-- Banker Hand Zone -->
+        <div class="flex flex-col items-center flex-1 max-w-[280px] md:max-w-[340px]">
+          <div class="flex items-center space-x-3 mb-1.5">
+            <span class="font-cinzel font-bold text-xs md:text-sm tracking-[0.2em] felt-print-red">BANKER</span>
+            <div id="banker-score-badge" class="hidden w-5 h-5 md:w-6 md:h-6 rounded-full bg-rose-900/90 border border-rose-400 text-[10px] md:text-xs font-bold text-white flex items-center justify-center shadow-lg">0</div>
+          </div>
+
+          <div class="flex space-x-1.5 md:space-x-2.5 p-2 rounded-lg card-drop-recess w-full justify-center min-h-[96px] md:min-h-[128px]">
+            <div id="banker-slot-0" class="w-12 h-18 md:w-16 md:h-24 rounded border border-white/5 flex items-center justify-center"></div>
+            <div id="banker-slot-1" class="w-12 h-18 md:w-16 md:h-24 rounded border border-white/5 flex items-center justify-center"></div>
+            <div id="banker-slot-2" class="w-12 h-18 md:w-16 md:h-24 rounded border border-white/5 flex items-center justify-center"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BETTING GRID -->
+      <div class="w-full max-w-4xl mx-auto z-10 px-1 md:px-4">
+        <div class="grid grid-cols-3 gap-2 mb-2 font-cinzel">
+          <div data-bet-target="playerPair" class="bet-cell rounded-md p-1.5 md:p-2 felt-line-gold flex flex-col items-center justify-center cursor-pointer">
+            <span class="text-[10px] md:text-xs font-bold felt-print-blue">P.PAIR</span>
+            <span class="text-[8px] md:text-[9px] text-[#c8a762]/70 font-mono">11 TO 1</span>
+            <div class="chip-stack-anchor mt-0.5 h-4 flex items-center justify-center"></div>
+          </div>
+
+          <div data-bet-target="tie" class="bet-cell rounded-md p-1.5 md:p-2 border border-emerald-600/40 flex flex-col items-center justify-center cursor-pointer">
+            <span class="text-xs md:text-sm font-extrabold tracking-widest text-emerald-400/90">TIE</span>
+            <span class="text-[9px] text-emerald-300/60 font-mono">8 TO 1</span>
+            <div class="chip-stack-anchor mt-0.5 h-4 flex items-center justify-center"></div>
+          </div>
+
+          <div data-bet-target="bankerPair" class="bet-cell rounded-md p-1.5 md:p-2 felt-line-gold flex flex-col items-center justify-center cursor-pointer">
+            <span class="text-[10px] md:text-xs font-bold felt-print-red">B.PAIR</span>
+            <span class="text-[8px] md:text-[9px] text-[#c8a762]/70 font-mono">11 TO 1</span>
+            <div class="chip-stack-anchor mt-0.5 h-4 flex items-center justify-center"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 font-cinzel">
+          <div data-bet-target="player" class="bet-cell rounded-lg p-2.5 md:p-4 border-2 border-blue-600/30 flex flex-col items-center justify-center cursor-pointer min-h-[64px] md:min-h-[82px]">
+            <span class="text-sm md:text-base font-black tracking-[0.25em] felt-print-blue">PLAYER</span>
+            <span class="text-[9px] text-blue-300/60 font-mono">PAYS 1 TO 1</span>
+            <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
+          </div>
+
+          <div data-bet-target="banker" class="bet-cell rounded-lg p-2.5 md:p-4 border-2 border-rose-600/30 flex flex-col items-center justify-center cursor-pointer min-h-[64px] md:min-h-[82px]">
+            <span class="text-sm md:text-base font-black tracking-[0.25em] felt-print-red">BANKER</span>
+            <span class="text-[9px] text-rose-300/60 font-mono">0.95 TO 1</span>
+            <div class="chip-stack-anchor mt-1 h-5 flex items-center justify-center"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROADMAP PANEL -->
+    <div class="h-28 md:h-36 bg-[#040805] border-t border-[#c8a762]/20 flex flex-col shrink-0 px-2 pt-1">
+      <div class="flex items-center justify-between px-2 py-0.5 text-[9px] text-zinc-400 font-mono border-b border-white/5">
+        <div class="flex space-x-4">
+          <span>PLAYER: <b id="stat-p" class="text-blue-400">0</b></span>
+          <span>BANKER: <b id="stat-b" class="text-rose-400">0</b></span>
+          <span>TIE: <b id="stat-t" class="text-emerald-400">0</b></span>
+        </div>
+        <span class="text-zinc-600 text-[8px]">EMPRESS INTEGRATED ROADMAP SYSTEM</span>
+      </div>
+
+      <div class="flex-1 flex overflow-x-auto overflow-y-hidden divide-x divide-white/5 py-1">
+        <div class="w-40 md:w-52 shrink-0 flex flex-col">
+          <span class="text-[7px] text-zinc-500 font-bold uppercase mb-0.5">Bead Road</span>
+          <div id="bead-road-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[14px] md:auto-cols-[17px] gap-[1px] bg-black/40 p-0.5 overflow-x-auto"></div>
+        </div>
+        <div class="flex-1 flex flex-col min-w-[260px] pl-2">
+          <span class="text-[7px] text-zinc-500 font-bold uppercase mb-0.5">Big Road</span>
+          <div id="big-road-grid" class="flex-1 grid grid-rows-6 grid-flow-col auto-cols-[11px] md:auto-cols-[13px] gap-[1px] bg-black/30 overflow-x-auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUTED CHIP RAIL & ACTIONS -->
+    <footer class="chip-rail p-2 md:p-3 shrink-0 flex flex-wrap items-center justify-between gap-3 z-30">
+      <div class="flex items-center space-x-1.5">
+        <button id="btn-clear-bets" class="px-2.5 py-1.5 rounded bg-black/60 hover:bg-black/90 border border-white/10 text-[10px] font-cinzel font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1">
+          <i class="fa-solid fa-trash-can text-[9px]"></i>
+          <span>CLEAR</span>
+        </button>
+        <button id="btn-double-bets" class="px-2.5 py-1.5 rounded bg-black/60 hover:bg-black/90 border border-white/10 text-[10px] font-cinzel font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1">
+          <i class="fa-solid fa-angles-up text-[9px]"></i>
+          <span>DOUBLE</span>
+        </button>
+        <button id="btn-rebet" class="px-2.5 py-1.5 rounded bg-black/60 hover:bg-black/90 border border-white/10 text-[10px] font-cinzel font-bold text-zinc-300 transition active:scale-95 flex items-center space-x-1">
+          <i class="fa-solid fa-rotate-right text-[9px]"></i>
+          <span>REBET</span>
+        </button>
+      </div>
+
+      <!-- Chip Rack -->
+      <div id="chip-selector" class="flex items-center space-x-2 md:space-x-3 overflow-x-auto py-1 px-2 bg-black/40 rounded-full border border-white/5">
+        <div data-val="50" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/70 bg-gradient-to-b from-blue-600 to-blue-900 shadow-lg transform transition active:scale-95">50</div>
+        <div data-val="100" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/70 bg-gradient-to-b from-purple-600 to-purple-900 shadow-lg transform transition active:scale-95">100</div>
+        <div data-val="500" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-xs cursor-pointer border-2 border-dashed border-white/70 bg-gradient-to-b from-teal-600 to-teal-900 shadow-lg transform transition active:scale-95">500</div>
+        <div data-val="1000" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-dashed border-[#ecd89d] bg-gradient-to-b from-amber-600 to-amber-900 shadow-lg ring-2 ring-[#c8a762] transform transition active:scale-95">1K</div>
+        <div data-val="5000" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-dashed border-white/80 bg-gradient-to-b from-rose-700 to-rose-950 shadow-lg transform transition active:scale-95">5K</div>
+        <div data-val="10000" class="chip-token w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center font-bold text-[10px] md:text-xs cursor-pointer border-2 border-solid border-[#c8a762] bg-gradient-to-b from-zinc-800 to-black text-[#ebd69b] shadow-xl transform transition active:scale-95">10K</div>
+      </div>
+
+      <!-- Main Action Deal -->
+      <div class="flex items-center space-x-2">
+        <button id="btn-deal" class="font-cinzel px-6 py-2 rounded bg-gradient-to-b from-[#dfc282] via-[#c8a762] to-[#997736] text-black font-black text-xs md:text-sm tracking-[0.2em] shadow-[0_4px_16px_rgba(0,0,0,0.6)] hover:brightness-110 active:scale-95 transition disabled:opacity-30 disabled:pointer-events-none">
+          DEAL
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <div id="flight-overlay" class="fixed inset-0 pointer-events-none z-50"></div>
+
+  <!-- CORE LOGIC & ENGINE INTEGRATION -->
+  <script>
+    /**
+     * EMPRESS ROYALE V4 · CORE ENGINE ARCHITECTURE
+     */
+
+    // --- 1. CONFIGURATION ---
+    const CONFIG = {
+      baccarat: {
+        deckCount: 8,
+        cutCardMin: 60,
+        cutCardMax: 75,
+        payouts: {
+          player: 1.0,
+          banker: 0.95,
+          tie: 8.0,
+          playerPair: 11.0,
+          bankerPair: 11.0
+        }
+      },
+      timings: {
+        cardFlight: 320,
+        dealPause: 180,
+        revealFlip: 450,
+        settleDelay: 600,
+        resetDelay: 2200
+      }
+    };
+
+    // --- 2. GAME PHASES ---
+    const PHASES = {
+      IDLE: 'IDLE',
+      BETTING: 'BETTING',
+      BETTING_LOCKED: 'BETTING_LOCKED',
+      DEALING_INITIAL: 'DEALING_INITIAL',
+      THIRD_CARD_EVAL: 'THIRD_CARD_EVAL',
+      THIRD_CARD_DEAL: 'THIRD_CARD_DEAL',
+      RESULT_REVEAL: 'RESULT_REVEAL',
+      PAYOUT: 'PAYOUT',
+      SHUFFLING: 'SHUFFLING'
+    };
+
+    // --- 3. BACCARAT ENGINE (Pure Punto Banco Mathematics) ---
+    const BaccaratEngine = {
+      SUITS: ['♠', '♥', '♣', '♦'],
+      VALUES: ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'],
+
+      getCardPoint(card) {
+        if (!card) return 0;
+        if (['10', 'J', 'Q', 'K'].includes(card.value)) return 0;
+        if (card.value === 'A') return 1;
+        return parseInt(card.value, 10);
+      },
+
+      calculateScore(cards) {
+        if (!cards || !Array.isArray(cards)) return 0;
+        const total = cards.reduce((acc, c) => acc + this.getCardPoint(c), 0);
+        return total % 10;
+      },
+
+      isNatural(pCards, bCards) {
+        if (!pCards || !bCards || pCards.length !== 2 || bCards.length !== 2) return false;
+        const p = this.calculateScore(pCards);
+        const b = this.calculateScore(bCards);
+        return p >= 8 || b >= 8;
+      },
+
+      hasPair(cards) {
+        if (!cards || cards.length < 2) return false;
+        return cards[0].value === cards[1].value;
+      },
+
+      shouldPlayerDraw(pScore) {
+        return pScore <= 5;
+      },
+
+      shouldBankerDraw(bScore, pThirdCard) {
+        if (pThirdCard === null || pThirdCard === undefined) {
+          return bScore <= 5;
+        }
+        const p3Val = this.getCardPoint(pThirdCard);
+        switch (bScore) {
+          case 0: case 1: case 2: return true;
+          case 3: return p3Val !== 8;
+          case 4: return [2, 3, 4, 5, 6, 7].includes(p3Val);
+          case 5: return [4, 5, 6, 7].includes(p3Val);
+          case 6: return [6, 7].includes(p3Val);
+          default: return false;
+        }
+      },
+
+      determineWinner(pScore, bScore) {
+        if (pScore > bScore) return 'player';
+        if (bScore > pScore) return 'banker';
+        return 'tie';
+      }
+    };
+
+    // --- 4. SHOE ENGINE (Fisher-Yates 8-Decks) ---
+    class ShoeEngine {
+      constructor() {
+        this.cards = [];
+        this.cutPosition = 0;
+        this.shoeNumber = 1;
+        this.initShoe();
+      }
+
+      initShoe() {
+        this.cards = [];
+        for (let d = 0; d < CONFIG.baccarat.deckCount; d++) {
+          for (const s of BaccaratEngine.SUITS) {
+            for (const v of BaccaratEngine.VALUES) {
+              this.cards.push({
+                suit: s,
+                value: v,
+                isRed: (s === '♥' || s === '♦')
+              });
+            }
+          }
+        }
+        // Fisher-Yates
+        for (let i = this.cards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+        }
+        this.cutPosition = Math.floor(Math.random() * (CONFIG.baccarat.cutCardMax - CONFIG.baccarat.cutCardMin + 1)) + CONFIG.baccarat.cutCardMin;
+      }
+
+      needsShuffle() {
+        return this.cards.length <= this.cutPosition;
+      }
+
+      draw() {
+        if (this.cards.length === 0) this.initShoe();
+        return this.cards.pop();
+      }
+
+      get remaining() {
+        return this.cards.length;
+      }
+    }
+
+    const Shoe = new ShoeEngine();
+
+    // --- 5. GAME STATE MODEL ---
+    const GameState = {
+      phase: PHASES.BETTING,
+      roundId: 1,
+      settledTransactionId: null,
+
+      wallet: {
+        balance: 100000,
+        lastBets: null
+      },
+
+      bets: {
+        player: 0,
+        banker: 0,
+        tie: 0,
+        playerPair: 0,
+        bankerPair: 0
+      },
+
+      selectedChip: 1000,
+
+      hands: {
+        player: [],
+        banker: []
+      },
+
+      history: []
+    };
+
+    // --- 6. TIMING & LIFECYCLE CONTROLLER ---
+    const TimerManager = {
+      timeouts: new Set(),
+      wait(ms) {
+        return new Promise(resolve => {
+          const id = setTimeout(() => {
+            this.timeouts.delete(id);
+            resolve();
+          }, ms);
+          this.timeouts.add(id);
+        });
+      },
+      clearAll() {
+        this.timeouts.forEach(id => clearTimeout(id));
+        this.timeouts.clear();
+      }
+    };
+
+    // --- 7. BETTING & SETTLEMENT ENGINES ---
+    const BettingEngine = {
+      placeBet(spot, amount) {
+        if (GameState.phase !== PHASES.BETTING) return false;
+        if (GameState.wallet.balance < amount) return false;
+
+        GameState.wallet.balance -= amount;
+        GameState.bets[spot] += amount;
+        UI.renderWallet();
+        UI.renderBets();
+        return true;
+      },
+
+      clearBets() {
+        if (GameState.phase !== PHASES.BETTING) return;
+        const total = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
+        GameState.wallet.balance += total;
+        for (const k in GameState.bets) GameState.bets[k] = 0;
+        UI.renderWallet();
+        UI.renderBets();
+      },
+
+      doubleBets() {
+        if (GameState.phase !== PHASES.BETTING) return;
+        const total = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
+        if (total === 0 || GameState.wallet.balance < total) return;
+        GameState.wallet.balance -= total;
+        for (const k in GameState.bets) GameState.bets[k] *= 2;
+        UI.renderWallet();
+        UI.renderBets();
+      },
+
+      rebet() {
+        if (GameState.phase !== PHASES.BETTING || !GameState.wallet.lastBets) return;
+        const totalLast = Object.values(GameState.wallet.lastBets).reduce((a, b) => a + b, 0);
+        if (GameState.wallet.balance < totalLast) return;
+        this.clearBets();
+        GameState.wallet.balance -= totalLast;
+        GameState.bets = { ...GameState.wallet.lastBets };
+        UI.renderWallet();
+        UI.renderBets();
+      }
+    };
+
+    const SettlementEngine = {
+      settle(roundId, pCards, bCards, bets) {
+        // Idempotency check
+        if (GameState.settledTransactionId === roundId) return null;
+        GameState.settledTransactionId = roundId;
+
+        const pScore = BaccaratEngine.calculateScore(pCards);
+        const bScore = BaccaratEngine.calculateScore(bCards);
+        const winner = BaccaratEngine.determineWinner(pScore, bScore);
+
+        const pPair = BaccaratEngine.hasPair(pCards.slice(0, 2));
+        const bPair = BaccaratEngine.hasPair(bCards.slice(0, 2));
+
+        let grossPayout = 0;
+
+        if (winner === 'player') {
+          grossPayout += bets.player * (1 + CONFIG.baccarat.payouts.player);
+        } else if (winner === 'banker') {
+          grossPayout += bets.banker * (1 + CONFIG.baccarat.payouts.banker);
+        } else {
+          // Push Player and Banker bets on Tie
+          grossPayout += (bets.player + bets.banker);
+          grossPayout += bets.tie * (1 + CONFIG.baccarat.payouts.tie);
+        }
+
+        if (pPair) grossPayout += bets.playerPair * (1 + CONFIG.baccarat.payouts.playerPair);
+        if (bPair) grossPayout += bets.bankerPair * (1 + CONFIG.baccarat.payouts.bankerPair);
+
+        const netProfit = grossPayout - Object.values(bets).reduce((a, b) => a + b, 0);
+
+        return {
+          roundId,
+          winner,
+          pScore,
+          bScore,
+          pPair,
+          bPair,
+          grossPayout: Math.round(grossPayout),
+          netProfit: Math.round(netProfit)
+        };
+      }
+    };
+
+    // --- 8. CARD PRESENTATION ENGINE ---
+    const CardPresentationEngine = {
+      createCardDOM(card) {
+        const color = card.isRed ? 'text-rose-600' : 'text-zinc-900';
+        const cardScene = document.createElement('div');
+        cardScene.className = 'card-3d';
+        cardScene.innerHTML = `
+          <div class="card-3d-flipper">
+            <div class="card-side card-back flex items-center justify-center">
+              <span class="text-[8px] font-cinzel text-[#e6ca85]/50">VIP</span>
+            </div>
+            <div class="card-side card-front p-1 flex flex-col justify-between ${color}">
+              <div class="text-[10px] font-bold leading-none">${card.value}<br><span class="text-[9px]">${card.suit}</span></div>
+              <div class="text-base self-center leading-none">${card.suit}</div>
+              <div class="text-[10px] font-bold leading-none self-end rotate-180">${card.value}<br><span class="text-[9px]">${card.suit}</span></div>
+            </div>
+          </div>
+        `;
+        return cardScene;
+      },
+
+      slideCard(targetSlot, card, duration = CONFIG.timings.cardFlight) {
+        return new Promise(resolve => {
+          const originSlot = document.getElementById('shoe-chute-origin');
+          const originRect = originSlot.getBoundingClientRect();
+          const targetRect = targetSlot.getBoundingClientRect();
+
+          const flightCard = document.createElement('div');
+          flightCard.className = 'flight-card-node card-side card-back rounded';
+          flightCard.style.width = `${targetRect.width}px`;
+          flightCard.style.height = `${targetRect.height}px`;
+          flightCard.style.left = `${originRect.left + 4}px`;
+          flightCard.style.top = `${originRect.top + 4}px`;
+          flightCard.style.transitionDuration = `${duration}ms`;
+
+          document.getElementById('flight-overlay').appendChild(flightCard);
+
+          requestAnimationFrame(() => {
+            flightCard.style.transform = `translate(${targetRect.left - originRect.left}px, ${targetRect.top - originRect.top}px) rotate(${(Math.random() - 0.5) * 4}deg)`;
+          });
+
+          setTimeout(() => {
+            flightCard.remove();
+            const realCard = this.createCardDOM(card);
+            targetSlot.innerHTML = '';
+            targetSlot.appendChild(realCard);
+            realCard.classList.add('card-impact');
+            resolve();
+          }, duration);
+        });
+      },
+
+      flipCard(slot) {
+        return new Promise(resolve => {
+          const flipper = slot.querySelector('.card-3d-flipper');
+          if (flipper) flipper.classList.add('flipped');
+          setTimeout(resolve, CONFIG.timings.revealFlip);
+        });
+      }
+    };
+
+    // --- 9. ROADMAP ENGINE ---
+    const RoadmapEngine = {
+      generateBigRoad(history) {
+        const matrix = [];
+        let col = 0, row = 0;
+        let lastWinner = null;
+
+        for (const round of history) {
+          if (round.winner === 'tie') {
+            if (col < matrix.length && matrix[col] && matrix[col][row]) {
+              matrix[col][row].tieCount = (matrix[col][row].tieCount || 0) + 1;
+            }
+            continue;
+          }
+
+          if (lastWinner === null) {
+            matrix[0] = [{ winner: round.winner, tieCount: 0 }];
+            lastWinner = round.winner;
+            continue;
+          }
+
+          if (round.winner === lastWinner) {
+            if (row + 1 < 6 && (!matrix[col] || !matrix[col][row + 1])) {
+              row++;
+            } else {
+              col++;
+            }
+          } else {
+            col = matrix.length;
+            row = 0;
+            lastWinner = round.winner;
+          }
+
+          if (!matrix[col]) matrix[col] = [];
+          matrix[col][row] = { winner: round.winner, tieCount: 0 };
+        }
+        return matrix;
+      }
+    };
+
+    // --- 10. UI VIEW CONTROLLER ---
+    const UI = {
+      init() {
+        this.bindEvents();
+        this.renderWallet();
+        this.renderBets();
+        this.renderRoadmaps();
+      },
+
+      setAnnouncement(text) {
+        document.getElementById('announcement-text').innerText = text;
+      },
+
+      renderWallet() {
+        document.getElementById('player-balance').innerText = `$${GameState.wallet.balance.toLocaleString()}`;
+      },
+
+      renderBets() {
+        document.querySelectorAll('.bet-cell').forEach(cell => {
+          const type = cell.dataset.betTarget;
+          const amt = GameState.bets[type];
+          const anchor = cell.querySelector('.chip-stack-anchor');
+          if (amt > 0) {
+            cell.classList.add('bet-cell-active');
+            anchor.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-[#dfc282] text-black font-black font-mono text-[9px] shadow-md">$${amt.toLocaleString()}</span>`;
+          } else {
+            cell.classList.remove('bet-cell-active');
+            anchor.innerHTML = '';
+          }
+        });
+      },
+
+      renderChips() {
+        document.querySelectorAll('.chip-token').forEach(el => {
+          el.classList.remove('ring-2', 'ring-[#c8a762]');
+          if (parseInt(el.dataset.val, 10) === GameState.selectedChip) {
+            el.classList.add('ring-2', 'ring-[#c8a762]');
+          }
+        });
+      },
+
+      renderScoreBadges(pScore = null, bScore = null) {
+        const pBadge = document.getElementById('player-score-badge');
+        const bBadge = document.getElementById('banker-score-badge');
+        if (pScore !== null) {
+          pBadge.innerText = pScore;
+          pBadge.classList.remove('hidden');
+        } else {
+          pBadge.classList.add('hidden');
+        }
+        if (bScore !== null) {
+          bBadge.innerText = bScore;
+          bBadge.classList.remove('hidden');
+        } else {
+          bBadge.classList.add('hidden');
+        }
+      },
+
+      renderRoadmaps() {
+        const history = GameState.history;
+        const bigRoad = RoadmapEngine.generateBigRoad(history);
+
+        const beadGrid = document.getElementById('bead-road-grid');
+        beadGrid.innerHTML = '';
+        history.forEach(round => {
+          const cell = document.createElement('div');
+          const color = round.winner === 'player' ? 'bg-blue-600' : (round.winner === 'banker' ? 'bg-rose-600' : 'bg-emerald-600');
+          cell.className = 'w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white shadow-sm ' + color;
+          cell.innerText = round.winner[0].toUpperCase();
+          beadGrid.appendChild(cell);
+        });
+
+        const bigGrid = document.getElementById('big-road-grid');
+        bigGrid.innerHTML = '';
+        bigRoad.forEach(col => {
+          const colDiv = document.createElement('div');
+          colDiv.className = 'flex flex-col w-[11px] md:w-[13px]';
+          for (let r = 0; r < 6; r++) {
+            const cellData = col[r];
+            const cell = document.createElement('div');
+            cell.className = 'w-[11px] h-[11px] md:w-[13px] md:h-[13px] road-grid-cell flex items-center justify-center relative';
+            if (cellData) {
+              const border = cellData.winner === 'player' ? 'border-blue-500' : 'border-rose-500';
+              const tieMarker = cellData.tieCount > 0 ? `<div class="absolute w-full h-[1.5px] bg-emerald-400 rotate-45"></div>` : '';
+              cell.innerHTML = `<div class="w-2 h-2 rounded-full border ${border} relative flex items-center justify-center">${tieMarker}</div>`;
+            }
+            colDiv.appendChild(cell);
+          }
+          bigGrid.appendChild(colDiv);
+        });
+
+        document.getElementById('stat-p').innerText = history.filter(h => h.winner === 'player').length;
+        document.getElementById('stat-b').innerText = history.filter(h => h.winner === 'banker').length;
+        document.getElementById('stat-t').innerText = history.filter(h => h.winner === 'tie').length;
+      },
+
+      bindEvents() {
+        document.querySelectorAll('.chip-token').forEach(chip => {
+          chip.addEventListener('click', () => {
+            GameState.selectedChip = parseInt(chip.dataset.val, 10);
+            this.renderChips();
+          });
+        });
+
+        document.querySelectorAll('.bet-cell').forEach(cell => {
+          cell.addEventListener('click', () => {
+            BettingEngine.placeBet(cell.dataset.betTarget, GameState.selectedChip);
+          });
+        });
+
+        document.getElementById('btn-clear-bets').addEventListener('click', () => BettingEngine.clearBets());
+        document.getElementById('btn-double-bets').addEventListener('click', () => BettingEngine.doubleBets());
+        document.getElementById('btn-rebet').addEventListener('click', () => BettingEngine.rebet());
+        document.getElementById('btn-deal').addEventListener('click', () => FlowDirector.startDealCycle());
+      }
+    };
+
+    // --- 11. PUNTO BANCO FLOW DIRECTOR (DEAL & PROGRESSION) ---
+    const FlowDirector = {
+      async startDealCycle() {
+        const totalBet = Object.values(GameState.bets).reduce((a, b) => a + b, 0);
+        if (totalBet === 0 || GameState.phase !== PHASES.BETTING) return;
+
+        // 1. Lock Bets
+        GameState.phase = PHASES.BETTING_LOCKED;
+        GameState.wallet.lastBets = { ...GameState.bets };
+        document.getElementById('btn-deal').disabled = true;
+        UI.setAnnouncement('BETS LOCKED');
+
+        // Check Shoe Cut
+        if (Shoe.needsShuffle()) {
+          GameState.phase = PHASES.SHUFFLING;
+          UI.setAnnouncement('SHUFFLING NEW SHOE');
+          await TimerManager.wait(1000);
+          Shoe.initShoe();
+          Shoe.shoeNumber++;
+          document.getElementById('shoe-num').innerText = `#00${Shoe.shoeNumber}`;
+        }
+
+        // 2. Clear Table Slots
+        for (let i = 0; i < 3; i++) {
+          document.getElementById(`player-slot-${i}`).innerHTML = '';
+          document.getElementById(`banker-slot-${i}`).innerHTML = '';
+        }
+        UI.renderScoreBadges(null, null);
+
+        GameState.hands.player = [];
+        GameState.hands.banker = [];
+
+        // 3. Deal Initial 4 Cards (P1 -> B1 -> P2 -> B2)
+        GameState.phase = PHASES.DEALING_INITIAL;
+        UI.setAnnouncement('DEALING CARDS');
+
+        const p1 = Shoe.draw(); GameState.hands.player.push(p1);
+        await CardPresentationEngine.slideCard(document.getElementById('player-slot-0'), p1);
+        await TimerManager.wait(CONFIG.timings.dealPause);
+
+        const b1 = Shoe.draw(); GameState.hands.banker.push(b1);
+        await CardPresentationEngine.slideCard(document.getElementById('banker-slot-0'), b1);
+        await TimerManager.wait(CONFIG.timings.dealPause);
+
+        const p2 = Shoe.draw(); GameState.hands.player.push(p2);
+        await CardPresentationEngine.slideCard(document.getElementById('player-slot-1'), p2);
+        await TimerManager.wait(CONFIG.timings.dealPause);
+
+        const b2 = Shoe.draw(); GameState.hands.banker.push(b2);
+        await CardPresentationEngine.slideCard(document.getElementById('banker-slot-1'), b2);
+        await TimerManager.wait(CONFIG.timings.dealPause);
+
+        document.getElementById('cards-remaining').innerText = Shoe.remaining;
+
+        // Reveal Initial Cards
+        await CardPresentationEngine.flipCard(document.getElementById('player-slot-0'));
+        await CardPresentationEngine.flipCard(document.getElementById('player-slot-1'));
+        let pScore = BaccaratEngine.calculateScore(GameState.hands.player);
+
+        await CardPresentationEngine.flipCard(document.getElementById('banker-slot-0'));
+        await CardPresentationEngine.flipCard(document.getElementById('banker-slot-1'));
+        let bScore = BaccaratEngine.calculateScore(GameState.hands.banker);
+
+        UI.renderScoreBadges(pScore, bScore);
+
+        // 4. Natural Check (8 or 9)
+        if (BaccaratEngine.isNatural(GameState.hands.player, GameState.hands.banker)) {
+          UI.setAnnouncement('NATURAL');
+          await TimerManager.wait(CONFIG.timings.settleDelay);
+          return this.concludeRound();
+        }
+
+        // 5. Third Card Decision Pipeline
+        GameState.phase = PHASES.THIRD_CARD_EVAL;
+        let playerThirdCard = null;
+
+        // Player Third Card Rule
+        if (BaccaratEngine.shouldPlayerDraw(pScore)) {
+          UI.setAnnouncement('PLAYER DRAWS');
+          await TimerManager.wait(CONFIG.timings.settleDelay);
+
+          GameState.phase = PHASES.THIRD_CARD_DEAL;
+          playerThirdCard = Shoe.draw();
+          GameState.hands.player.push(playerThirdCard);
+          await CardPresentationEngine.slideCard(document.getElementById('player-slot-2'), playerThirdCard);
+          await CardPresentationEngine.flipCard(document.getElementById('player-slot-2'));
+          pScore = BaccaratEngine.calculateScore(GameState.hands.player);
+          UI.renderScoreBadges(pScore, bScore);
+          document.getElementById('cards-remaining').innerText = Shoe.remaining;
+        } else {
+          UI.setAnnouncement('PLAYER STANDS');
+          await TimerManager.wait(CONFIG.timings.dealPause);
+        }
+
+        // Banker Third Card Rule
+        if (BaccaratEngine.shouldBankerDraw(bScore, playerThirdCard)) {
+          UI.setAnnouncement('BANKER DRAWS');
+          await TimerManager.wait(CONFIG.timings.settleDelay);
+
+          GameState.phase = PHASES.THIRD_CARD_DEAL;
+          const bankerThirdCard = Shoe.draw();
+          GameState.hands.banker.push(bankerThirdCard);
+          await CardPresentationEngine.slideCard(document.getElementById('banker-slot-2'), bankerThirdCard);
+          await CardPresentationEngine.flipCard(document.getElementById('banker-slot-2'));
+          bScore = BaccaratEngine.calculateScore(GameState.hands.banker);
+          UI.renderScoreBadges(pScore, bScore);
+          document.getElementById('cards-remaining').innerText = Shoe.remaining;
+        } else {
+          UI.setAnnouncement('BANKER STANDS');
+          await TimerManager.wait(CONFIG.timings.dealPause);
+        }
+
+        await TimerManager.wait(CONFIG.timings.settleDelay);
+        this.concludeRound();
+      },
+
+      concludeRound() {
+        GameState.phase = PHASES.PAYOUT;
+
+        const settlement = SettlementEngine.settle(
+          GameState.roundId,
+          GameState.hands.player,
+          GameState.hands.banker,
+          GameState.bets
+        );
+
+        if (!settlement) return;
+
+        // Update Wallet & Record History
+        GameState.wallet.balance += settlement.grossPayout;
+        GameState.history.push(settlement);
+
+        const banner = settlement.winner === 'tie' ? 'TIE GAME' : `${settlement.winner.toUpperCase()} WINS`;
+        UI.setAnnouncement(`${banner} (${settlement.pScore} vs ${settlement.bScore})`);
+
+        UI.renderWallet();
+        UI.renderRoadmaps();
+
+        setTimeout(() => {
+          this.resetToBetting();
+        }, CONFIG.timings.resetDelay);
+      },
+
+      resetToBetting() {
+        for (const k in GameState.bets) GameState.bets[k] = 0;
+        UI.renderBets();
+        GameState.roundId++;
+        document.getElementById('round-num').innerText = `#${GameState.roundId}`;
+        document.getElementById('btn-deal').disabled = false;
+        UI.setAnnouncement('PLACE YOUR BETS');
+        GameState.phase = PHASES.BETTING;
+      }
+    };
+
+    // --- 12. 100-ROUND HEADLESS TEST RUNNER ---
+    function runHeadlessSimulation100() {
+      console.log('--- STARTING 100 ROUND SIMULATION ---');
+      const testShoe = new ShoeEngine();
+      let pWins = 0, bWins = 0, ties = 0, naturals = 0;
+
+      for (let r = 1; r <= 100; r++) {
+        if (testShoe.needsShuffle()) testShoe.initShoe();
+        const pCards = [testShoe.draw(), testShoe.draw()];
+        const bCards = [testShoe.draw(), testShoe.draw()];
+
+        let pScore = BaccaratEngine.calculateScore(pCards);
+        let bScore = BaccaratEngine.calculateScore(bCards);
+
+        if (BaccaratEngine.isNatural(pCards, bCards)) {
+          naturals++;
+        } else {
+          let p3 = null;
+          if (BaccaratEngine.shouldPlayerDraw(pScore)) {
+            p3 = testShoe.draw();
+            pCards.push(p3);
+            pScore = BaccaratEngine.calculateScore(pCards);
+          }
+          if (BaccaratEngine.shouldBankerDraw(bScore, p3)) {
+            const b3 = testShoe.draw();
+            bCards.push(b3);
+            bScore = BaccaratEngine.calculateScore(bCards);
+          }
+        }
+
+        const winner = BaccaratEngine.determineWinner(pScore, bScore);
+        if (winner === 'player') pWins++;
+        else if (winner === 'banker') bWins++;
+        else ties++;
+
+        // Verify Settlement Engine for round
+        const dummyBets = { player: 100, banker: 100, tie: 0, playerPair: 0, bankerPair: 0 };
+        const res = SettlementEngine.settle(`sim-${r}`, pCards, bCards, dummyBets);
+        if (!res) console.error(`Simulation failed on round ${r}`);
+      }
+
+      console.log(`--- SIMULATION COMPLETE: P:${pWins} | B:${bWins} | T:${ties} | Naturals:${naturals} ---`);
+    }
+
+    // --- 13. BOOTSTRAP ---
+    window.addEventListener('DOMContentLoaded', () => {
+      runHeadlessSimulation100();
+      UI.init();
+
+      const setAppHeight = () => {
+        document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      };
+      window.addEventListener('resize', setAppHeight);
+      setAppHeight();
+    });
+  </script>
+</body>
+</html>

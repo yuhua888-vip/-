@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"], "strict": true,
+    "noUncheckedIndexedAccess": true, "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true, "noUnusedParameters": true, "useUnknownInCatchVariables": true,
+    "rootDir": "src", "outDir": "assets/app", "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"]
+}
