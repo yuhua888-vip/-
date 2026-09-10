@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 rmSync('assets/app', { recursive: true, force: true });
 execFileSync(process.execPath, ['node_modules/typescript/bin/tsc'], { stdio: 'inherit' });
+rmSync('assets/app/dev', { recursive: true, force: true });
 mkdirSync('assets', { recursive: true });
 cpSync('src/styles.css', 'assets/queen.css');
 rmSync('dist', { recursive: true, force: true });

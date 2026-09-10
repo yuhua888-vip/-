@@ -6,6 +6,7 @@ PHASE 1：单人、虚拟筹码的百家乐互动模拟器。无充值、提现�
 
 - 改造前的 13 项完整审查：[docs/AUDIT.md](docs/AUDIT.md)
 - 功能保护与验收结果：[docs/PHASE1.md](docs/PHASE1.md)
+- 发牌与咪牌专项重构、自检及开发调试面板：[docs/EXPERIENCE_REFACTOR.md](docs/EXPERIENCE_REFACTOR.md)
 - 角色资产说明：[docs/ASSETS.md](docs/ASSETS.md)
 
 ## 启动
@@ -37,7 +38,7 @@ npm run build
 | `src/game/engine.ts` | 点数、自然牌、补牌、两种明确规则、8 副牌鞋和安全随机抽样 |
 | `src/game/session.ts` / `ledger.ts` | 原子投注、退款、续押、结算去重、整数最小单位、快照恢复 |
 | `src/game/state.ts` / `runner.ts` | 合法状态转换、单一牌局进程、动画异常后的结果恢复 |
-| `src/game/cards.ts` / `peek.ts` | 程序牌面、牌背、四角局部揭牌、Pointer Events 与键盘操作 |
+| `src/game/cards.ts` / `peek.ts` / `paper.ts` / `ownership.ts` | 牌面、WebGL 四角曲面、Canvas 降级、下注方咪牌权限与键盘操作 |
 | `src/game/roadmap.ts` | 珠盘、大路及三种衍生路 |
 | `src/ui/` / `src/styles.css` | 桌面视图、实体筹码示意、数字与交互反馈、响应式样式 |
 | `src/animations/` / `audio/` / `dealer/` | 统一动画、音量通道、四姿态皇后及 DealerBrain 接口 |
@@ -58,4 +59,4 @@ npm run build
 
 ## 验证边界
 
-自动测试通过并不代表实机体验已经验收。此次浏览器预览被运行环境的 URL 安全策略阻止，未完成截图、真实触摸、Safari、帧率和后台切换的浏览器验证。合并或上线前应按 `docs/PHASE1.md` 中的实机清单验收。
+自动测试通过并不代表实机体验已经验收。此次浏览器预览被运行环境的 URL 安全策略阻止，未完成截图、真实触摸、Safari、帧率和后台切换的浏览器验证。此次专项重构已经加入开发专用慢动作与固定牌序回放，但实际视觉和移动端验收仍未完成。合并或上线前应按 `docs/EXPERIENCE_REFACTOR.md` 中的实机清单验收。

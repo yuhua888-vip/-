@@ -1,3 +1,4 @@
+import { peekOwnership, initialRevealOrder } from './ownership.js';
 export class GameRunner {
     session;
     view;
@@ -29,21 +30,29 @@ export class GameRunner {
         this.view.motion.reset();
         this.view.updateControls();
         const state = this.session.state, motion = this.view.motion;
-        const peekSide = plan.result.bets.banker > plan.result.bets.player ? 'banker' : 'player';
-        const reveal = async (deal, allowPeek) => {
-            if (!this.preferences().autoReveal && deal.side === peekSide && allowPeek) {
+        let ownership = peekOwnership(plan.result.bets);
+        const manual = { player: false, banker: false };
+        const reveal = async (deal) => {
+            let squeezed = false;
+            if (!this.preferences().autoReveal && manual[deal.side]) {
                 state.move(deal.side === 'player' ? 'PLAYER_PEEK' : 'BANKER_PEEK');
-                await this.peek.open(deal.card, `${deal.side === 'player' ? '闲' : '庄'}家 · ${deal.index === 2 ? '补牌' : `第 ${deal.index + 1} 张`}`, motion.signal);
+                this.view.focus(true);
+                try {
+                    squeezed = await this.peek.open(deal.card, `${deal.side === 'player' ? '闲' : '庄'}家 · ${deal.index === 2 ? '第三张补牌' : `第 ${deal.index + 1} 张`}`, motion.signal);
+                }
+                finally {
+                    this.view.focus(false);
+                }
                 state.move('REVEAL');
             }
-            await this.view.flip(deal);
+            await this.view.flip(deal, squeezed);
         };
         try {
             await this.view.finishBetAnimations();
-            await motion.wait(250);
+            await this.view.countdown();
             state.move('BETTING_CLOSED');
             this.view.audio.play('tick');
-            await motion.wait(620);
+            await motion.wait(800);
             state.move('PREPARE_DEAL');
             this.view.clearTable();
             if (plan.shuffled) {
@@ -54,17 +63,26 @@ export class GameRunner {
             for (const deal of plan.deals.slice(0, 4)) {
                 state.move(deal.side === 'player' ? 'DEAL_PLAYER' : 'DEAL_BANKER');
                 await this.view.deal(deal);
-                await motion.wait(140);
             }
             state.move('REVEAL');
-            for (const deal of plan.deals.slice(0, 4))
-                await reveal(deal, deal.index === 1);
+            if (!this.preferences().autoReveal) {
+                if (ownership.needsChoice)
+                    ownership = peekOwnership(plan.result.bets, await this.peek.chooseSide(motion.signal));
+                for (const side of ownership.owned)
+                    manual[side] = true;
+                if (ownership.owned.length === 1) {
+                    const opponent = ownership.order[0];
+                    manual[opponent] = await this.peek.chooseOpponent(opponent, motion.signal);
+                }
+            }
+            for (const deal of initialRevealOrder(plan.deals, ownership))
+                await reveal(deal);
             for (const deal of plan.deals.slice(4)) {
                 await motion.wait(500);
                 state.move(deal.side === 'player' ? 'PLAYER_DRAW' : 'BANKER_DRAW');
                 await this.view.deal(deal);
                 state.move('REVEAL');
-                await reveal(deal, true);
+                await reveal(deal);
             }
             state.move('RESULT');
             this.view.showResult(plan.result);

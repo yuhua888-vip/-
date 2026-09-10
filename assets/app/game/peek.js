@@ -1,160 +1,255 @@
-import { drawFront, drawBack } from './cards.js';
 import { Motion } from '../animations/motion.js';
+import { AnimationDirector, tuning } from '../animations/director.js';
+import { PaperRenderer, resistedProgress, springStep } from './paper.js';
 export function dragProgress(startX, startY, x, y, width, height, corner) {
     const inwardX = (x - startX) * (corner.endsWith('r') ? -1 : 1), inwardY = (y - startY) * (corner.startsWith('b') ? -1 : 1);
     return Math.max(0, Math.min(1, (inwardX + inwardY) / ((width + height) * .62)));
 }
-export const REVEAL_THRESHOLD = .58;
-function clippedBack(width, height, distance) {
-    const input = [[0, 0], [width, 0], [width, height], [0, height]], output = [];
-    for (let i = 0; i < input.length; i++) {
-        const a = input[i], b = input[(i + 1) % input.length];
-        const fa = a[0] + a[1] - distance, fb = b[0] + b[1] - distance;
-        if (fa >= 0)
-            output.push(a);
-        if ((fa >= 0) !== (fb >= 0)) {
-            const t = fa / (fa - fb);
-            output.push([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])]);
-        }
-    }
-    return output;
-}
+export const REVEAL_THRESHOLD = .62;
+const name = (side) => side === 'player' ? '闲' : '庄';
 export class PeekController {
     audio;
-    dialog;
-    canvas;
+    dialog = document.querySelector('#peek-dialog');
+    input = document.querySelector('#peek-input');
+    renderer = null;
     motion = new Motion();
     constructor(audio) {
         this.audio = audio;
-        this.dialog = document.querySelector('#peek-dialog');
-        this.canvas = document.querySelector('#peek-canvas');
     }
-    open(card, label, signal) {
-        this.motion.reset();
-        this.audio.focusPeek(true);
-        const ctx = this.canvas.getContext('2d');
-        if (!ctx)
-            return Promise.resolve();
-        const width = 300, height = 420, dpr = Math.min(2, window.devicePixelRatio || 1);
-        this.canvas.width = width * dpr;
-        this.canvas.height = height * dpr;
-        ctx.scale(dpr, dpr);
-        const title = this.dialog.querySelector('#peek-title'), hint = this.dialog.querySelector('#peek-hint'), time = this.dialog.querySelector('#peek-time');
-        title.textContent = label;
-        hint.textContent = '从任意牌角向内拖动';
-        time.textContent = '20 秒后自动开牌';
-        let corner = 'br', progress = 0, startX = 0, startY = 0, pointer = null, done = false, frame = 0, gesture = 0;
-        const buttons = Array.from(this.dialog.querySelectorAll('[data-corner]'));
-        const map = (point) => [corner.endsWith('r') ? width - point[0] : point[0], corner.startsWith('b') ? height - point[1] : point[1]];
-        const path = (points) => { ctx.beginPath(); points.forEach((point, index) => { const p = map(point); if (index === 0)
-            ctx.moveTo(...p);
-        else
-            ctx.lineTo(...p); }); ctx.closePath(); };
-        const render = () => {
-            frame = 0;
-            ctx.clearRect(0, 0, width, height);
-            drawFront(ctx, card, width, height);
-            const distance = progress * (width + height) * .87;
-            ctx.save();
-            path(clippedBack(width, height, distance));
-            ctx.clip();
-            drawBack(ctx, width, height);
-            ctx.restore();
-            if (distance > 1 && progress < 1) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.rect(0, 0, width, height);
-                ctx.clip();
-                const a = map([distance, 0]), b = map([0, distance]), tip = map([distance * .86, distance * .86]);
-                const gradient = ctx.createLinearGradient(...map([distance * .42, distance * .42]), ...tip);
-                gradient.addColorStop(0, '#aaa99f');
-                gradient.addColorStop(.22, '#fdfbf2');
-                gradient.addColorStop(.68, '#d8d7cc');
-                gradient.addColorStop(1, '#8b9086');
-                ctx.shadowColor = '#0009';
-                ctx.shadowBlur = 12 + progress * 12;
-                ctx.shadowOffsetX = corner.endsWith('r') ? -5 : 5;
-                ctx.shadowOffsetY = corner.startsWith('b') ? -5 : 5;
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.moveTo(...a);
-                ctx.quadraticCurveTo(...map([distance * .83, distance * .18]), ...tip);
-                ctx.quadraticCurveTo(...map([distance * .18, distance * .83]), ...b);
-                ctx.closePath();
-                ctx.fill();
-                ctx.restore();
-            }
-            this.canvas.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
-            for (const button of buttons)
-                button.setAttribute('aria-pressed', String(button.dataset.corner === corner));
-        };
-        const queue = () => { if (!frame)
-            frame = requestAnimationFrame(render); };
-        render();
-        this.dialog.showModal();
+    choice(title, detail, options, signal) {
+        const dialog = document.querySelector('#peek-choice-dialog'), heading = dialog.querySelector('h2'), copy = dialog.querySelector('p'), clock = dialog.querySelector('output');
+        const buttons = Array.from(dialog.querySelectorAll('[data-choice]'));
+        heading.textContent = title;
+        copy.textContent = detail;
+        buttons.forEach((button, i) => button.textContent = options[i]);
+        dialog.showModal();
+        const timer = new Motion();
+        let done = false;
         return new Promise((resolve, reject) => {
-            const clean = () => { done = true; cancelAnimationFrame(frame); this.motion.cancel(); this.audio.focusPeek(false); this.dialog.close(); signal.removeEventListener('abort', abort); this.canvas.removeEventListener('pointerdown', down); this.canvas.removeEventListener('pointermove', move); this.canvas.removeEventListener('pointerup', up); this.canvas.removeEventListener('pointercancel', cancelPointer); this.canvas.removeEventListener('keydown', key); this.dialog.removeEventListener('cancel', cancelDialog); openButton.removeEventListener('click', complete); for (const button of buttons)
-                button.removeEventListener('click', select); };
-            const finish = () => { if (done)
-                return; clean(); this.audio.play('flip'); resolve(); };
-            const complete = () => { if (done)
-                return; pointer = null; progress = 1; render(); finish(); };
+            const clean = () => { done = true; timer.cancel(); dialog.close(); signal.removeEventListener('abort', abort); dialog.removeEventListener('cancel', cancel); buttons.forEach(button => button.removeEventListener('click', click)); };
+            const finish = (index) => { if (done)
+                return; clean(); resolve(index); };
             const abort = () => { if (done)
-                return; clean(); reject(new DOMException('Peek cancelled', 'AbortError')); };
-            const coords = (event) => { const r = this.canvas.getBoundingClientRect(); return { x: (event.clientX - r.left) * width / r.width, y: (event.clientY - r.top) * height / r.height }; };
-            const down = (event) => { if (pointer !== null || event.button !== 0)
-                return; event.preventDefault(); gesture++; const p = coords(event); corner = (p.y < height / 2 ? 't' : 'b') + (p.x < width / 2 ? 'l' : 'r'); startX = p.x; startY = p.y; progress = 0; pointer = event.pointerId; this.canvas.setPointerCapture(pointer); queue(); };
-            const move = (event) => { if (event.pointerId !== pointer)
-                return; const p = coords(event); progress = dragProgress(startX, startY, p.x, p.y, width, height, corner); hint.textContent = progress >= REVEAL_THRESHOLD ? '松手开牌' : '慢慢向内拖动'; this.audio.play('peek'); queue(); };
-            const rebound = () => { progress = 0; hint.textContent = '未过阈值，牌角已回弹'; queue(); };
-            const up = (event) => { if (event.pointerId !== pointer)
-                return; pointer = null; if (this.canvas.hasPointerCapture(event.pointerId))
-                this.canvas.releasePointerCapture(event.pointerId); if (progress >= REVEAL_THRESHOLD)
-                complete();
-            else {
-                const from = progress, version = gesture;
-                void this.motion.tween(from, 0, 260, value => { if (pointer === null && gesture === version) {
-                    progress = value;
-                    queue();
-                } }).then(() => { if (pointer === null && gesture === version)
-                    rebound(); }).catch(() => { });
-            } };
-            const cancelPointer = () => { pointer = null; rebound(); };
-            const key = (event) => { if (['Enter', ' '].includes(event.key)) {
-                event.preventDefault();
-                complete();
-            }
-            else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
-                event.preventDefault();
-                progress = Math.min(1, progress + .12);
-                if (progress >= REVEAL_THRESHOLD)
-                    complete();
-                else
-                    queue();
-            } };
-            const cancelDialog = (event) => { event.preventDefault(); complete(); };
-            const select = (event) => { gesture++; corner = event.currentTarget.dataset.corner; progress = 0; render(); this.canvas.focus(); };
-            const openButton = this.dialog.querySelector('#peek-open');
-            this.canvas.addEventListener('pointerdown', down);
-            this.canvas.addEventListener('pointermove', move);
-            this.canvas.addEventListener('pointerup', up);
-            this.canvas.addEventListener('pointercancel', cancelPointer);
-            this.canvas.addEventListener('keydown', key);
-            this.dialog.addEventListener('cancel', cancelDialog);
-            openButton.addEventListener('click', complete);
-            for (const button of buttons)
-                button.addEventListener('click', select);
+                return; clean(); reject(new DOMException('Choice cancelled', 'AbortError')); };
+            const cancel = (event) => { event.preventDefault(); finish(1); };
+            const click = (event) => finish(Number(event.currentTarget.dataset.choice));
+            buttons.forEach(button => button.addEventListener('click', click));
+            dialog.addEventListener('cancel', cancel);
             signal.addEventListener('abort', abort, { once: true });
             if (signal.aborted) {
                 abort();
                 return;
             }
-            void (async () => { for (let remaining = 19; remaining >= 0; remaining--) {
-                await this.motion.wait(1000, true);
-                if (done)
-                    return;
-                time.textContent = `${remaining} 秒后自动开牌`;
-            } complete(); })().catch(() => { });
+            void (async () => { for (let remaining = 15; remaining > 0; remaining--) {
+                clock.textContent = `${remaining} 秒后：${options[1]}`;
+                await timer.wait(1000, true);
+            } finish(1); })().catch(() => { });
         });
     }
+    async chooseSide(signal) { return await this.choice('这一局，想咪哪一方？', '和与对子投注也可以慢慢开牌。', ['咪庄家牌', '咪闲家牌'], signal) === 0 ? 'banker' : 'player'; }
+    async chooseOpponent(side, signal) {
+        return await this.choice(`先开${name(side)}家牌`, `随后由你咪${name(side === 'player' ? 'banker' : 'player')}家的每一张牌。`, [`亲自咪${name(side)}家牌`, `${name(side)}家直接开牌`], signal) === 0;
+    }
+    open(card, label, signal) {
+        this.motion.reset();
+        this.motion.reduced = document.body.classList.contains('reduced');
+        if (!this.renderer)
+            this.renderer = new PaperRenderer(this.input);
+        this.renderer.resize();
+        this.renderer.setCard(card);
+        const renderer = this.renderer, title = this.dialog.querySelector('#peek-title'), hint = this.dialog.querySelector('#peek-hint'), clock = this.dialog.querySelector('#peek-time'), openButton = this.dialog.querySelector('#peek-open');
+        const buttons = Array.from(this.dialog.querySelectorAll('[data-corner]'));
+        title.textContent = label;
+        hint.textContent = '按住任意牌角，慢慢向内搓开';
+        clock.textContent = '静置 45 秒后直接开牌';
+        this.audio.focusPeek(true);
+        document.body.classList.add('peek-focus');
+        this.dialog.showModal();
+        this.input.focus();
+        let corner = 'br', progress = 0, target = 0, velocity = 0, direction = .5, pointer = null, done = false, completing = false, frame = 0, lastFrame = 0, startX = 0, startY = 0, lastX = 0, lastY = 0, lastMove = 0, thresholdReached = false;
+        let rect = this.input.getBoundingClientRect(), lastInteraction = performance.now();
+        const opened = lastInteraction;
+        const render = () => { renderer.render(progress, corner, direction); this.input.setAttribute('aria-valuenow', String(Math.round(progress * 100))); };
+        render();
+        return new Promise((resolve, reject) => {
+            const clean = () => {
+                done = true;
+                cancelAnimationFrame(frame);
+                this.motion.cancel();
+                this.audio.stopPaper();
+                this.audio.focusPeek(false);
+                document.body.classList.remove('peek-focus');
+                if (pointer !== null && this.input.hasPointerCapture(pointer))
+                    this.input.releasePointerCapture(pointer);
+                pointer = null;
+                this.dialog.close();
+                signal.removeEventListener('abort', abort);
+                window.removeEventListener('resize', resize);
+                this.input.removeEventListener('pointerdown', down);
+                this.input.removeEventListener('pointermove', move);
+                this.input.removeEventListener('pointerup', up);
+                this.input.removeEventListener('pointercancel', cancelPointer);
+                this.input.removeEventListener('lostpointercapture', cancelPointer);
+                this.input.removeEventListener('keydown', key);
+                this.dialog.removeEventListener('cancel', cancelDialog);
+                openButton.removeEventListener('click', direct);
+                buttons.forEach(button => button.removeEventListener('click', select));
+            };
+            const complete = async (squeezed) => {
+                if (done || completing)
+                    return;
+                completing = true;
+                cancelAnimationFrame(frame);
+                frame = 0;
+                this.audio.stopPaper();
+                try {
+                    if (squeezed) {
+                        hint.textContent = '缓缓揭晓';
+                        await new AnimationDirector(this.motion).play(`peek:${corner}`, [{ name: 'unfold-and-turn', duration: 780, run: duration => { if (this.motion.reduced) {
+                                    progress = 1;
+                                    render();
+                                    return this.motion.wait(duration);
+                                } return this.motion.tween(progress, 1, duration, value => { progress = value; render(); }); } }, { name: 'read-the-card', duration: 380 }]);
+                    }
+                    if (!done) {
+                        clean();
+                        resolve(squeezed);
+                    }
+                }
+                catch (error) {
+                    if (!done) {
+                        clean();
+                        reject(error);
+                    }
+                }
+            };
+            const direct = () => { void complete(false); };
+            const abort = () => { if (done)
+                return; clean(); reject(new DOMException('Peek cancelled', 'AbortError')); };
+            const tick = (time) => {
+                frame = 0;
+                if (done || completing)
+                    return;
+                const next = springStep(progress, velocity, target, lastFrame ? (time - lastFrame) / 1000 : 1 / 60, tuning.spring);
+                lastFrame = time;
+                progress = next.position;
+                velocity = next.velocity;
+                if (Math.abs(target - progress) < .0008 && Math.abs(velocity) < .008) {
+                    progress = target;
+                    velocity = 0;
+                }
+                if (progress >= tuning.threshold && !thresholdReached) {
+                    thresholdReached = true;
+                    this.audio.haptic('threshold');
+                }
+                else if (progress < tuning.threshold - .03)
+                    thresholdReached = false;
+                hint.textContent = progress >= tuning.threshold ? '松手，揭晓这张牌' : pointer !== null ? '慢慢向内搓开' : '按住任意牌角，慢慢向内搓开';
+                render();
+                if (pointer !== null && time - lastMove > 90)
+                    this.audio.rub(0);
+                if (pointer !== null || progress !== target || Math.abs(velocity) > .008)
+                    frame = requestAnimationFrame(tick);
+            };
+            const queue = () => { if (!frame && !done && !completing) {
+                lastFrame = 0;
+                frame = requestAnimationFrame(tick);
+            } };
+            const coords = (event) => ({ x: (event.clientX - rect.left) * 420 / rect.width - 60, y: (event.clientY - rect.top) * 550 / rect.height - 65 });
+            const down = (event) => {
+                if (pointer !== null || event.button !== 0 || completing)
+                    return;
+                rect = this.input.getBoundingClientRect();
+                const p = coords(event);
+                if (p.x < 0 || p.x > 300 || p.y < 0 || p.y > 420)
+                    return;
+                event.preventDefault();
+                lastInteraction = performance.now();
+                corner = ((p.y < 210 ? 't' : 'b') + (p.x < 150 ? 'l' : 'r'));
+                progress = target = velocity = 0;
+                thresholdReached = false;
+                startX = lastX = p.x;
+                startY = lastY = p.y;
+                lastMove = performance.now();
+                pointer = event.pointerId;
+                this.input.setPointerCapture(pointer);
+                buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.corner === corner)));
+                queue();
+            };
+            const move = (event) => {
+                if (event.pointerId !== pointer || completing)
+                    return;
+                const p = coords(event), now = performance.now();
+                lastInteraction = now;
+                target = resistedProgress(dragProgress(startX, startY, p.x, p.y, 300, 420, corner), tuning.resistance);
+                const ix = Math.max(0, (p.x - startX) * (corner.endsWith('r') ? -1 : 1)), iy = Math.max(0, (p.y - startY) * (corner.startsWith('b') ? -1 : 1));
+                if (ix + iy > 10)
+                    direction = iy / (ix + iy);
+                this.audio.rub(Math.hypot(p.x - lastX, p.y - lastY) / Math.max(.008, (now - lastMove) / 1000));
+                lastX = p.x;
+                lastY = p.y;
+                lastMove = now;
+                queue();
+            };
+            const up = (event) => {
+                if (event.pointerId !== pointer || completing)
+                    return;
+                const id = pointer;
+                pointer = null;
+                if (this.input.hasPointerCapture(id))
+                    this.input.releasePointerCapture(id);
+                this.audio.stopPaper();
+                lastInteraction = performance.now();
+                if (progress >= tuning.threshold)
+                    void complete(true);
+                else {
+                    target = 0;
+                    queue();
+                }
+            };
+            const cancelPointer = () => { if (pointer === null)
+                return; pointer = null; target = 0; this.audio.stopPaper(); queue(); };
+            const resize = () => { cancelPointer(); rect = this.input.getBoundingClientRect(); renderer.resize(); render(); };
+            const key = (event) => { lastInteraction = performance.now(); if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                direct();
+            }
+            else if (event.key.startsWith('Arrow')) {
+                event.preventDefault();
+                target = Math.min(1, target + .13);
+                if (target >= tuning.threshold)
+                    void complete(true);
+                else
+                    queue();
+            } };
+            const cancelDialog = (event) => { event.preventDefault(); direct(); };
+            const select = (event) => { if (completing)
+                return; corner = event.currentTarget.dataset.corner; progress = target = velocity = 0; lastInteraction = performance.now(); buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.corner === corner))); render(); this.input.focus(); };
+            this.input.addEventListener('pointerdown', down);
+            this.input.addEventListener('pointermove', move);
+            this.input.addEventListener('pointerup', up);
+            this.input.addEventListener('pointercancel', cancelPointer);
+            this.input.addEventListener('lostpointercapture', cancelPointer);
+            this.input.addEventListener('keydown', key);
+            this.dialog.addEventListener('cancel', cancelDialog);
+            openButton.addEventListener('click', direct);
+            buttons.forEach(button => button.addEventListener('click', select));
+            window.addEventListener('resize', resize);
+            signal.addEventListener('abort', abort, { once: true });
+            if (signal.aborted) {
+                abort();
+                return;
+            }
+            void (async () => { while (!done) {
+                await this.motion.wait(1000, true);
+                const remaining = Math.ceil(Math.min(45000 - (performance.now() - lastInteraction), 180000 - (performance.now() - opened)) / 1000);
+                clock.textContent = `静置 ${Math.max(0, remaining)} 秒后直接开牌`;
+                if (remaining <= 0) {
+                    direct();
+                    return;
+                }
+            } })().catch(() => { });
+        });
+    }
+    dispose() { this.motion.cancel(); this.renderer?.dispose(); this.renderer = null; }
 }

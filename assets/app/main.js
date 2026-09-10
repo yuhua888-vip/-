@@ -2,19 +2,20 @@ import { GameSession } from './game/session.js';
 import { GameRunner } from './game/runner.js';
 import { isSpot } from './game/engine.js';
 import { LocalStore } from './services/storage.js';
+import { tuning, timelineObservers } from './animations/director.js';
 import { Motion } from './animations/motion.js';
 import { AudioManager } from './audio/manager.js';
 import { DealerController } from './dealer/controller.js';
 import { PeekController } from './game/peek.js';
 import { TableView, element } from './ui/table.js';
 import { PHASE_LABELS } from './game/state.js';
-const DEFAULTS = { autoReveal: false, quick: false, reduced: false, muted: false, master: .45, ambience: .2, music: .08, effects: .7 };
+const DEFAULTS = { autoReveal: false, quick: false, reduced: false, muted: false, master: .45, ambience: .2, music: .08, effects: .7, haptics: true };
 function readSettings() { try {
     const parsed = JSON.parse(localStorage.getItem('queen-entertainment:settings:v1') ?? 'null');
     if (!parsed || typeof parsed !== 'object')
         return { ...DEFAULTS };
     const source = parsed, settings = { ...DEFAULTS };
-    for (const key of ['autoReveal', 'quick', 'reduced', 'muted'])
+    for (const key of ['autoReveal', 'quick', 'reduced', 'muted', 'haptics'])
         if (typeof source[key] === 'boolean')
             settings[key] = source[key];
     for (const key of ['master', 'ambience', 'music', 'effects'])
@@ -47,18 +48,19 @@ async function bootstrap() {
     const session = new GameSession(store.save, loaded, phase => { dealer.set(phase); element('phase-code').textContent = phase === 'BETTING_OPEN' ? 'PLACE YOUR BETS' : phase === 'BETTING_CLOSED' ? 'NO MORE BETS' : phase.replaceAll('_', ' '); });
     if (!loaded)
         session.persist();
-    const view = new TableView(session, audio, motion), peek = new PeekController(audio), runner = new GameRunner(session, view, peek, () => settings, fatal);
+    const view = new TableView(session, audio, motion, dealer), peek = new PeekController(audio), runner = new GameRunner(session, view, peek, () => settings, fatal);
     const reduceQuery = matchMedia('(prefers-reduced-motion: reduce)');
     const applySettings = () => {
-        const lowPower = navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 2;
-        view.setReduced(settings.reduced || reduceQuery.matches || lowPower, settings.quick);
+        view.setReduced(settings.reduced || reduceQuery.matches, settings.quick);
         audio.settings = { master: settings.master, ambience: settings.ambience, music: settings.music, effects: settings.effects, muted: settings.muted };
         audio.update();
+        audio.haptics = settings.haptics;
         element('sound-toggle').setAttribute('aria-pressed', String(settings.muted));
         element('sound-toggle').setAttribute('aria-label', settings.muted ? '开启声音' : '静音');
         element('peek-toggle').setAttribute('aria-pressed', String(!settings.autoReveal));
         element('auto-reveal').checked = settings.autoReveal;
         element('reduced-effects').checked = settings.reduced;
+        element('haptic-effects').checked = settings.haptics;
         element('pace-select').value = settings.quick ? 'quick' : 'normal';
         for (const key of ['master', 'ambience', 'music', 'effects'])
             element(`volume-${key}`).value = String(Math.round(settings[key] * 100));
@@ -80,6 +82,16 @@ async function bootstrap() {
     if (session.recovered)
         view.toast('已恢复上一局结算，虚拟筹码和记录已保存。');
     const unlock = () => { void audio.unlock(); };
+    const releasePressure = () => { for (const button of document.querySelectorAll('.pressed'))
+        button.classList.remove('pressed'); };
+    document.addEventListener('pointerdown', event => { const button = event.target.closest('button'); if (button && !button.disabled) {
+        button.classList.add('pressed');
+        unlock();
+        audio.play('button');
+        audio.haptic('button');
+    } }, { passive: true });
+    document.addEventListener('pointerup', releasePressure, { passive: true });
+    document.addEventListener('pointercancel', releasePressure, { passive: true });
     const act = (operation) => { if (runner.running)
         return; unlock(); const before = { ...session.bets }; try {
         operation();
@@ -112,6 +124,7 @@ async function bootstrap() {
         return; settings.autoReveal = !settings.autoReveal; saveSettings(); view.toast(settings.autoReveal ? '已开启自动开牌' : '已开启四角咪牌'); });
     element('auto-reveal').addEventListener('change', () => { settings.autoReveal = element('auto-reveal').checked; saveSettings(); });
     element('reduced-effects').addEventListener('change', () => { settings.reduced = element('reduced-effects').checked; saveSettings(); });
+    element('haptic-effects').addEventListener('change', () => { settings.haptics = element('haptic-effects').checked; saveSettings(); });
     element('pace-select').addEventListener('change', () => { settings.quick = element('pace-select').value === 'quick'; saveSettings(); });
     element('rule-select').addEventListener('change', () => { try {
         session.setRule(element('rule-select').value);
@@ -133,7 +146,11 @@ async function bootstrap() {
         tab.setAttribute('aria-pressed', String(tab.dataset.road === 'big'));
     if (matchMedia('(max-width:600px)').matches)
         element('roads-panel').open = false;
-    window.addEventListener('resize', () => motion.finishAnimations());
+    let viewportWidth = window.innerWidth;
+    window.addEventListener('resize', () => { if (window.innerWidth !== viewportWidth) {
+        viewportWidth = window.innerWidth;
+        view.reflow();
+    } });
     document.addEventListener('visibilitychange', () => { if (document.hidden) {
         runner.skip();
         audio.suspend();
@@ -143,9 +160,10 @@ async function bootstrap() {
         if (!runner.running)
             element('announcement').textContent = PHASE_LABELS.BETTING_OPEN;
     } });
-    window.addEventListener('pagehide', () => runner.skip());
+    window.addEventListener('pagehide', () => { runner.skip(); peek.dispose(); });
     window.addEventListener('pageshow', event => { if (event.persisted)
         location.reload(); });
     window.addEventListener('unhandledrejection', event => { console.error('Unhandled application error', event.reason); view.toast('发生意外错误，已保存的牌局进度可刷新恢复。'); });
+    return { view, runner, peek, settings, audio, tuning, timelineObservers };
 }
-void bootstrap().catch(error => { console.error('Queen initialization failed', error); fatal(error instanceof Error ? error.message : '牌桌准备失败，请重新打开。'); });
+export const ready = bootstrap().catch(error => { console.error('Queen initialization failed', error); fatal(error instanceof Error ? error.message : '牌桌准备失败，请重新打开。'); });

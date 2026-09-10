@@ -6,7 +6,10 @@ export class AudioManager {
     effects = null;
     noise = null;
     lastPeek = 0;
+    cues = new Set();
     duck = false;
+    haptics = true;
+    paper = null;
     settings = { master: .45, ambience: .2, music: .08, effects: .7, muted: false };
     async unlock() {
         try {
@@ -61,7 +64,81 @@ export class AudioManager {
         this.music.gain.setTargetAtTime(this.settings.music * (this.duck ? .15 : 1), now, .08);
     }
     focusPeek(active) { this.duck = active; this.update(); }
-    suspend() { void this.context?.suspend().catch(() => { }); }
+    suspend() { this.stopPaper(); void this.context?.suspend().catch(() => { }); }
+    haptic(kind) {
+        if (this.haptics && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+            try {
+                navigator.vibrate(kind === 'threshold' ? 12 : kind === 'chip' ? 7 : 4);
+            }
+            catch { /* optional */ }
+        }
+    }
+    paperCue(kind, milliseconds) {
+        const c = this.context, output = this.effects;
+        if (!c || !output || !this.noise || c.state !== 'running' || this.settings.muted)
+            return;
+        const node = c.createBufferSource(), gain = c.createGain(), filter = c.createBiquadFilter();
+        node.buffer = this.noise;
+        node.loop = true;
+        const character = { draw: [1700, .033], travel: [650, .009], land: [480, .068], slide: [1150, .025], lift: [1450, .02] }[kind];
+        filter.type = kind === 'land' ? 'lowpass' : 'bandpass';
+        filter.frequency.value = character[0];
+        filter.Q.value = .65;
+        const now = c.currentTime, duration = Math.max(.045, milliseconds / 1000);
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(character[1], now + .025);
+        gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
+        node.playbackRate.value = kind === 'slide' ? .7 : 1;
+        node.connect(filter);
+        filter.connect(gain);
+        gain.connect(output);
+        node.start();
+        node.stop(now + duration);
+        const cue = { source: node, gain };
+        this.cues.add(cue);
+        node.onended = () => { this.cues.delete(cue); node.disconnect(); filter.disconnect(); gain.disconnect(); };
+    }
+    cancelPresentation() { this.stopPaper(); const now = this.context?.currentTime; if (now === undefined)
+        return; for (const cue of this.cues) {
+        cue.gain.gain.cancelScheduledValues(now);
+        cue.gain.gain.setTargetAtTime(0, now, .012);
+        try {
+            cue.source.stop(now + .05);
+        }
+        catch { /* already stopped */ }
+    } }
+    /** One persistent noise voice per gesture; velocity changes timbre, not node count. */
+    rub(velocity) {
+        const c = this.context;
+        if (!c || !this.effects || !this.noise || c.state !== 'running')
+            return;
+        if (!this.paper) {
+            const source = c.createBufferSource(), gain = c.createGain(), filter = c.createBiquadFilter();
+            source.buffer = this.noise;
+            source.loop = true;
+            filter.type = 'bandpass';
+            filter.Q.value = .8;
+            gain.gain.value = 0;
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.effects);
+            source.start();
+            this.paper = { source, gain, filter };
+        }
+        const speed = Math.min(1, Math.abs(velocity) / 900), now = c.currentTime;
+        this.paper.gain.gain.setTargetAtTime(speed * .045, now, .025);
+        this.paper.source.playbackRate.setTargetAtTime(.5 + speed * 1.15, now, .04);
+        this.paper.filter.frequency.setTargetAtTime(600 + speed * 2100, now, .04);
+    }
+    stopPaper() {
+        const paper = this.paper;
+        if (!paper || !this.context)
+            return;
+        this.paper = null;
+        paper.gain.gain.setTargetAtTime(0, this.context.currentTime, .025);
+        paper.source.stop(this.context.currentTime + .12);
+        paper.source.onended = () => { paper.source.disconnect(); paper.gain.disconnect(); paper.filter.disconnect(); };
+    }
     play(sound) {
         const c = this.context, output = this.effects;
         if (!c || !output || c.state !== 'running' || this.settings.muted)

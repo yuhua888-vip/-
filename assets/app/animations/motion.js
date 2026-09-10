@@ -1,12 +1,12 @@
-export const EASE = 'cubic-bezier(.18,.75,.22,1)';
-export const TIMING = { chip: 460, card: 680, flip: 440, fast: 160, normal: 350, slow: 750, cinematic: 1100 };
+import { tuning } from './director.js';
+export const EASE = 'cubic-bezier(.22,.68,.25,1)';
 export class Motion {
     controller = new AbortController();
     animations = new Set();
     reduced = false;
     quick = false;
     get signal() { return this.controller.signal; }
-    get scale() { return this.reduced ? 0.06 : this.quick ? 0.62 : 1; }
+    get scale() { return (this.quick ? .88 : 1) / tuning.playbackRate; }
     reset() { this.cancel(); this.controller = new AbortController(); }
     cancel() { this.controller.abort(); for (const animation of this.animations)
         animation.cancel(); this.animations.clear(); }
@@ -55,18 +55,35 @@ export class Motion {
         });
     }
     async animate(element, keyframes, milliseconds, options = {}) {
-        if (this.signal.aborted)
+        const signal = this.signal;
+        if (signal.aborted)
             throw new DOMException('Motion cancelled', 'AbortError');
-        const animation = element.animate(keyframes, { duration: Math.max(1, milliseconds * this.scale), easing: EASE, fill: 'none', ...options });
+        // Accessibility removes spatial motion without accelerating the game clock.
+        if (this.reduced && 'style' in element) {
+            const style = element.style;
+            if (keyframes.some(frame => frame.transform !== undefined))
+                style.transform = 'none';
+            if (keyframes.some(frame => frame.clipPath !== undefined))
+                style.clipPath = 'none';
+        }
+        const frames = this.reduced ? keyframes.map(({ transform: _transform, filter: _filter, clipPath: _clip, ...frame }) => frame) : keyframes;
+        const animation = element.animate(frames, { duration: Math.max(1, milliseconds * this.scale), easing: EASE, fill: 'both', ...options });
         this.animations.add(animation);
         const abort = () => animation.cancel();
-        this.signal.addEventListener('abort', abort, { once: true });
+        signal.addEventListener('abort', abort, { once: true });
         try {
             await animation.finished;
         }
         finally {
+            if (animation.playState === 'finished') {
+                try {
+                    animation.commitStyles();
+                }
+                catch { /* detached node */ }
+            }
+            animation.cancel();
             this.animations.delete(animation);
-            this.signal.removeEventListener('abort', abort);
+            signal.removeEventListener('abort', abort);
         }
     }
 }

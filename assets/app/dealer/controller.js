@@ -1,4 +1,5 @@
 import { PHASE_LABELS } from '../game/state.js';
+import { tuning } from '../animations/director.js';
 export class ScriptedDealerBrain {
     onPhase(phase) { return PHASE_LABELS[phase]; }
 }
@@ -14,6 +15,20 @@ export class DealerController {
         this.caption = caption;
         this.brain = brain;
     }
+    async cue(stage, side, duration, motion) {
+        this.element.dataset.gesture = stage;
+        const direction = side === 'player' ? -1 : 1;
+        const positions = {
+            prepare: 'translate(0,0) rotate(0deg)', extract: 'translate(3px,2px) rotate(.35deg)',
+            travel: `translate(${direction * 4}px,4px) rotate(${direction * .6}deg)`,
+            contact: `translate(${direction * 3}px,3px) rotate(${direction * .3}deg)`,
+            settle: 'translate(0,0) rotate(0deg)', pause: 'translate(0,0) rotate(0deg)',
+        };
+        // Shared cue duration binds dealer speed to the card and audio clock.
+        const from = this.element.style.transform || 'translate(0,0) rotate(0deg)';
+        await motion.animate(this.element, [{ transform: from }, { transform: positions[stage] }], duration);
+    }
+    rest() { delete this.element.dataset.gesture; this.element.style.removeProperty('transform'); }
     set(phase) {
         let pose = 0;
         if (phase === 'BETTING_CLOSED' || phase === 'BETTING_WARNING')
@@ -33,7 +48,7 @@ export class DealerController {
                 previous.style.animation = 'none';
                 this.element.append(previous);
                 this.previousArt = previous;
-                const animation = previous.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease-out' });
+                const animation = previous.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 / tuning.playbackRate, easing: 'ease-out' });
                 this.transition = animation;
                 void animation.finished.catch(() => { }).finally(() => {
                     previous.remove();
